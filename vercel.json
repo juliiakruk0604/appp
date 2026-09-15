@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/omnera-demo-v2.html" }
+  ]
+}
