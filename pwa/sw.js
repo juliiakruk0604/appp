@@ -1,5 +1,5 @@
 /* Offline shell for the Dvoje prototype: app files are cache-first, fonts are cached as they load. */
-const CACHE = "dvoie-v8";
+const CACHE = "dvoie-v9";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {

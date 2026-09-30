@@ -428,6 +428,11 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;back
 .calmBox{display:flex;gap:14px;align-items:baseline}
 .calmBox .d{font-family:var(--display);font-size:40px;line-height:1;letter-spacing:-.03em}
 .anom{border-left:3px solid var(--clay);padding-left:12px;margin-top:10px;font-size:13.5px;line-height:1.5}
+.hidden3{position:relative;border:1px dashed var(--rule);border-radius:16px;padding:14px;margin-top:10px}
+.hidden3 .blurTxt{filter:blur(5px);user-select:none;font-family:var(--display);font-size:16px;line-height:1.4;color:var(--graphite)}
+.hidden3 .hint{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay);margin-bottom:6px}
+.ahaBar{display:flex;align-items:center;gap:10px;font-size:13.5px;border-radius:14px;padding:10px 14px;background:var(--mossSoft);border:1px solid var(--mossLine);margin-top:12px}
+.ahaBar b{font-family:var(--display);font-weight:400;font-size:20px}
 /* audit: tap targets, legible tags, clear disabled state */
 .seg button{min-height:40px}
 button.chip{min-height:36px;padding:8px 14px;font-size:10.5px}
@@ -488,7 +493,7 @@ html,body{overflow-x:clip}
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
-const APP_VERSION="8 · компас";
+const APP_VERSION="9 · компас+";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const arrow='<svg width="18" height="18" aria-hidden="true"><use href="#arrow"/></svg>';
 const checkI='<svg width="12" height="12" aria-hidden="true"><use href="#check"/></svg>';
@@ -740,7 +745,7 @@ const CATALOG=[
   ["Поки сам",[["E2","Що ви самі про себе сказали"],["E3","Удвох це працює інакше"]]],
   ["Головний",[["C1","Головний екран"],["C2","Каталог модулів"],["C3","Картка модуля"]]],
   ["Цикл",[["D1","Захід, інтро"],["D2","Питання"],["D3","Чекаємо партнера"],["D4","Відкриття"],["D5","Розбір"],["D6","Розмова"],["D7","Домовленість"],["D8","Перевірка"],["D9","Підсумок заходу"]]],
-  ["Соло",[["K1","Хто ви зараз"],["K2","Карта пошуку, інтро"],["K3","Карта пошуку, питання"],["K4","Результат"],["K5","Пейвол соло"],["M1","Моя історія, інтро"],["M2","Історія: ввід"],["M3","Патерни історії"],["N0","Точка"],["N0c","Тихий режим"],["N1","Мій компас"],["N7","Аномалії"],["N5","Після побачення"],["N6","Маршрут"],["N2","Соло-розбір"],["N3","Практика тижня"],["N4","Перевірка практики"],["P1","Мій фільтр"],["P2","Я зустрів(ла) людину"]]],
+  ["Соло",[["K1","Хто ви зараз"],["K2","Карта пошуку, інтро"],["K3","Карта пошуку, питання"],["K4","Результат"],["K5","Пейвол соло"],["M1","Моя історія, інтро"],["M2","Історія: ввід"],["M3","Патерни історії"],["N0","Точка"],["N0c","Тихий режим"],["N0b","Від точки до курсу"],["M2q","Коротка історія"],["N8","Перед побаченням"],["N1","Мій компас"],["N7","Аномалії"],["N5","Після побачення"],["N6","Маршрут"],["N2","Соло-розбір"],["N3","Практика тижня"],["N4","Перевірка практики"],["P1","Мій фільтр"],["P2","Я зустрів(ла) людину"]]],
   ["Збереження і контент",[["F1","Наші домовленості"],["G1","Вечір розмов"],["G2","Колода в дії"],["G3","Блог"],["G4","Стаття"]]],
   ["Психолог і оплата",[["H1","Вибір психолога"],["H2","Письмовий розбір"],["H3","Згода на доступ"],["H4","Запис на сесію"],["H5","Оплата"]]],
   ["Безпека і система",[["S1","Попередження перед рівнем 3"],["S2","Екран допомоги"],["Z1","Приватність і мої дані"],["Z2","Налаштування"],["Z3","Порожні стани й помилки"]]],
@@ -1287,18 +1292,21 @@ V.K4=()=>{const cr=criteria(),neg=cr.filter(isNeg),M=cr.length,Nn=neg.length,cla
   ${Nn>=M/2&&M?`<div class="card darkCard" style="margin-top:12px"><div class="lab">Розмитий фокус · знахідка повністю</div><p style="font-family:var(--display);font-size:17px;line-height:1.4;margin:8px 0 0">${Nn} з ${M} ваших критеріїв сформульовані через «не». Ви дуже точно знаєте, кого не хочете. Кого хочете — майже не описали.</p></div>`
   :`<div class="card soft" style="margin-top:12px;font-size:14px;line-height:1.5">Ваш фокус досить чіткий: більшість критеріїв — ствердження.</div>`}
   <div class="card" style="margin-top:12px;opacity:.75"><div class="row">${lockI}<span style="font-size:13.5px">Ще знахідки й рекомендація модуля — у повному соло-доступі</span></div></div>`,
-  foot:`${Nn?`<button class="btn" data-go="K4b">Переписати це ствердженнями${arrow}</button>`:""}<button class="btn ghost" data-go="${S.solo.paid?"M1":"K5"}">${S.solo.paid?"До моєї історії":"Що далі"}${arrow}</button>`};};
+  foot:`${Nn?`<button class="btn" data-act="goK4b">Переписати це ствердженнями${arrow}</button>`:""}<button class="btn ghost" data-go="${S.solo.paid?"M1":"N1"}">${S.solo.paid?"До моєї історії":"До компаса"}${arrow}</button>`};};
 V.K4b=()=>{const neg=criteria().filter(isNeg);return {body:`
   <div class="eb">Вправа</div><h2 class="t2">Кожне «не хочу» — у ствердження.</h2>
   <p class="p">Не «не ревнивий», а що саме замість: «спокійно ставиться до моїх друзів». Це перший крок до вашого фільтра.</p>
   ${neg.map((c,i)=>`<label class="lab" for="rw${i}">${esc(c)}</label><input id="rw${i}" class="field" data-bind="solo.rewrites.${i}" value="${esc(S.solo.rewrites[i]||"")}" placeholder="Замість цього я шукаю…">`).join("")}`,
   foot:`<button class="btn" data-act="rewritesDone">Зберегти в мій фільтр${arrow}</button>`};};
-V.K5=()=>({body:`
-  <div class="eb">Соло, повний доступ</div><h2 class="t2">Ясність, а не виправлення.</h2>
-  <div class="tariff rec" style="margin-top:16px"><div class="between"><div style="font-size:15px">Соло, повний доступ</div><div class="price">790 ₴</div></div>
-  <ul><li>8 соло-модулів</li><li>Розбір історії стосунків з патернами</li><li>Практики тижня з перевіркою</li><li>Артефакт «Мій фільтр»</li></ul></div>
-  <p class="small">Разово. Повернення грошей протягом 14 днів.</p>`,
-  foot:`<button class="btn" data-act="buySolo">Оплатити 790 ₴${arrow}</button>`});
+V.K5=()=>{const ps=anomalies(),hid=Math.max(0,ps.length-1),st=(S.solo.stories||[]).length;return {body:`
+  <div class="eb">Соло, повний доступ</div><h2 class="t2">Що ви повторюєте — і як не повторити</h2>
+  ${st>=FREE_STORIES&&ps.length?`<div class="card darkCard" style="margin-top:14px"><div class="lab">У ваших історіях</div><p style="font-family:var(--display);font-size:18px;line-height:1.35;margin:8px 0 0;color:var(--onInk)">Знайдено ${ps.length} ${ps.length===1?"повтор":ps.length<5?"повтори":"повторів"}. Один ви вже бачили${hid?`, ще ${hid} чекають`:""}.</p></div>`
+  :`<div class="card soft" style="margin-top:14px;font-size:13.5px;line-height:1.5">Додайте дві короткі історії стосунків безкоштовно — і побачите перший повтор ще до оплати.</div>`}
+  <div class="tariff rec" style="margin-top:12px"><div class="between"><div style="font-size:15px">Соло, повний доступ</div><div class="price">790 ₴</div></div>
+  <ul><li>Усі повтори з ваших історій і що з ними робити</li><li>«Перед наступним побаченням»: одна сторінка на вечір перед зустріччю</li><li>Маршрут: перевірка вашого курсу на побаченнях</li><li>Соло-розбір і практика тижня з перевіркою</li></ul></div>
+  <div class="card" style="margin-top:12px;font-size:13px;line-height:1.5"><div class="lab">Хто це зробив</div>Методика: ${esc(PSY[0].n)}, психологиня, ${esc(PSY[0].dir.toLowerCase())}. Спирається на дослідження про те, як люди обирають партнерів і відновлюються після розриву.<br><span style="color:var(--graphite)">Прототип: дані психолога — заглушка.</span></div>
+  <p class="small">Разово, без підписки. Повернення грошей протягом 14 днів. Одна сесія з психологом коштує 1500–2600 ₴.</p>`,
+  foot:`<button class="btn" data-act="buySolo">Відкрити все · 790 ₴${arrow}</button><button class="btn ghost" data-go="N1">Поки ні${arrow}</button>`}};
 V.M1=()=>({body:`
   <div class="eb">Моя історія</div><h2 class="t1">Тепер про те, що вже було</h2>
   <p class="p">Далі — кілька питань про ваші минулі стосунки. Не для того, щоб їх оцінити чи знайти винного. Щоб побачити, що в них повторювалось — це видно тільки збоку і тільки коли поруч кілька історій.</p>
@@ -1325,15 +1333,17 @@ function patterns(st){const out=[];const n=st.length;if(n<2) return out;
   const notMe=st.filter(s=>s.end==="other").length;if(notMe>=3) out.push(`У ${notMe} з ${n} історій завершували не ви.`);
   TAGS.forEach(t=>{if(st.every(s=>s.attr.includes(t))&&!out.some(o=>o.includes(t))) out.push(`У всіх історіях вас приваблювало одне: «${t}».`)});
   return out;}
-V.M3=()=>{const st=S.solo.stories,ps=patterns(st),rep={};st.forEach(s=>s.attr.forEach(t=>{if(s.irr.includes(t))rep[t]=1}));
+V.M3=()=>{const st=S.solo.stories,ps=anomalies(),rep={},paid=S.solo.paid;st.forEach(s=>s.attr.forEach(t=>{if(s.irr.includes(t))rep[t]=1}));
   return {body:`
-  <div class="eb">Патерни історії</div><h2 class="t2">${st.length<2?"Потрібна ще одна історія.":"Що повторювалось."}</h2>
+  <div class="eb">Патерни історії</div><h2 class="t2">${st.length<2?"Потрібна ще одна історія.":ps.length?"Що повторювалось.":"Повторів немає."}</h2>
   <div class="story" style="--n:${Math.max(1,st.length)}">${st.map((s,i)=>`<div class="s"><span class="mono" style="color:var(--faint)">${i+1}</span><b>${s.len} міс.</b>ресурс ${s.res}<div>${s.attr.map(t=>`<span class="t ${rep[t]?"hit":""}">${esc(t)}</span>`).join("")}</div></div>`).join("")}</div>
   ${st.length<2?`<p class="p">Мінімум дві історії, інакше патернів не буде.</p>`
-  :ps.length?`<div class="stack" style="margin-top:14px">${ps.slice(0,3).map(p=>`<div class="card"><p style="font-family:var(--display);font-size:16.5px;line-height:1.4;margin:0">${esc(p)}</p></div>`).join("")}</div>`
+  :ps.length?patternList()
   :`<div class="card soft" style="margin-top:14px"><p style="font-size:14px;line-height:1.5;margin:0">Ваші історії між собою не схожі. Це теж відповідь: справа не в типі людей, яких ви обираєте, а швидше в обставинах або в етапі, на якому ви були.</p></div>`}
   <p class="small">Патерни рахуються правилами по ваших полях, не ШІ.</p>`,
-  foot:`<button class="btn ${st.length<2?"":"ghost"}" data-act="storyNew">Додати історію${arrow}</button>${st.length>=2?`<button class="btn" data-go="N1">Далі — соло-розбір${arrow}</button>`:""}`};};
+  foot:st.length<2?`<button class="btn" data-act="storyNew">Додати історію${arrow}</button>`
+    :!paid&&ps.length>1?`<button class="btn" data-go="K5">Відкрити ще ${ps.length-1} · 790 ₴${arrow}</button><button class="btn ghost" data-go="N1">До компаса${arrow}</button>`
+    :`<button class="btn ghost" data-act="storyNew">Додати історію${arrow}</button><button class="btn" data-go="${paid?"N8":"N1"}">${paid?"Перед наступним побаченням":"До компаса"}${arrow}</button>`}};
 V.N1=()=>({noBack:false,homeBar:true,body:`
   <div class="eb">Соло-трек · ${{hard:"Я зараз без пари, і мені важко",prep:"Я готуюсь до стосунків",search:"Я шукаю і не знаходжу"}[S.solo.state]||"—"}</div><h2 class="t2">Цикл про себе</h2>
   <p class="p">Кроків чотири, не п’ять: немає відкриття відповідей партнера.</p>
@@ -1404,7 +1414,8 @@ V.P2=()=>{const sh=S.solo.share;return {body:`
 const SOLO_STATE_T={hard:"Я зараз без пари, і мені важко",prep:"Я готуюсь до стосунків",search:"Я шукаю і не знаходжу"};
 const RE_SELF=/(не\s+хочу\s+жити|не\s+хочеться\s+жити|покінчити\s+з\s+собою|накласти\s+на\s+себе|суїцид|вбити\s+себе|зникнути\s+назавжди|немає\s+сенсу\s+жити)/i;
 function soloArr(k){return S.solo[k]||(S.solo[k]=[])}
-function anomalies(){return patterns(S.solo.stories||[])}
+/* strongest, most personal repeat first: it is the one shown for free */
+function anomalies(){const w=t=>/приваблює, а потім дратує/.test(t)?0:/ресурс/.test(t)?1:/завершували/.test(t)?2:3;return patterns(S.solo.stories||[]).slice().sort((a,b)=>w(a)-w(b))}
 function verified(){const f=filterData(),calm=soloArr("dates").filter(d=>d.calm==="yes"),out={};
   f.must.forEach(c=>{out[c]=calm.filter(d=>(d.seen||[]).includes(c)).length});return out}
 /* one number, 0–10, and exactly where it comes from */
@@ -1423,8 +1434,9 @@ function compass(){const s=S.solo,cr=criteria(),neg=cr.filter(isNeg).length,rw=O
 function nextSoloStep(){const s=S.solo,c=compass(),C=[];
   if(s.state==="hard"&&!s.compassOpen) return {t:"Точка відліку",s:"Спершу про вас, а не про того, кого шукаєте",a:`data-go="N0"`,d:null};
   if(!s.done) C.push({t:"Пройти карту пошуку",s:"Перше вимірювання компаса",a:`data-act="soloStart"`,d:7});
-  if(c.effNeg>0) C.push({t:`Переписати ${c.effNeg} «не хочу» у «хочу»`,s:"Стрілка заспокоїться одразу",a:`data-go="K4b"`,d:4*c.effNeg/Math.max(1,c.cr.length)});
-  if((s.stories||[]).length<2) C.push({t:"Додати історію стосунків",s:"Щоб побачити, що вас збиває з курсу",a:`data-act="goM"`,d:1});
+  if(c.effNeg>0) C.push({t:`Переписати ${c.effNeg} «не хочу» у «хочу»`,s:"Стрілка заспокоїться одразу",a:`data-act="goK4b"`,d:4*c.effNeg/Math.max(1,c.cr.length)});
+  if((s.stories||[]).length<2) C.push({t:s.paid?"Додати історію стосунків":"Дві короткі історії · безкоштовно",s:"І побачите, що ви повторюєте",a:`data-act="goM"`,d:1.5});
+  if(!s.paid&&c.an.length>1) C.push({t:`Що ще знайдено у ваших історіях (${c.an.length-1})`,s:"Відкривається в повному доступі",a:`data-go="K5"`,d:(c.an.length-1)/c.an.length+.2});
   if(c.an.length>c.seen) C.push({t:`Подивитись, що збиває стрілку (${c.an.length-c.seen})`,s:"Аномалії з ваших історій",a:`data-go="N7"`,d:(c.an.length-c.seen)/c.an.length});
   C.push({t:"Записати побачення",s:"Хвилина, три питання",a:`data-go="N5"`,d:.5});
   return C.sort((x,y)=>y.d-x.d)[0]}
@@ -1447,6 +1459,7 @@ V.N1=()=>{const s=S.solo,c=compass(),nx=nextSoloStep(),open=s.state!=="hard"||s.
   <div class="compassWrap">${compassSVG(open?c:{score:0,pull:0})}
     <div><div class="cScore">${open?c.score.toFixed(1).replace(".0",""):"—"}<span style="font-size:18px;color:var(--graphite)"> / 10</span></div>
     <div class="small" style="margin-top:4px">${open?(c.score>=8?"Стрілка майже не тремтить: ви знаєте, куди йдете.":c.pull?"Щось із ваших історій тягне стрілку вбік.":"Стрілка тремтить, поки фокус розмитий. Кожен крок її заспокоює."):"Компас відкриється після глави «Точка». Спершу про вас."}</div></div></div>
+  ${s.aha&&open?`<div class="ahaBar"><span>Стрілка заспокоїлась</span><b>${s.aha.from.toFixed(1)} → ${s.aha.to.toFixed(1)}</b></div>`:""}
   <button class="card darkCard" ${nx.a} style="width:100%;text-align:left;padding:18px;margin-top:14px"><div class="lab">Наступний крок${nx.d?` · +${nx.d.toFixed(1).replace(".0","")} до курсу`:""}</div><div class="t3" style="margin-top:6px;color:var(--onInk)">${esc(nx.t)}</div><div class="between" style="margin-top:10px"><span style="font-size:13px;opacity:.8">${esc(nx.s)}</span>${arrow}</div></button>
   ${open?`<div class="cParts" aria-label="З чого складається курс">${c.parts.map(p=>`<div class="cPart"><span>${esc(p.t)}</span><span class="bar"><i style="width:${Math.round(p.v/p.max*100)}%"></i></span><b>${(Math.round(p.v*10)/10)}/${p.max}</b></div>`).join("")}</div>`:""}
   <div class="lab" style="margin:20px 0 8px">Три глави</div>
@@ -1455,7 +1468,8 @@ V.N1=()=>{const s=S.solo,c=compass(),nx=nextSoloStep(),open=s.state!=="hard"||s.
   <div class="stack">
     <button class="card mod" data-act="goM"><span class="ic ${s.paid?"":"lock"}">${s.paid?"✎":lockI}</span><span class="tx"><b>Моя історія</b><span>${(s.stories||[]).length} історій</span></span>${arrow}</button>
     <button class="card mod" data-act="goN2"><span class="ic ${s.paid?"":"lock"}">${s.paid?"◐":lockI}</span><span class="tx"><b>Соло-розбір</b><span>Знахідки за типами</span></span>${arrow}</button>
-    <button class="card mod" data-act="goP1"><span class="ic ${s.paid?"":"lock"}">${s.paid?"▤":lockI}</span><span class="tx"><b>Мій курс</b><span>Один аркуш: кого я шукаю</span></span>${arrow}</button>
+    <button class="card mod" data-go="N8"><span class="ic ${s.paid?"":"lock"}">${s.paid?"☾":lockI}</span><span class="tx"><b>Перед наступним побаченням</b><span>Одна сторінка на вечір</span></span>${arrow}</button>
+    <button class="card mod" data-act="goP1"><span class="ic">▤</span><span class="tx"><b>Мій курс</b><span>Один аркуш: кого я шукаю</span></span>${arrow}</button>
     <button class="card mod" data-go="P2"><span class="ic">∞</span><span class="tx"><b>Ви зустріли когось</b><span>Міст у парний режим</span></span>${arrow}</button></div>`}};
 V.N1c=()=>V.N1();
 
@@ -1496,12 +1510,12 @@ V.N0c=()=>{const p=S.solo.point||{minus:[]};return {body:`
 V.N7=()=>{const an=anomalies(),seen=soloArr("seenAnom");return {body:`
   <div class="eb">Компас · аномалії</div><h2 class="t2">Що збиває стрілку</h2>
   <p class="p">Це повтори з ваших історій. Поки вони не названі, вони тягнуть курс убік. Позначте кожну, коли прочитаєте й подумаєте, що з цим робити.</p>
-  ${an.length?an.map(t=>`<div class="anom">${esc(t)}<div style="margin-top:8px"><button class="chip ${seen.includes(t)?"on":""}" data-act="anomSeen" data-v="${esc(t)}">${seen.includes(t)?"Названо":"Я це бачу"}</button></div></div>`).join("")
+  ${an.length?patternList(t=>`<div style="margin-top:8px"><button class="chip ${seen.includes(t)?"on":""}" data-act="anomSeen" data-v="${esc(t)}">${seen.includes(t)?"Названо":"Я це бачу"}</button></div>`)+(!S.solo.paid&&an.length>1?`<button class="btn" style="margin-top:12px" data-go="K5">Відкрити ще ${an.length-1} · 790 ₴${arrow}</button>`:"")
   :`<p class="p">Поки аномалій немає. Потрібно щонайменше дві історії.</p>`}`,
   foot:`<button class="btn" data-go="N1">До компаса${arrow}</button>`}};
 
 /* chapter 3: after a date */
-V.N5=()=>{const f=filterData(),d=S.dateDraft||(S.dateDraft={calm:null,seen:[],red:[],energy:null});const ok=d.calm&&d.energy;
+V.N5=()=>{if(!S.solo.paid&&soloArr("dates").length>=FREE_DATES)return V.K5();const f=filterData(),d=S.dateDraft||(S.dateDraft={calm:null,seen:[],red:[],energy:null});const ok=d.calm&&d.energy;
   const chips=(arr,list,act)=>`<div class="chips" style="margin-top:8px">${list.map(x=>`<button class="chip ${arr.includes(x)?"on":""}" data-act="${act}" data-v="${esc(x)}">${esc(x)}</button>`).join("")}</div>`;
   return {body:`
   <div class="eb">Глава 3 · Маршрут</div><h2 class="t2">Після побачення</h2>
@@ -1520,6 +1534,42 @@ V.N6=()=>{const f=filterData(),D=soloArr("dates"),calm=D.filter(d=>d.calm==="yes
   ${tired?`<div class="card" style="margin-top:12px"><div class="lab">Три зустрічі поспіль забирали сили</div><p style="font-size:13.5px;line-height:1.5;margin:6px 0 0">Це схоже на втому від знайомств. Практика на тиждень: пауза від застосунків для знайомств.</p></div>`:""}`
   :`<p class="p">Після кожного побачення — хвилина і три питання. Через 3–5 зустрічей стане видно, що для вас важливо насправді.</p>`}`,
   foot:`<button class="btn" data-go="N5">Записати побачення${arrow}</button><button class="btn ghost" data-go="N1">До компаса${arrow}</button>`}};
+
+/* ── what is free and what is paid in the solo track ──
+   free: Точка, тихий режим, карта пошуку, компас, переписування «не», «Мій курс», 2 короткі історії, перший повтор, одне «після побачення»
+   paid (790 ₴): решта повторів, «Перед наступним побаченням», маршрут повністю, соло-розбір і практики */
+const FREE_STORIES=2,FREE_DATES=1;
+function patHint(t){return /ресурс/.test(t)?"про те, коли ви починаєте стосунки":/завершували/.test(t)?"про те, хто завершує стосунки":/приваблює, а потім дратує/.test(t)?"про те, що вас приваблює":/тривалість/.test(t)?"про тривалість стосунків":/всіх історіях/.test(t)?"про ваш «тип»":"про ваші стосунки"}
+function patternList(open){const ps=anomalies(),paid=S.solo.paid;
+  return ps.map((t,i)=>paid||i===0?`<div class="card" style="margin-top:10px"><p style="font-family:var(--display);font-size:16.5px;line-height:1.4;margin:0">${esc(t)}</p>${open?open(t):""}</div>`
+    :`<div class="hidden3" aria-label="Прихована знахідка ${patHint(t)}"><div class="hint">Ще один повтор · ${patHint(t)}</div><div class="blurTxt" aria-hidden="true">▓▓▓▓▓▓ ▓▓▓▓ ▓▓▓▓▓▓▓▓ ▓▓▓ ▓▓▓▓▓ ▓▓▓▓▓▓▓ ▓▓▓▓ ▓▓▓▓▓▓</div></div>`).join("")}
+const ASK={"Надійність":"Як ти поводишся, коли не можеш виконати обіцянку?","Спільні цінності":"Що для тебе точно неможливо в стосунках?","Гумор":"Над чим ти смієшся, коли все йде не так?","Пристрасть":"Що тебе захоплює настільки, що забуваєш про час?","Амбітність":"Чого ти хочеш досягти за найближчі два роки?","Спокій":"Як ти відновлюєшся після важкого дня?"};
+
+V.N0b=()=>{const s=S.solo,p=s.point||{lost:[],back:[]},lit=p.lost.filter(x=>p.back.includes(x)).length;return {body:`
+  <div class="eb">Від точки до курсу</div><h2 class="t1">Ви вже багато зробили</h2>
+  <div class="stats"><div><b>${lit}</b><span>Повернули собі</span></div><div><b>${calmDays()}</b><span>Днів штилю</span></div></div>
+  <p class="p">Компас відкрито. Він допомагає зрозуміти, кого ви шукаєте. Спішити не треба: тихий режим працює далі, хоч би що ви обрали.</p>`,
+  foot:`<button class="btn" data-act="bridgeGo">Готовий(а) подумати, куди далі${arrow}</button><button class="btn ghost" data-act="bridgeStay">Ще побуду в точці${arrow}</button>`}};
+
+V.M2q=()=>{const d=S.solo.storyDraft||(S.solo.storyDraft={len:null,start:"",attr:[],irr:[],end:null,res:null,crossed:[]}),n=(S.solo.stories||[]).length+1;
+  const tags=(arr,act)=>`<div class="chips" style="margin-top:8px">${TAGS.map(t=>`<button class="chip ${arr.includes(t)?"on":""}" data-act="${act}" data-v="${esc(t)}">${esc(t)}</button>`).join("")}</div>`;
+  const ok=d.len&&d.attr.length&&d.end;
+  return {steps:[Math.min(n,FREE_STORIES),FREE_STORIES],body:`
+  <div class="eb">Історія ${n} · дві хвилини</div><h2 class="t2">Одні стосунки — кілька натискань</h2>
+  <div class="lab" style="margin:14px 0 6px">Скільки тривали</div>${seg(["До пів року","Пів року–рік","1–3 роки","Довше"],{3:"До пів року",9:"Пів року–рік",24:"1–3 роки",48:"Довше"}[d.len],"qLen")}
+  <div class="lab" style="margin:16px 0 0">Що привабило спочатку</div>${tags(d.attr,"stAttr")}
+  <div class="lab" style="margin:16px 0 0">Що почало дратувати · той самий список</div>${tags(d.irr,"stIrr")}
+  <div class="lab" style="margin:16px 0 6px">Хто завершив</div>${seg(["Я","Інша людина","Розійшлось само"],{me:"Я",other:"Інша людина",self:"Розійшлось само"}[d.end],"stEnd")}
+  <div class="lab" style="margin:16px 0 6px">Сил на початку цих стосунків</div>${seg(["Мало","Нормально","Багато"],{3:"Мало",6:"Нормально",9:"Багато"}[d.res],"qRes")}`,
+  foot:`<button class="btn" data-act="storySaveQ" ${ok?"":"disabled"}>${n>=FREE_STORIES?"Зберегти й подивитись повтори":"Зберегти"}${arrow}</button>`}};
+
+V.N8=()=>{if(!S.solo.paid)return V.K5();const f=filterData(),ps=anomalies();return {body:`
+  <div class="eb">Перед наступним побаченням</div><h2 class="t2">Одна сторінка на сьогоднішній вечір</h2>
+  <div class="card" style="margin-top:12px"><div class="lab">Що я повторюю</div>${ps.length?ps.slice(0,3).map(t=>`<p style="font-size:14px;line-height:1.45;margin:8px 0 0">${esc(t)}</p>`).join(""):`<p class="small">Повторів у ваших історіях не знайдено.</p>`}</div>
+  <div class="card" style="margin-top:8px"><div class="lab">Мої червоні лінії</div>${f.reds.length?f.reds.map(r=>`<p style="font-size:14px;margin:6px 0 0">${esc(r)}</p>`).join(""):`<p class="small">Не названі. Їх можна додати в карті пошуку.</p>`}</div>
+  <div class="card warm" style="margin-top:8px"><div class="lab" style="color:var(--clay)">Що перевірити цього разу</div>${f.must.slice(0,2).map(c=>`<p style="font-size:14px;line-height:1.45;margin:8px 0 0"><b style="font-weight:500">${esc(c)}.</b> Спитати: «${esc(ASK[c]||"Що для тебе означає «"+c.toLowerCase()+"»?")}»</p>`).join("")}</div>
+  <p class="small">Головне правило: слухайте, чи вам спокійно. Решта — деталі.</p>`,
+  foot:`<button class="btn" data-go="N5">Після зустрічі — хвилина тут${arrow}</button><button class="btn ghost" data-go="N1">До компаса${arrow}</button>`}};
 
 /* ═════════ psychologist cabinet ═════════ */
 function cabView(){const s=S.nav.psy.s;
@@ -1778,7 +1828,7 @@ const A={
     else if(o.kind==="solo"){S.solo.paid=true;S.orders.push({type:"solo",sum:o.sum,at:now().toISOString()})}
     else if(o.kind==="upgrade"){S.couple.purchased.push("full");S.orders.push({type:"upgrade",sum:o.sum,at:now().toISOString()})}
     render(true)},
-  payDone(){const o=S.pay;S.payResult=null;if(o.kind==="solo"){S.nav[S.user].st=[];go("M1",{replace:true});return}if(o.kind==="upgrade"){S.nav[S.user].st=[];go("A4",{replace:true});return}
+  payDone(){const o=S.pay;S.payResult=null;if(o.kind==="solo"){S.nav[S.user].st=[];go(S.solo.stories.length>=2?"M3":"M1",{replace:true});return}if(o.kind==="upgrade"){S.nav[S.user].st=[];go("A4",{replace:true});return}
     if(o.kind==="buy"&&o.extra!=="full"){S.modSel=o.extra}S.nav[S.user].st=[];go(o.kind==="buy"?"C3":"C1",{replace:true})},
   revoke(v){const c=S.consents.find(x=>x.id===v);c.revoked=now().toISOString();toast("Доступ відкликано. Одразу.");render(false)},
   exportData(){toast("Архів із вашими відповідями надішлемо на пошту · прототип")},
@@ -1797,7 +1847,7 @@ const A={
   calmOn(){S.solo.calmStart=now().toISOString();S.solo.calmPaused=[];toast("Тихий режим увімкнено");render(false)},
   calmHold(){toast("Штиль триває");go("N0",{replace:true})},
   calmSlip(){const k=dayKey();if(!soloArr("calmPaused").includes(k))S.solo.calmPaused.push(k);toast("Буває. Цей день просто не рахується");go("N0",{replace:true})},
-  toCompass(){S.solo.compassOpen=true;go("N1")},
+  toCompass(){S.solo.compassOpen=true;go(S.solo.bridgeSeen?"N1":"N0b")},
   anomSeen(v){const a=soloArr("seenAnom");S.solo.seenAnom=a.includes(v)?a.filter(x=>x!==v):[...a,v];render(false)},
   dCalm(v){S.dateDraft.calm={"Так":"yes","Частково":"part","Ні":"no"}[v];render(false)},
   dEnergy(v){S.dateDraft.energy={"Більше":"up","Так само":"same","Менше":"down"}[v];render(false)},
@@ -1813,11 +1863,18 @@ const A={
   soloNext(skip){const Q=SOLO_Q[S.solo.idx];if(Q.f==="rank"&&S.solo.ans[Q.id]==null)S.solo.ans[Q.id]=Q.o.map((_,k)=>k);
     if(S.solo.idx<SOLO_Q.length-1){S.solo.idx++;render(true);return}S.solo.done=true;go("K4")},
   goK4(){go("K4")},
-  rewritesDone(){toast("Додано у фільтр");go(S.solo.paid?"M1":"K5")},
+  goK4b(){S.solo.scoreBefore=compass().score;go("K4b")},
+  rewritesDone(){const b=S.solo.scoreBefore!=null?S.solo.scoreBefore:compass().score,a=compass().score;S.solo.aha={from:b,to:a};toast(a>b?`Стрілка: ${b.toFixed(1)} → ${a.toFixed(1)}`:"Додано у ваш курс");S.nav[S.user].st=[];go("N1",{replace:true})},
   buySolo(){pay(790,"Соло, повний доступ","solo")},
-  goM(){go(S.solo.paid?(S.solo.stories.length?"M3":"M1"):"K5")},
-  goN2(){go(S.solo.paid?"N2":"K5")}, goP1(){go(S.solo.paid?"P1":"K5")},
-  storyNew(){S.solo.storyDraft=null;go("M2")},
+  goM(){const n=S.solo.stories.length;go(n===0?"M1":S.solo.paid?"M3":n<FREE_STORIES?"M2q":"M3")},
+  goN2(){go(S.solo.paid?"N2":"K5")}, goP1(){go("P1")},
+  storyNew(){S.solo.storyDraft=null;if(!S.solo.paid&&S.solo.stories.length>=FREE_STORIES){toast("Більше історій — у повному доступі");go("K5");return}go(S.solo.paid?"M2":"M2q")},
+  qLen(v){S.solo.storyDraft.len={"До пів року":3,"Пів року–рік":9,"1–3 роки":24,"Довше":48}[v];render(false)},
+  qRes(v){S.solo.storyDraft.res={"Мало":3,"Нормально":6,"Багато":9}[v];render(false)},
+  storySaveQ(){const d=S.solo.storyDraft;if(d.res==null)d.res=6;S.solo.stories.push(d);S.solo.storyDraft=null;S.nav[S.user].st=S.nav[S.user].st.filter(x=>x!=="M2q");
+    if(S.solo.stories.length<FREE_STORIES){toast("Збережено. Ще одна — і побачите повтори");render(true);return}go("M3",{replace:true})},
+  bridgeGo(){S.solo.bridgeSeen=true;S.solo.compassOpen=true;S.nav[S.user].st=[];go(S.solo.done?"N1":"K2",{replace:true})},
+  bridgeStay(){S.solo.bridgeSeen=true;go("N0",{replace:true})},
   stAttr(v){const d=S.solo.storyDraft;d.attr=d.attr.includes(v)?d.attr.filter(x=>x!==v):[...d.attr,v];render(false)},
   stIrr(v){const d=S.solo.storyDraft;d.irr=d.irr.includes(v)?d.irr.filter(x=>x!==v):[...d.irr,v];render(false)},
   stEnd(v){S.solo.storyDraft.end={"Я":"me","Інша людина":"other","Розійшлось само":"self"}[v];render(false)},
