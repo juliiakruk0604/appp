@@ -430,6 +430,7 @@ html,body{overflow-x:clip}
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
+const APP_VERSION="5 · світла";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const arrow='<svg width="18" height="18" aria-hidden="true"><use href="#arrow"/></svg>';
 const checkI='<svg width="12" height="12" aria-hidden="true"><use href="#check"/></svg>';
@@ -1302,7 +1303,7 @@ function cabView(){const s=S.nav.psy.s;
 
 /* ═════════ landing (L1) ═════════ */
 function siteView(){return `<div class="site">
-  <div class="navS"><div class="logo"><svg width="32" height="19"><use href="#logo"/></svg>Двоє</div><nav><a href="#how">Як це працює</a><a href="#prices">Ціни</a><a href="#privacy">Приватність</a><a href="#faq">Питання</a><button data-act="siteLogin" style="text-decoration:underline">Увійти</button></nav></div>
+  <div class="navS"><div class="logo"><svg width="32" height="19"><use href="#logo"/></svg>Двоє<span class="tag" style="margin-left:6px">v${APP_VERSION}</span></div><nav><a href="#how">Як це працює</a><a href="#prices">Ціни</a><a href="#privacy">Приватність</a><a href="#faq">Питання</a><button data-act="siteLogin" style="text-decoration:underline">Увійти</button></nav></div>
   <section class="heroS">
     <div class="seg heroSeg"><button class="on" data-act="siteStart">Ми пара</button><button data-act="siteSolo">Поки сам</button></div>
     <h2 class="h heroH">Ви разом. <span>Тепер давайте поговоримо про те, що зазвичай не проговорюють</span></h2>
@@ -1366,7 +1367,7 @@ function sideView(){const cur=S.view==="app"?S.nav[S.user].s:S.nav.psy.s;return 
   <p class="lede">Відкрийте це посилання на телефоні — застосунок займе весь екран. Щоб пройти удвох по-справжньому, у «Профіль → Два телефони» створіть пару й надішліть партнеру посилання. Без цього двох партнерів емулює перемикач «Хто зараз» угорі.</p>
   <div class="who"><span class="pillU">${av()} Зараз ви — <b style="font-weight:500">${esc(nm(S.user))}</b></span>${S.sync.code?`<span class="tag moss">пара ${esc(S.sync.code)} · синхронізація</span>`:""}${SAMPLE?`<span class="tag moss">ШІ-розбір доступний</span>`:""}</div>
   <div class="map">${mapIds(cur)}</div>
-  <p class="note">Не в прототипі: T4, T5. Оплата й блог — заглушки. Прогрес зберігається в цьому браузері; «Скинути» починає заново.</p></aside>`;}
+  <p class="note">Не в прототипі: T4, T5. Оплата й блог — заглушки. Прогрес зберігається в цьому браузері; «Скинути» починає заново. Версія ${APP_VERSION}.</p></aside>`;}
 function tabbar(id){if(!S.couple.mode||!TABS.some(t=>t[0]===id))return "";const nb=unseen();return `<nav class="tabbar" aria-label="Розділи">${TABS.map(([t,l,ic])=>`<button class="${t===id?"on":""}" data-tab="${t}">${ICON[ic]}${l}${t==="DQ"&&!S.daily[me()][dayKey()]?'<span class="badge">1</span>':""}</button>`).join("")}</nav>`}
 function phoneView(keepScroll){
   const id=S.nav[S.user].s,f=V[id]||V.Z3empty,v=f();
@@ -1392,7 +1393,7 @@ function phoneView(keepScroll){
     ${S.toast?`<div class="toast" role="status">${esc(S.toast)}</div>`:""}</div>`;
 }
 function sheetView(){if(!S.sheet)return "";const u=S.user,sy=S.sync.code,cur=S.view==="app"?S.nav[u].s:"";return `<div class="sheetBg" data-act="sheetClose"></div><div class="sheet" role="dialog" aria-label="Меню демо">
-  <div class="between"><div class="eb">Меню демо</div><button class="chip" data-act="sheetClose">Закрити</button></div>
+  <div class="between"><div class="eb">Меню демо · версія ${APP_VERSION}</div><button class="chip" data-act="sheetClose">Закрити</button></div>
   <div class="lab" style="margin:14px 0 8px">Вигляд</div><div>${[["site","Лендинг"],["app","Застосунок"],["cab","Кабінет психолога"]].map(([k,l])=>`<button class="sb ${S.view===k?"on":""}" data-dev="${k}">${l}</button>`).join("")}</div>
   <div class="lab" style="margin:10px 0 8px">${sy?"Пара "+esc(sy):"Хто зараз"}</div><div>${sy?`<span class="sb on">Ви — ${esc(nm(u))}</span>`:["p1","p2"].map(k=>`<button class="sb ${u===k?"on":""}" data-dev="${k}">${esc(nm(k))}</button>`).join("")}</div>
   <div class="lab" style="margin:10px 0 8px">Дії</div><div>${sy?"":`<button class="sb" data-dev="fill">Автозаповнити за ${esc(nm(u))}</button>`}<button class="sb" data-dev="time">+14 днів</button><button class="sb" data-jump="SY">Два телефони</button><button class="sb" data-dev="reset">Скинути</button></div>
