@@ -1,0 +1,781 @@
+<title>Двоє</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+/* Layout: a quiet field notebook — product narrative on the left, the live phone on the right. */
+:root{
+  --paper:#F2EEE6; --sheet:#FBF9F4; --card:#FFFDF9; --ink:#1F1E1B; --onInk:#FBF9F4;
+  --graphite:#6F695F; --faint:#A39B8E; --rule:#DDD6C9; --rule2:#E9E3D8;
+  --moss:#3F5446; --mossSoft:#E3E8E0; --mossLine:#BCC8BC;
+  --clay:#A9644C; --claySoft:#F3E4DB; --clayLine:#E8CFC2;
+  --shadow:rgba(50,38,22,.28);
+  --display:"Lora",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Serif",Georgia,serif;
+  --mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#181715; --sheet:#211F1C; --card:#292723; --ink:#ECE7DD; --onInk:#1C1B18;
+  --graphite:#ADA597; --faint:#7D766B; --rule:#3B3831; --rule2:#302D28;
+  --moss:#9DB5A2; --mossSoft:#2A322C; --mossLine:#40503F;
+  --clay:#D9937A; --claySoft:#3A2923; --clayLine:#5A3B30;
+  --shadow:rgba(0,0,0,.55); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#181715; --sheet:#211F1C; --card:#292723; --ink:#ECE7DD; --onInk:#1C1B18;
+  --graphite:#ADA597; --faint:#7D766B; --rule:#3B3831; --rule2:#302D28;
+  --moss:#9DB5A2; --mossSoft:#2A322C; --mossLine:#40503F;
+  --clay:#D9937A; --claySoft:#3A2923; --clayLine:#5A3B30;
+  --shadow:rgba(0,0,0,.55); color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;padding-inline:16px;padding-block:32px}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
+
+.app{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:72px;align-items:start}
+@media (max-width:900px){.app{grid-template-columns:1fr;gap:32px}.device{order:-1}}
+
+/* intro */
+.intro{padding-top:24px;min-width:0}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:20px}
+.intro h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,5vw,64px);line-height:1;letter-spacing:-.02em;margin:40px 0 0;text-wrap:balance}
+.intro h1 em{color:var(--clay)}
+.intro .lede{font-size:17px;line-height:1.6;color:var(--graphite);max-width:34em;margin:22px 0 0}
+.label{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--graphite)}
+.scen{margin-top:44px;border-top:1px solid var(--rule)}
+.scen .label{display:block;padding:18px 0 8px}
+.scenBtn{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:8px;width:100%;text-align:left;padding:13px 0;border-bottom:1px solid var(--rule2)}
+.scenBtn span{font-family:var(--mono);font-size:10.5px;color:var(--clay);letter-spacing:.1em}
+.scenBtn b{font-weight:400;font-size:15px}
+.scenBtn small{display:block;font-size:12.5px;color:var(--graphite);margin-top:2px}
+.scenBtn i{font-style:normal;color:var(--faint);transition:transform .2s}
+.scenBtn:hover i{transform:translateX(4px);color:var(--ink)}
+.intro .fine2{font-size:12.5px;color:var(--faint);margin-top:18px;line-height:1.5}
+
+/* device */
+.device{position:sticky;top:24px}
+.phone{width:100%;max-width:400px;height:min(800px,calc(100dvh - 48px));min-height:620px;margin:0 auto;border-radius:44px;background:var(--sheet);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px var(--rule),0 0 0 7px var(--sheet),0 0 0 8px var(--rule),0 40px 80px -40px var(--shadow)}
+@media (max-width:900px){.device{position:static}.phone{height:calc(100dvh - 32px);max-height:820px}}
+.status{height:38px;flex:none;display:flex;justify-content:space-between;align-items:flex-end;padding:0 30px 2px;font-family:var(--mono);font-size:11px}
+.bat{display:inline-block;width:22px;height:9px;border:1px solid var(--ink);border-radius:3px;position:relative}
+.bat:after{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:13px;background:var(--ink);border-radius:1px}
+.bar{height:52px;flex:none;display:grid;grid-template-columns:64px 1fr 64px;align-items:center;padding:0 18px}
+.bar .logo{justify-self:center;display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:17px}
+.iconBtn{width:36px;height:36px;display:grid;place-items:center;border-radius:50%}
+.iconBtn:hover{background:var(--rule2)}
+.iconBtn[disabled]{visibility:hidden}
+.right{justify-self:end}
+.pillBtn{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--clay);color:var(--clay);border-radius:99px;padding:7px 10px;white-space:nowrap}
+.pillBtn.solid{background:var(--clay);color:var(--sheet)}
+.steps{display:flex;gap:5px;padding:2px 26px 0;flex:none}
+.steps i{flex:1;height:2px;background:var(--rule);transition:background .3s}
+.steps i.on{background:var(--ink)}
+.scroll{flex:1;overflow-y:auto;padding:22px 26px 16px;min-height:0}
+.foot{flex:none;padding:10px 26px 26px;display:flex;flex-direction:column;gap:10px}
+.screen{animation:in .32s cubic-bezier(.2,.75,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.screen{animation:none}}
+
+.eb{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--graphite)}
+.eb.clay{color:var(--clay)}
+.t1{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.08;letter-spacing:-.015em;margin:14px 0 0;text-wrap:balance}
+.t2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.14;letter-spacing:-.01em;margin:12px 0 0;text-wrap:balance}
+.t1 em,.t2 em{color:var(--moss)}
+.p{font-size:14px;line-height:1.55;color:var(--graphite);margin:12px 0 0}
+.btn{height:52px;border-radius:99px;background:var(--ink);color:var(--onInk);display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:15px;width:100%;transition:opacity .2s}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.clay{background:var(--clay);color:var(--sheet)}
+.btn[disabled]{opacity:.3;cursor:not-allowed}
+.link{text-align:center;font-size:13px;color:var(--graphite);font-style:italic;padding:4px}
+.link:hover{color:var(--ink)}
+.fine{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:center}
+.card{border:1px solid var(--rule);border-radius:18px;padding:15px 16px;background:var(--card)}
+.lab{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--graphite)}
+.stack{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;border:1px solid var(--rule);border-radius:16px;padding:13px 14px;font-size:14.5px;line-height:1.3;background:var(--card);text-align:left;width:100%}
+.opt:hover{border-color:var(--faint)}
+.dot{width:18px;height:18px;border-radius:50%;border:1px solid var(--faint);flex:none;display:grid;place-items:center}
+.opt.sel{border-color:var(--ink);box-shadow:inset 0 0 0 .5px var(--ink)}
+.opt.sel .dot{background:var(--ink);border-color:var(--ink)}
+.opt small{display:block;font-size:12px;color:var(--graphite);margin-top:2px}
+.seg{display:flex;border:1px solid var(--rule);border-radius:99px;padding:3px;margin-top:10px;background:var(--card)}
+.seg button{flex:1;text-align:center;font-size:13px;padding:8px 0;border-radius:99px;color:var(--graphite)}
+.seg button.on{background:var(--ink);color:var(--onInk)}
+textarea.field,input.field{width:100%;border:1px solid var(--rule);border-radius:16px;background:var(--card);padding:14px 15px;resize:none;line-height:1.5}
+textarea.big{font-family:var(--display);font-size:17px;min-height:190px}
+textarea.field:focus,input.field:focus{outline:none;border-color:var(--ink)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--rule);border-radius:99px;padding:6px 10px;color:var(--graphite);background:var(--card)}
+.chip.ok{color:var(--moss);border-color:var(--mossLine)}
+button.chip:hover{border-color:var(--ink);color:var(--ink)}
+button.chip.on{background:var(--ink);color:var(--onInk);border-color:var(--ink)}
+.hl-f{background:linear-gradient(transparent 62%,var(--mossSoft) 62%);border-bottom:1.5px solid var(--moss)}
+.hl-r{background:linear-gradient(transparent 62%,var(--claySoft) 62%);border-bottom:1.5px solid var(--clay)}
+.hl-e{border-bottom:1.5px dotted var(--ink)}
+.hl-w{border-bottom:1.5px dashed var(--moss)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite)}
+.legend i{display:inline-block;width:14px;height:0;vertical-align:middle;margin-right:6px}
+.rule{height:1px;background:var(--rule);margin:18px 0}
+.kv{display:flex;flex-direction:column;gap:5px}
+.kv p{font-size:14px;line-height:1.5;margin:0}
+.soft{background:var(--mossSoft);border-color:var(--mossLine);color:var(--moss)}
+.warm{background:var(--claySoft);border-color:var(--clayLine)}
+.quote{font-family:var(--display);font-size:18px;line-height:1.42}
+.hot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--rule2)}
+.hot b{font-family:var(--display);font-weight:400;font-size:26px;font-variant-numeric:tabular-nums;user-select:all}
+.hot span{font-size:12.5px;color:var(--graphite);text-align:right;line-height:1.35;max-width:180px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:18px}
+.stats div{padding:12px 0 10px;min-width:0}
+.stats div+div{border-left:1px solid var(--rule);padding-left:12px}
+.stats b{font-family:var(--display);font-weight:400;font-size:28px;display:block;line-height:1;font-variant-numeric:tabular-nums}
+.stats span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--graphite)}
+.tl{position:relative;margin-top:16px;padding-left:18px}
+.tl:before{content:"";position:absolute;left:4px;top:6px;bottom:10px;width:1px;background:var(--rule)}
+.tli{position:relative;padding-bottom:14px;display:block;width:100%;text-align:left}
+.tli:before{content:"";position:absolute;left:-18px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--sheet);border:1px solid var(--graphite)}
+.tli.open:before{border-color:var(--clay);background:var(--clay)}
+.tli .d{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.tli .h{font-size:14px;margin-top:3px;line-height:1.35}
+.tli .r{font-size:12.5px;color:var(--graphite);margin-top:3px}
+.tli.open .r{color:var(--clay)}
+.tag{font-family:var(--mono);font-size:8px;letter-spacing:.14em;border:1px solid var(--rule);border-radius:99px;padding:2px 6px;margin-left:6px;color:var(--faint);vertical-align:1px}
+.range{width:100%;accent-color:var(--ink);margin-top:10px}
+.range.moss{accent-color:var(--moss)}
+.slTop{display:flex;justify-content:space-between;align-items:baseline}
+.slTop span{font-size:13.5px;color:var(--graphite)}
+.slTop b{font-family:var(--display);font-weight:400;font-size:26px;font-variant-numeric:tabular-nums}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.side{border-radius:18px;padding:16px 14px;min-height:110px;min-width:0}
+.side .lab{margin-bottom:10px}
+.side p{font-family:var(--display);font-size:17px;line-height:1.25;margin:0}
+.side.a{background:var(--mossSoft)}.side.a .lab{color:var(--moss)}
+.side.b{background:var(--claySoft)}.side.b .lab{color:var(--clay)}
+.av{display:flex}
+.av i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-style:normal;font-size:13px;border:2px solid var(--sheet);color:var(--sheet)}
+.av i+i{margin-left:-8px}
+.av .m{background:var(--moss)}.av .c{background:var(--clay)}
+.dark{background:var(--ink);color:var(--onInk);border-color:var(--ink)}
+.dark .lab{color:var(--faint)}
+.bars{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.brow .top{display:flex;justify-content:space-between;font-size:13.5px}
+.brow .top b{font-weight:400;font-family:var(--mono);font-size:11px;color:var(--graphite)}
+.track{position:relative;height:18px;margin-top:6px}
+.track:before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--rule)}
+.track i{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%)}
+.track i.a{background:var(--moss)}.track i.b{background:var(--clay)}
+.track em{position:absolute;top:50%;height:2px;transform:translateY(-50%);background:var(--ink);opacity:.25}
+.key{display:flex;gap:14px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--graphite);margin-top:14px}
+.key i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:0}
+.toast{position:absolute;left:50%;bottom:104px;transform:translateX(-50%);background:var(--ink);color:var(--onInk);font-size:13px;padding:10px 16px;border-radius:99px;white-space:nowrap;animation:in .25s}
+.dots{display:flex;gap:8px;align-items:center;margin-top:18px}
+.dots i{width:26px;height:26px;border-radius:50%;border:1px dashed var(--faint)}
+.dots i.on{background:var(--moss);border:0}
+.dots span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--graphite);margin-left:4px}
+.vis{display:block;margin:26px auto 0;max-width:100%}
+.caret{display:inline-block;width:1.5px;height:1em;background:var(--clay);vertical-align:-2px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 30 18"><circle cx="10" cy="9" r="7.3" fill="none" stroke="var(--moss)" stroke-width="1.4"/><circle cx="20" cy="9" r="7.3" fill="none" stroke="var(--clay)" stroke-width="1.4"/></symbol>
+    <symbol id="back" viewBox="0 0 20 20"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="home" viewBox="0 0 20 20"><path d="M4 8.5 10 4l6 4.5V16H4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="arrow" viewBox="0 0 20 20"><path d="M4 10h11.5M11 5.5 15.5 10 11 14.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="check" viewBox="0 0 20 20"><path d="m5 10.5 3.2 3L15 6.5" fill="none" stroke="var(--sheet)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="lock" viewBox="0 0 20 20"><rect x="4.5" y="9" width="11" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 9V6.8a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <section class="intro">
+    <div class="brand"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</div>
+    <h1>Одна ситуація —<br>два <em>погляди</em>.</h1>
+    <p class="lede">Інтерактивне демо продукту для стосунків. Опиши реальну ситуацію, і Двоє розкладе її на факт, реакцію й почуття, підбере один наступний крок і збереже, що було потім. Для пари Двоє порівнює дві окремі відповіді.</p>
+    <nav class="scen" aria-label="Демо-сценарії">
+      <span class="label">Швидкий старт · приклади</span>
+      <button class="scenBtn" data-scen="say"><span>A</span><div><b>Хочеться сказати, але мовчу</b><small>Скасовані плани й «все нормально»</small></div><i>→</i></button>
+      <button class="scenBtn" data-scen="change"><span>B</span><div><b>Говорили, але нічого не змінюється</b><small>Запізнення, які повторюються</small></div><i>→</i></button>
+      <button class="scenBtn" data-scen="cycle"><span>C</span><div><b>Розмова щоразу стає сваркою</b><small>Один і той самий цикл</small></div><i>→</i></button>
+      <button class="scenBtn" data-scen="clarify"><span>D</span><div><b>Не знаю, що він має на увазі</b><small>Бракує однієї відповіді</small></div><i>→</i></button>
+      <button class="scenBtn" data-scen="safety"><span>E</span><div><b>Мені небезпечно</b><small>Маршрут безпеки</small></div><i>→</i></button>
+      <button class="scenBtn" data-scen="couple"><span>F</span><div><b>Разом із партнером</b><small>Карта, відкриття, домовленість</small></div><i>→</i></button>
+    </nav>
+    <p class="fine2">Демо працює в браузері: текст нікуди не надсилається, а маршрут рахується правилами на цій сторінці. Приклади в історії позначені міткою «приклад».</p>
+  </section>
+
+  <div class="device"><div class="phone" id="phone" aria-live="polite"></div></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const arrow='<svg width="18" height="18" aria-hidden="true"><use href="#arrow"/></svg>';
+const check='<svg width="12" height="12" aria-hidden="true"><use href="#check"/></svg>';
+const lock='<svg width="12" height="12" aria-hidden="true" style="vertical-align:-1px"><use href="#lock"/></svg>';
+const fmt=d=>d.toLocaleDateString("uk-UA",{day:"numeric",month:"short"}).replace(".","");
+const fmtLong=d=>d.toLocaleDateString("uk-UA",{day:"numeric",month:"long"});
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d};
+
+/* ───────── language analysis ───────── */
+const RE={
+  safety:/(вдар|удар|б['ʼ’]є|бив мене|била мене|бьет|штовх|душив|душила|погрож|загрож|угрож|боюс[яь]\s+(його|її|партнера|чоловіка|дружини)|(його|її)\s+боюс|контролю\S*\s+(мої\s+)?грош|забира\S*\s+(мої\s+)?(гроші|телефон|документ)|стеж|переслід|змушу|примушу|насил|зґвалт)/i,
+  feel:/(гірк|боляч|біль|образ|прикр|сумн|злюс|злий|зла(?!\p{L})|тривож|страшн|самотн|сором|неприємн|засмут|розчар|ревн|почуваю|відчуваю|плак|важко|кривдн)/iu,
+  react:/(?<!\p{L})(я|мене|мені)(?!\p{L})[^.!?]*(?<!\p{L})(сказал|сказав|промовч|мовчал|мовчав|відповіл|відповів|написал|написав|зробил|зробив|кричал|кричав|підвищую|наполяга|питаю|тисну|вдала|вдав|погодил|погодив)/iu,
+  suppress:/(нормально|промовч|мовчал|мовчав|нічого не сказ|вдала|вдав|проковтн)/i,
+  want:/(хочу|хотіл|хотів|хочеться|мені важливо|треба,? щоб|прошу|попрос)/i,
+  unknown:/(не знаю|не розумію,? чи|чи він|чи вона|незрозуміл|що він має на увазі|що вона має на увазі)/i,
+  repeat:/(знову|вкотре|утретє|втретє|вчетверте|постійно|щоразу|завжди|кілька разів|обіцяє|обіцяв|обіцяла)/i,
+  talked:/(говорили|обговорювали|казала йому|казав їй|просила|просив|пояснювала)/i,
+  fight:/(свар|посвар|кричи|кричу|підвищ|закрива|ескал|конфлікт)/i,
+  subj:/(?<!\p{L})(він|вона|партнер|партнерка|ми|чоловік|дружина)(?!\p{L})/iu
+};
+function splitClauses(t){ return t.split(/(\s+(?=але\s)|(?<=[.!?;])\s+|,\s+(?=а\s))/); }
+function classify(c){
+  if(RE.react.test(c)) return "r";
+  if(RE.feel.test(c)) return "e";
+  if(RE.want.test(c)) return "w";
+  if(RE.subj.test(c)) return "f";
+  return "";
+}
+function analyse(t){
+  const parts=splitClauses(t); const out={parts:[],fact:"",react:"",feel:"",want:""};
+  parts.forEach((p,i)=>{
+    if(i%2===1){out.parts.push({t:p,k:"sep"});return}
+    if(!p.trim())return;
+    const k=classify(p); out.parts.push({t:p,k});
+    const key={f:"fact",r:"react",e:"feel",w:"want"}[k];
+    if(key&&!out[key]) out[key]=p.trim();
+  });
+  return out;
+}
+function focusOptions(t,a){
+  const sc={say:1,clarify:0,change:0,cycle:0,understand:1};
+  if(RE.suppress.test(t)) sc.say+=3;
+  if(RE.want.test(t)) sc.say+=1;
+  if(RE.unknown.test(t)) sc.clarify+=3;
+  if(RE.repeat.test(t)) {sc.change+=2;sc.cycle+=1}
+  if(RE.talked.test(t)) sc.change+=2;
+  if(RE.fight.test(t)) sc.cycle+=3;
+  if(a.feel&&!RE.suppress.test(t)) sc.understand+=1;
+  const label={
+    say: RE.suppress.test(t)?"Несказане «мені не нормально»":"Хочеться прямо сказати, що для мене важливо",
+    clarify:"Бракує однієї відповіді від партнера",
+    change:"Це повторюється, і розмови нічого не змінюють",
+    cycle:"Розмова щоразу переходить у сварку",
+    understand:"Зачепило, але поки незрозуміло чому"
+  };
+  return Object.keys(sc).sort((x,y)=>sc[y]-sc[x]).map(k=>({k,label:label[k]}));
+}
+function guessRepeats(t){
+  if(/(вчетверте|постійно|щоразу|завжди|кілька разів)/i.test(t)) return 2;
+  if(/(утретє|втретє|знову|вкотре)/i.test(t)) return 1;
+  return 0;
+}
+function guessTalks(t){
+  if(/(кілька разів|багато разів|вже не раз)[^.!?]*(говорили|обговорювали)|(говорили|обговорювали)[^.!?]*(кілька|багато) разів/i.test(t)) return 2;
+  if(RE.talked.test(t)) return 1;
+  return 0;
+}
+
+/* ───────── routing ───────── */
+const JOBS={
+  SAFETY:{eb:"Спершу — безпека",title:"Твоя безпека важливіша за будь-яку розмову."},
+  REGULATE:{eb:"Спершу знизити напругу",title:"Не вирішувати на <em>піку</em>."},
+  SAY:{eb:"Що зараз допоможе",title:"Сказати одну <em>ясну</em> річ."},
+  CLARIFY:{eb:"Що зараз допоможе",title:"З’ясувати <em>одну</em> річ."},
+  UNDERSTAND:{eb:"Що зараз допоможе",title:"Відділити факт від <em>значення</em>."},
+  CHANGE:{eb:"Що зараз допоможе",title:"Перевіряти не слова, а <em>зміну</em>."},
+  CYCLE:{eb:"Що зараз допоможе",title:"Перервати цикл <em>раніше</em>."},
+  DECIDE:{eb:"Що зараз допоможе",title:"Побачити, на чому стоїть <em>рішення</em>."}
+};
+const STEP_NAME={SAY:"Сказати",CLARIFY:"З’ясувати",UNDERSTAND:"Зрозуміти",REGULATE:"Пауза",CHANGE:"Зміна",CYCLE:"Цикл",DECIDE:"Рішення",SAFETY:"Безпека"};
+function route(s){
+  if(RE.safety.test(s.text)) return {job:"SAFETY",why:"У твоїй історії є слова, що можуть означати небезпеку. Тут ми не пропонуватимемо з’ясовувати стосунки.",unknown:""};
+  if(s.distress===2) return {job:"REGULATE",why:"Зараз емоції дуже сильні. У такому стані легко зробити крок, про який потім пошкодуєш. Спершу повернемо собі вибір.",unknown:"Що ти вирішиш, коли напруга спаде. Цю ситуацію нікуди не подінеш, до неї можна повернутися."};
+  const f=s.focus;
+  if(f==="change"){
+    if(s.talks===0) return {job:"SAY",why:"Ситуація повторюється, але про неї ще прямо не говорили. Перший крок — сказати про це.",unknown:"Як партнер відреагує на пряму розмову."};
+    if(s.talks===2&&s.failed===2&&s.repeats===2) return {job:"DECIDE",why:"Про це говорили вже кілька разів, домовленості не втрималися. Ще один кращий текст навряд чи щось змінить. Тобі потрібні критерії для власного рішення.",unknown:"Чи готовий партнер підтримувати зміну діями."};
+    return {job:"CHANGE",why:"Тему вже проговорено. Наступне питання не в тому, як пояснити краще, а в тому, що реально змінюється в поведінці.",unknown:"Чи зміниться поведінка, коли є конкретний критерій і дата перевірки."};
+  }
+  if(f==="cycle"){
+    if(s.repeats===0) return {job:"UNDERSTAND",why:"Сварка сталася вперше в такому вигляді. Спершу варто розібрати, що саме в ній зачепило.",unknown:"Чи це одноразовий епізод, чи початок повторюваного циклу."};
+    return {job:"CYCLE",why:"Схоже, проблема не лише в темі, а в послідовності самої розмови: одна реакція запускає наступну.",unknown:"Що партнер відчуває на своєму кроці циклу. Ми бачимо лише твій бік."};
+  }
+  if(f==="say") return {job:"SAY",why:"Ти знаєш, що тебе зачепило. Бар’єр не в розумінні, а в тому, щоб сказати це вголос.",unknown:"Чому партнер зробив саме так. Одна історія — не висновок про нього чи про вас."};
+  if(f==="clarify") return {job:"CLARIFY",why:"Наступне рішення блокує одна невідома. Її варто з’ясувати окремо, не перетворюючи на велику розмову про все.",unknown:"Відповідь партнера. Поки її немає, будь-яке пояснення — лише здогадка."};
+  return {job:"UNDERSTAND",why:"Даних поки замало для висновків. Спершу відділимо факт від значення, яке він для тебе отримав.",unknown:"Мотиви партнера й те, чи точне твоє перше трактування."};
+}
+const FOLLOW={
+  SAY:["Сказано — розмова пішла добре","Сказано — почалася суперечка","Поки не сказано","Вже не актуально"],
+  CLARIFY:["Отримано чітку відповідь","Відповідь лишилась нечіткою","Поки не запитано","Партнер не відповів"],
+  UNDERSTAND:["Стало зрозуміліше","З’явилась нова інформація","Все ще плутаюсь","Потрібна розмова з партнером"],
+  REGULATE:["Повернулася до теми спокійніше","Напруга лишилась високою","Діяла на імпульсі","Тема втратила актуальність"],
+  CHANGE:["Зміна відбулась","Частково","Нічого не змінилось","Не було нагоди перевірити"],
+  CYCLE:["Вдалося зупинитися раніше","Частково","Цикл повторився","Не було нагоди"],
+  DECIDE:["Побачила реальну готовність","Змін немає","Сигнали змішані","Потрібно більше часу"]
+};
+
+/* ───────── state ───────── */
+const SEED=[
+  {id:"s1",date:"14 вер",title:"Коротка відповідь у месенджері",job:"UNDERSTAND",outcome:0,example:true},
+  {id:"s2",date:"22 вер",title:"Хто готує вечерю в будні",job:"SAY",outcome:0,example:true}
+];
+const fresh=()=>({text:"",distress:null,focus:null,opts:[],repeats:null,talks:null,failed:0,ask:"",meaning:null,
+  draft:null,tone:"soft",pause:0,changeText:"",period:7,breakStep:null,decideText:"",r:null});
+let S={screen:"landing",stack:[],c:fresh(),records:SEED.slice(),openId:null,follow:null,toast:"",
+  couple:{me:"Юлія",partner:"Андрій",mapI:0,map:{},modI:0,mod:{},revI:0,agree:null,agreeText:"",check:null,checked:null,sent:false}};
+const AREAS=[
+  {n:"Близькість",q:"Наскільки близькими ви відчуваєте себе останнім часом?",me:[6,8],pt:[7,8]},
+  {n:"Увага",q:"Наскільки вам вистачає уваги одне до одного?",me:[5,8],pt:[7,8]},
+  {n:"Складні розмови",q:"Наскільки легко вам говорити про складне?",me:[4,8],pt:[7,8]},
+  {n:"Побут",q:"Наскільки справедливо розподілені побутові справи?",me:[6,7],pt:[6,7]}
+];
+const MOD=[
+  {q:"Коли між нами напруга, мені важливо…",o:["поговорити одразу","спершу взяти паузу","щоб інший зробив перший крок"],pt:1},
+  {q:"Після сварки я швидше відновлюю контакт, коли…",o:["ми проговорили, що сталося","ми просто разом щось робимо","минуло трохи часу"],pt:1},
+  {q:"Якщо розмова стає гарячою, для мене нормально…",o:["зупинитися й повернутися пізніше","довести її до кінця зараз","вийти без пояснень"],pt:0}
+];
+const SCEN={
+  say:"Учора він утретє за місяць скасував наші плани в останній момент. Я сказала, що все нормально, але весь вечір було гірко.",
+  change:"Ми вже кілька разів говорили про те, що він запізнюється, і щоразу він обіцяє, що це востаннє. Сьогодні знову запізнився на годину.",
+  cycle:"Щоразу, коли я питаю про його друзів, він закривається, а я підвищую голос. Учора знову посварились.",
+  clarify:"Він сказав, що йому треба час. Не знаю, це про вечір чи про тиждень, і чи він узагалі хоче це обговорювати.",
+  safety:"Учора він штовхнув мене під час сварки, і тепер я боюся його реакції, коли він повертається додому."
+};
+
+/* ───────── navigation ───────── */
+function go(scr,{replace=false}={}){ if(!replace) S.stack.push(S.screen); S.screen=scr; render(true); }
+function back(){ if(!S.stack.length) return; S.screen=S.stack.pop(); render(true); }
+function toast(msg){ S.toast=msg; render(false); clearTimeout(toast.t); toast.t=setTimeout(()=>{S.toast="";render(false)},1800); }
+async function copy(txt){
+  try{ await navigator.clipboard.writeText(txt); toast("Скопійовано"); }
+  catch(e){ const el=document.getElementById("copySrc"); if(el){el.focus();el.select();} toast("Виділено — скопіюй вручну"); }
+}
+
+/* ───────── screens ───────── */
+function stepsBar(n,total){ let h='<div class="steps" aria-label="Крок '+n+' з '+total+'">'; for(let i=1;i<=total;i++) h+='<i class="'+(i<=n?"on":"")+'"></i>'; return h+"</div>"; }
+function opt(label,sel,act,val,sub){ return '<button class="opt'+(sel?" sel":"")+'" data-act="'+act+'" data-v="'+esc(val)+'"><span class="dot">'+(sel?check:"")+'</span><div>'+esc(label)+(sub?"<small>"+esc(sub)+"</small>":"")+'</div></button>'; }
+function seg(labels,cur,act){ return '<div class="seg" role="group">'+labels.map((l,i)=>'<button class="'+(cur===i?"on":"")+'" data-act="'+act+'" data-v="'+i+'">'+l+'</button>').join("")+'</div>'; }
+function highlighted(a){
+  const cls={f:"hl-f",r:"hl-r",e:"hl-e",w:"hl-w"};
+  return a.parts.map(p=>p.k==="sep"||!cls[p.k]?esc(p.t):'<span class="'+cls[p.k]+'">'+esc(p.t)+'</span>').join("");
+}
+function draftFrom(c,a){
+  const toYou=s=>s.replace(/(?<!\p{L})[Вв]ін(?!\p{L})/gu,"ти").replace(/(?<!\p{L})[Вв]она(?!\p{L})/gu,"ти").replace(/[.!?]+$/,"");
+  const lower=s=>s?s.charAt(0).toLowerCase()+s.slice(1):s;
+  const fact=a.fact?"Хочу повернутися до того, що сталося: "+lower(toYou(a.fact))+".":"Хочу повернутися до того, що сталося.";
+  let feel=a.feel?a.feel.replace(/^але\s+/i,"").replace(/[.!?]+$/,""):"";
+  feel=feel?(/^(я|мені|мене)(?!\p{L})/iu.test(feel)?feel:"Мені "+lower(feel))+".":"Мені від цього було непросто.";
+  const ask=c.ask.trim()||"Можемо спокійно обговорити, як нам бути з цим далі?";
+  return {fact,feel:feel.charAt(0).toUpperCase()+feel.slice(1),ask};
+}
+function composed(c){
+  const open=c.tone==="soft"?"Мені непросто це казати, але це важливо. ":"Скажу прямо. ";
+  return open+c.draft.fact+" "+c.draft.feel+" "+c.draft.ask;
+}
+
+const V={};
+
+V.landing=()=>({bar:{menu:true},body:`
+  <div class="eb">Психологія стосунків</div>
+  <h2 class="t1">Що сталося між вами — розберемо <em>спокійно</em>.</h2>
+  <p class="p">Почни з однієї ситуації. Без тестів і ярликів, лише наступний ясний крок.</p>
+  <svg class="vis" viewBox="0 0 288 150" width="288" height="150" aria-hidden="true"><g fill="none" stroke-width=".8">
+    <circle cx="116" cy="75" r="62" stroke="var(--moss)"/><circle cx="116" cy="75" r="48" stroke="var(--moss)" opacity=".45"/><circle cx="116" cy="75" r="34" stroke="var(--moss)" opacity=".22"/>
+    <circle cx="172" cy="75" r="62" stroke="var(--clay)"/><circle cx="172" cy="75" r="48" stroke="var(--clay)" opacity=".45"/><circle cx="172" cy="75" r="34" stroke="var(--clay)" opacity=".22"/></g>
+    <line x1="144" y1="8" x2="144" y2="142" stroke="var(--ink)" stroke-width=".6" stroke-dasharray="2 4"/></svg>`,
+  foot:`<button class="btn" data-act="startSolo">Розібрати ситуацію${arrow}</button>
+  <button class="btn ghost" data-act="startCouple">Пройти разом із партнером${arrow}</button>
+  ${S.records.length?`<button class="link" data-go="home">Мої ситуації (${S.records.length})</button>`:""}
+  <div class="fine">Приватно · 3 хвилини · без реєстрації</div>`});
+
+V.text=()=>{const a=analyse(S.c.text);const t=S.c.text.trim();return {bar:{back:true,help:true},steps:[1,4],body:`
+  <div class="eb">Своїми словами</div>
+  <h2 class="t2">Розкажи, що сталося.</h2>
+  <p class="p">Не треба писати гарно. Двох-трьох речень достатньо: що сталося, як ти відреагувала, що відчуваєш.</p>
+  <label for="situation" class="lab" style="display:block;margin-top:18px">Ситуація</label>
+  <textarea id="situation" class="field big" style="margin-top:8px" data-bind="text" placeholder="Наприклад: учора він скасував наші плани, а я сказала, що все нормально.">${esc(S.c.text)}</textarea>
+  <div class="chips" id="detect" style="margin-top:12px">${detectChips(a,t)}</div>`,
+  foot:`<button class="btn" data-act="toState" id="nextText" ${t.length<12?"disabled":""}>Далі${arrow}</button>
+  <div class="fine">${lock} Бачиш лише ти</div>`};};
+function detectChips(a,t){
+  if(!t) return '<span class="chip">Почни писати — Двоє підкаже, чого бракує</span>';
+  const c=(ok,l)=>'<span class="chip'+(ok?" ok":"")+'">'+(ok?"✓ ":"○ ")+l+'</span>';
+  return c(!!a.fact,"Подія")+c(!!a.react,"Твоя реакція")+c(!!a.feel,"Почуття")+c(!!a.want,"Чого хочеш");
+}
+
+V.state=()=>({bar:{back:true,help:true},steps:[2,4],body:`
+  <div class="eb">Перш ніж радити</div>
+  <h2 class="t2">Як ти зараз?</h2>
+  <p class="p">Від цього залежить, чи варто щось робити сьогодні.</p>
+  <div class="stack" style="margin-top:20px">
+    ${opt("Можу спокійно думати",S.c.distress===0,"distress",0,"Готовність до наступного кроку")}
+    ${opt("Сильно зачіпає",S.c.distress===1,"distress",1,"Думати можу, але емоції високо")}
+    ${opt("Мене накриває",S.c.distress===2,"distress",2,"Хочеться діяти негайно")}
+  </div>`,
+  foot:`<button class="card warm" data-go="safety" style="display:flex;gap:10px;align-items:center;text-align:left;font-size:13px;line-height:1.4">Якщо тобі зараз небезпечно — <u>отримати допомогу</u></button>
+  <button class="btn" data-act="toParse" ${S.c.distress===null?"disabled":""}>Далі${arrow}</button>`});
+
+V.parse=()=>{const a=analyse(S.c.text);return {bar:{back:true,help:true},steps:[3,4],body:`
+  <div class="eb">Перевір, чи так</div>
+  <h2 class="t2">Ось що Двоє почуло в історії.</h2>
+  <div class="card" style="margin-top:16px"><p style="font-family:var(--display);font-size:16.5px;line-height:1.72;margin:0">${highlighted(a)}</p></div>
+  <div class="legend" style="margin-top:12px">
+    <span><i style="border-top:1.5px solid var(--moss)"></i>Факт</span><span><i style="border-top:1.5px solid var(--clay)"></i>Реакція</span>
+    <span><i style="border-top:1.5px dotted var(--ink)"></i>Почуття</span><span><i style="border-top:1.5px dashed var(--moss)"></i>Бажання</span></div>
+  <div class="rule"></div>
+  <div class="lab">Що в центрі? Двоє пропонує перший варіант</div>
+  <div class="stack" style="margin-top:10px">${S.c.opts.map(o=>opt(o.label,S.c.focus===o.k,"focus",o.k)).join("")}</div>`,
+  foot:`<button class="btn" data-act="toClarify">Так, це воно${arrow}</button>`};};
+
+V.clarify=()=>{const c=S.c;let q="",title="Ще одне уточнення.";
+  if(c.focus==="change"||c.focus==="cycle"){
+    title="Від цього залежить, що допоможе.";
+    q=`<div style="margin-top:22px"><div class="lab">Таке вже траплялося?</div>${seg(["Вперше","2–3 рази","Часто"],c.repeats,"repeats")}</div>`;
+    if(c.focus==="change"){
+      q+=`<div style="margin-top:20px"><div class="lab">Ви вже говорили саме про це?</div>${seg(["Ще ні","Раз","Кілька"],c.talks,"talks")}</div>`;
+      if(c.talks>0) q+=`<div style="margin-top:20px"><div class="lab">Були домовленості, які не втрималися?</div>${seg(["Ні","Одна","Дві й більше"],c.failed,"failed")}</div>`;
+    }
+    q+=`<div class="card soft" style="margin-top:22px;font-size:13px;line-height:1.5">Якщо про це ще не говорили — потрібні слова. Якщо говорили багато разів — уже не слова, а зміни.</div>`;
+  } else if(c.focus==="say"){
+    title="Що хочеться попросити?";
+    q=`<p class="p">Одне конкретне прохання. Можна пропустити — Двоє запропонує нейтральне.</p>
+    <label for="ask" class="lab" style="display:block;margin-top:18px">Прохання</label>
+    <textarea id="ask" class="field" rows="3" style="margin-top:8px" data-bind="ask" placeholder="Наприклад: попереджай мене про зміну планів хоча б за день.">${esc(c.ask)}</textarea>`;
+  } else if(c.focus==="clarify"){
+    title="Якої однієї відповіді бракує?";
+    q=`<p class="p">Сформулюй як питання, на яке можна відповісти коротко.</p>
+    <label for="ask" class="lab" style="display:block;margin-top:18px">Питання</label>
+    <textarea id="ask" class="field" rows="3" style="margin-top:8px" data-bind="ask" placeholder="Наприклад: тобі потрібен вечір чи кілька днів?">${esc(c.ask)}</textarea>`;
+  } else {
+    title="Що з цього ближче?";
+    q=`<div class="stack" style="margin-top:20px">
+      ${opt("Сама подія була болючою",c.meaning===0,"meaning",0)}
+      ${opt("Не знаю, що ця подія означає",c.meaning===1,"meaning",1)}
+      ${opt("Я почала робити висновки про себе або стосунки",c.meaning===2,"meaning",2)}</div>`;
+  }
+  const ready=!((c.focus==="change"||c.focus==="cycle")&&c.repeats===null)&&!(c.focus==="change"&&c.talks===null)&&!(c.focus==="understand"&&c.meaning===null);
+  return {bar:{back:true,help:true},steps:[4,4],body:`<div class="eb">Останній крок</div><h2 class="t2">${title}</h2>${q}`,
+  foot:`<button class="btn" data-act="toRoute" ${ready?"":"disabled"}>Показати крок${arrow}</button>`};};
+
+V.route=()=>{const r=S.c.r;if(r.job==="SAFETY") return V.safety();const j=JOBS[r.job];return {bar:{back:true,help:true},body:`
+  <div class="eb">${j.eb}</div>
+  <h2 class="t1">${j.title}</h2>
+  <div class="kv" style="margin-top:22px"><div class="lab">Чому</div><p>${esc(r.why)}</p></div>
+  <div class="kv" style="margin-top:16px"><div class="lab">Чого ми не знаємо</div><p style="color:var(--graphite)">${esc(r.unknown)}</p></div>
+  ${S.c.distress===1&&r.job!=="REGULATE"?`<div class="card warm" style="margin-top:18px;font-size:13px;line-height:1.5">Емоції зараз високо. Крок можна зробити й завтра — він нікуди не зникне.</div>`:""}`,
+  foot:`<button class="btn" data-go="action">${{SAY:"Скласти фразу",CLARIFY:"Сформулювати питання",UNDERSTAND:"Розкласти",REGULATE:"Скласти план паузи",CHANGE:"Визначити зміну",CYCLE:"Знайти точку зупинки",DECIDE:"Зібрати критерії"}[r.job]}${arrow}</button>
+  <button class="link" data-act="wrongRoute">Не схоже на мою ситуацію</button>`};};
+
+V.action=()=>{const c=S.c,job=c.r.job;let b="",cta="Зберегти й нагадати завтра";
+  if(job==="SAY"){
+    b=`<div class="eb">Чернетка</div><h2 class="t2">Одна фраза замість великої розмови.</h2>
+    <div class="stack" style="margin-top:16px">
+      <label class="lab" for="dF">Факт</label><textarea id="dF" class="field" rows="3" data-bind="draft.fact">${esc(c.draft.fact)}</textarea>
+      <label class="lab" for="dE" style="margin-top:6px">Почуття</label><textarea id="dE" class="field" rows="2" data-bind="draft.feel">${esc(c.draft.feel)}</textarea>
+      <label class="lab" for="dA" style="margin-top:6px">Прохання</label><textarea id="dA" class="field" rows="2" data-bind="draft.ask">${esc(c.draft.ask)}</textarea>
+    </div>
+    <div class="chips" style="margin-top:12px"><button class="chip ${c.tone==="soft"?"on":""}" data-act="tone" data-v="soft">М’якше</button><button class="chip ${c.tone==="direct"?"on":""}" data-act="tone" data-v="direct">Прямо</button><button class="chip" data-act="copyDraft">Скопіювати</button></div>
+    <div class="card" style="margin-top:14px"><div class="lab">Повністю</div><p class="quote" id="composed" style="margin:8px 0 0">«${esc(composed(c))}»</p></div>
+    <textarea id="copySrc" class="field" rows="1" style="position:absolute;left:-9999px" aria-hidden="true" tabindex="-1">${esc(composed(c))}</textarea>`;
+  } else if(job==="CLARIFY"){
+    const q=c.ask.trim()||"Коли ти кажеш, що тобі потрібен час, — це про вечір чи про кілька днів?";
+    b=`<div class="eb">Одне питання</div><h2 class="t2">Не вирішуємо все. З’ясовуємо одну річ.</h2>
+    <div class="card" style="margin-top:18px"><p class="quote" style="margin:0">«Хочу зрозуміти одну конкретну річ. ${esc(q)}»</p></div>
+    <div class="chips" style="margin-top:12px"><button class="chip" data-act="copyQ">Скопіювати</button></div>
+    <textarea id="copySrc" class="field" rows="1" style="position:absolute;left:-9999px" aria-hidden="true" tabindex="-1">Хочу зрозуміти одну конкретну річ. ${esc(q)}</textarea>
+    <p class="p" style="margin-top:18px">Коротка ясна відповідь корисніша за довгу розмову про всі можливі мотиви.</p>`;
+  } else if(job==="UNDERSTAND"){
+    const a=analyse(c.text);
+    b=`<div class="eb">Розкласти</div><h2 class="t2">Що тут факт, а що — значення.</h2>
+    <div class="stack" style="margin-top:16px">
+      <div class="card"><div class="lab" style="color:var(--moss)">Що сталося · факт</div><p style="margin:8px 0 0;font-size:14px;line-height:1.5">${esc(a.fact||c.text)}</p></div>
+      <div class="card"><div class="lab" style="color:var(--clay)">Що це для мене означає</div><p style="margin:8px 0 0;font-size:14px;line-height:1.5">${esc(["Сама подія болюча — і це вже достатня причина.","Поки невідомо, що ця подія означає. Здогадка — ще не факт.","Від однієї події з’явилися висновки про себе або стосунки. Їх варто перевірити."][c.meaning??1])}</p></div>
+      <div class="card"><div class="lab">Чого ми не знаємо</div><p style="margin:8px 0 0;font-size:14px;line-height:1.5;color:var(--graphite)">Мотиви партнера й те, чи твоє перше трактування точне.</p></div>
+    </div>`;
+    cta="Зберегти";
+  } else if(job==="REGULATE"){
+    b=`<div class="eb">План паузи</div><h2 class="t2">Пауза з метою, а не уникання.</h2>
+    <p class="p">Не пиши й не вирішуй нічого незворотного, поки тебе накриває. Обери, коли повернешся до теми.</p>
+    <div class="stack" style="margin-top:16px">
+      ${opt("Через годину",c.pause===0,"pause",0)}${opt("Завтра зранку",c.pause===1,"pause",1)}${opt("Коли висплюся",c.pause===2,"pause",2)}</div>
+    <div class="card soft" style="margin-top:14px;font-size:13px;line-height:1.5">Що допомагає зараз: вийти на 10 хвилин, повільно видихати, написати чернетку, але не надсилати.</div>`;
+    cta="Нагадати "+["через годину","завтра зранку","завтра"][c.pause];
+  } else if(job==="CHANGE"){
+    b=`<div class="eb">Одна зміна</div><h2 class="t2">Що саме має змінитися в поведінці?</h2>
+    <p class="p">Не «ставитися серйозніше», а те, що можна побачити й перевірити.</p>
+    <label for="chg" class="lab" style="display:block;margin-top:16px">Спостережувана зміна</label>
+    <textarea id="chg" class="field" rows="3" style="margin-top:8px" data-bind="changeText" placeholder="Наприклад: якщо запізнюється, пише за 30 хвилин.">${esc(c.changeText)}</textarea>
+    <div class="lab" style="margin-top:18px">Перевірити через</div>${seg(["7 днів","14 днів","30 днів"],[7,14,30].indexOf(c.period),"period")}`;
+    cta="Зберегти й перевірити "+fmtLong(addDays(c.period));
+  } else if(job==="CYCLE"){
+    const steps=["Я наполягаю на розмові","Партнер закривається","Я підвищую голос"];
+    b=`<div class="eb">Карта циклу</div><h2 class="t2">Де цикл можна зупинити найраніше?</h2>
+    <p class="p">Обери крок, який залежить від тебе. Саме там спробуємо одну зміну.</p>
+    <div class="stack" style="margin-top:16px">${steps.map((s,i)=>opt((i+1)+". "+s,c.breakStep===i,"breakStep",i,i===1?"Не залежить від тебе":"")).join("")}</div>
+    ${c.breakStep!==null&&c.breakStep!==1?`<div class="card soft" style="margin-top:14px;font-size:13px;line-height:1.5">${c.breakStep===0?"Експеримент: запропонувати час для розмови замість «зараз». Наприклад: «Поговоримо о 20:00?»":"Експеримент: помітивши, що голос підвищується, сказати «я гарячкую, повернуся за 20 хвилин»."}</div>`:""}`;
+  } else if(job==="DECIDE"){
+    b=`<div class="eb">Твої критерії</div><h2 class="t2">Що має змінитися, щоб ти сказала: «так, це рух»?</h2>
+    <p class="p">Рішення ухвалюєш ти. Двоє лише допомагає зробити критерії видимими.</p>
+    <label for="dec" class="lab" style="display:block;margin-top:16px">Мінімальна реальна зміна</label>
+    <textarea id="dec" class="field" rows="3" style="margin-top:8px" data-bind="decideText" placeholder="Наприклад: протягом місяця жодного запізнення без попередження."></textarea>
+    <div class="lab" style="margin-top:18px">Скільки часу спостерігати</div>${seg(["2 тижні","Місяць","Два місяці"],[14,30,60].indexOf(c.period),"periodD")}`;
+    cta="Зберегти критерії";
+  }
+  const ok=!(job==="CYCLE"&&(c.breakStep===null||c.breakStep===1));
+  return {bar:{back:true,help:true},body:b,foot:`<button class="btn" data-act="saveCase" ${ok?"":"disabled"}>${esc(cta)}${arrow}</button>`};};
+
+V.safety=()=>({bar:{exit:true},tone:"warm",body:`
+  <div class="eb clay">Спершу — безпека</div>
+  <h2 class="t2">Твоя безпека важливіша за будь-яку розмову.</h2>
+  <p class="p">${S.c.r&&S.c.r.job==="SAFETY"?"У твоїй історії є слова, що можуть означати небезпеку. ":""}Тут ми не пропонуватимемо з’ясовувати стосунки або йти на конфронтацію.</p>
+  <div style="margin-top:12px">
+    <div class="hot"><b>102</b><span>Поліція — якщо загроза просто зараз</span></div>
+    <div class="hot"><b>112</b><span>Екстрена допомога</span></div>
+    <div class="hot"><b>116 123</b><span>Національна лінія з протидії домашньому насильству · безкоштовно, цілодобово</span></div>
+  </div>
+  <p class="p" style="font-size:12.5px">Якщо безпечно, поговори з людиною, якій довіряєш, і домовся про умовний сигнал.</p>`,
+  foot:`<a class="btn clay" href="tel:116123" style="text-decoration:none">Подзвонити 116 123${arrow}</a>
+  <button class="link" data-act="discard">Не зберігати цю ситуацію й вийти</button>`});
+
+V.home=()=>{const recs=S.records,done=recs.filter(r=>r.outcome!==null).length,open=recs.filter(r=>r.outcome===null);
+  const good=recs.filter(r=>r.outcome===0).length;
+  const list=recs.slice().reverse().map(r=>`<button class="tli ${r.outcome===null?"open":""}" ${r.outcome===null?`data-act="openFollow" data-v="${r.id}"`:"disabled"}>
+    <div class="d">${esc(r.date)} · ${STEP_NAME[r.job]}${r.example?'<span class="tag">приклад</span>':""}</div>
+    <div class="h">${esc(r.title)}</div>
+    <div class="r">${r.outcome===null?"Що сталося потім? →":esc(FOLLOW[r.job][r.outcome])}</div></button>`).join("");
+  return {bar:{menu:true,homeBack:true},body:`
+  <div class="eb">Мої ситуації</div>
+  <h2 class="t2">Що відбувається — і що з цим роблю я.</h2>
+  <div class="stats"><div><b>${recs.length}</b><span>Ситуацій</span></div><div><b>${done}</b><span>Перевірено</span></div><div><b>${done>=3?1:0}</b><span>Спостережень</span></div></div>
+  <div class="tl">${list||'<p class="p">Поки порожньо.</p>'}</div>
+  <div class="rule"></div>
+  <div class="lab">Що вже можна сказати</div>
+  ${done<3?`<p style="font-family:var(--display);font-size:19px;line-height:1.3;margin:10px 0 0">Поки що — нічого сталого.</p>
+    <p class="p">Щоб відрізнити випадковість від того, що повторюється, потрібно хоча б три ситуації з результатом.</p>
+    <div class="dots">${[0,1,2].map(i=>`<i class="${i<done?"on":""}"></i>`).join("")}<span>${done} / 3</span></div>`
+  :`<p style="font-family:var(--display);font-size:19px;line-height:1.3;margin:10px 0 0">У ${good} з ${done} перевірених ситуацій твій крок спрацював.</p>
+    <p class="p">Це спостереження, не правило. Наступні ситуації покажуть, чи воно тримається.</p>`}
+  <div class="rule"></div>
+  <button class="card" data-act="startCouple" style="width:100%;text-align:left;display:flex;align-items:center;gap:12px">
+    <span class="av"><i class="m">${esc(S.couple.me[0])}</i><i class="c">${esc(S.couple.partner[0])}</i></span>
+    <span style="flex:1;font-size:13.5px;line-height:1.4">Запросити партнера<br><span style="color:var(--graphite);font-size:12.5px">Твої ситуації лишаються приватними</span></span>${arrow}</button>`,
+  foot:`<button class="btn" data-act="newCase">Нова ситуація${arrow}</button>${open.length?"":""}`};};
+
+V.follow=()=>{const r=S.records.find(x=>x.id===S.openId);return {bar:{back:true},body:`
+  <div class="card" style="display:flex;gap:12px;align-items:flex-start;background:var(--rule2);border:0">
+    <svg width="30" height="18" style="flex:none;margin-top:2px"><use href="#logo"/></svg>
+    <div><b style="font-size:12.5px">Двоє · нагадування</b><p style="font-size:12.5px;color:var(--graphite);margin:2px 0 0;line-height:1.4">${esc(r.title)}</p></div></div>
+  <h2 class="t2" style="margin-top:20px">Що сталося після твого кроку?</h2>
+  <p class="p">Не «чи правильно ти зробила», а що реально відбулося.</p>
+  <div class="stack" style="margin-top:16px">${FOLLOW[r.job].map((l,i)=>opt(l,S.follow===i,"follow",i)).join("")}</div>`,
+  foot:`<button class="btn" data-act="saveFollow" ${S.follow===null?"disabled":""}>Зберегти${arrow}</button>`};};
+
+/* couple */
+V.invite=()=>{const c=S.couple;return {bar:{back:true},body:`
+  <div class="eb">Другий погляд</div>
+  <h2 class="t2">Запроси партнера.</h2>
+  <p class="p">Ви відповідаєте окремо. Ніхто не бачить відповідей іншого, доки обоє не завершать.</p>
+  <div class="stack" style="margin-top:16px">
+    <label class="lab" for="me">Твоє ім’я</label><input id="me" class="field" data-bind="couple.me" value="${esc(c.me)}">
+    <label class="lab" for="pt" style="margin-top:6px">Ім’я партнера</label><input id="pt" class="field" data-bind="couple.partner" value="${esc(c.partner)}">
+  </div>
+  <div class="card" style="margin-top:14px;text-align:center"><div class="lab">Код пари</div>
+    <div style="font-family:var(--display);font-size:32px;letter-spacing:.14em;margin-top:6px">ДВ·24K7</div></div>
+  <div class="card" style="margin-top:10px;font-size:13px;line-height:1.45;color:var(--graphite)">${lock} Твої solo-ситуації не потрапляють у спільний простір.</div>`,
+  foot:`<button class="btn" data-act="sendInvite">${c.sent?"Далі — моя карта":"Надіслати запрошення"}${arrow}</button>`};};
+
+V.map=()=>{const c=S.couple,i=c.mapI,a=AREAS[i],v=c.map[i]||{now:a.me[0],want:a.me[1]};return {bar:{back:true},steps:[i+1,AREAS.length],body:`
+  <div class="eb">Твій бік · ${esc(a.n)}</div>
+  <h2 class="t2">${esc(a.q)}</h2>
+  <div style="margin-top:30px"><div class="slTop"><span><label for="sNow">Як є зараз</label></span><b id="vNow">${v.now}</b></div>
+    <input id="sNow" class="range" type="range" min="0" max="10" value="${v.now}" data-slider="now"></div>
+  <div style="margin-top:26px"><div class="slTop"><span><label for="sWant">Як я хочу</label></span><b id="vWant" style="color:var(--moss)">${v.want}</b></div>
+    <input id="sWant" class="range moss" type="range" min="0" max="10" value="${v.want}" data-slider="want"></div>
+  <div class="card" style="margin-top:26px;font-size:13px;line-height:1.45;color:var(--graphite)">${lock} ${esc(c.partner)} не побачить відповідь, доки не завершить свою частину.</div>`,
+  foot:`<button class="btn" data-act="mapNext">${i<AREAS.length-1?"Далі":"Завершити свій бік"}${arrow}</button>`};};
+
+V.wait=()=>{const c=S.couple;return {bar:{back:true},body:`
+  <div class="eb">Карта · 4 сфери</div>
+  <h2 class="t2">Твій бік готовий. Чекаємо на ${esc(c.partner)}.</h2>
+  <div class="pair"><div class="side a"><div class="lab">${esc(c.me)}</div><p>4 / 4 ✓</p></div><div class="side b"><div class="lab">${esc(c.partner)}</div><p>0 / 4</p></div></div>
+  <p class="p">Прийде сповіщення, коли обидві сторони завершать. Твої відповіді вже не редагуються.</p>`,
+  foot:`<button class="btn ghost" data-go="mapResult">Демо: ${esc(c.partner)} уже відповів${arrow}</button>`};};
+
+function mapCalc(){const c=S.couple;return AREAS.map((a,i)=>{const m=c.map[i]||{now:a.me[0],want:a.me[1]};return {n:a.n,me:m.now,meW:m.want,pt:a.pt[0],d:Math.abs(m.now-a.pt[0])}})}
+V.mapResult=()=>{const c=S.couple,rows=mapCalc(),big=rows.slice().sort((x,y)=>y.d-x.d)[0],same=rows.slice().sort((x,y)=>x.d-y.d)[0];return {bar:{back:true,pair:true},body:`
+  <div class="eb">Карта готова · обоє завершили</div>
+  <h2 class="t2">Як кожен бачить «зараз».</h2>
+  <div class="bars">${rows.map(r=>`<div class="brow"><div class="top"><span>${esc(r.n)}</span><b>${r.me} · ${r.pt}</b></div>
+    <div class="track"><em style="left:${Math.min(r.me,r.pt)*10}%;width:${r.d*10}%"></em><i class="a" style="left:${r.me*10}%"></i><i class="b" style="left:${r.pt*10}%"></i></div></div>`).join("")}</div>
+  <div class="key"><span><i style="background:var(--moss)"></i>${esc(c.me)}</span><span><i style="background:var(--clay)"></i>${esc(c.partner)}</span></div>
+  <div class="rule"></div>
+  <div class="kv"><div class="lab">Найбільша різниця</div><p style="font-family:var(--display);font-size:19px">${big.d?esc(big.n)+" · "+big.me+" і "+big.pt:"Ви бачите все майже однаково"}</p></div>
+  <div class="kv" style="margin-top:12px"><div class="lab">Найбільший збіг</div><p>${esc(same.n)}</p></div>`,
+  foot:`<button class="btn" data-go="modIntro">Розібрати різницю глибше${arrow}</button>`};};
+
+V.modIntro=()=>({bar:{back:true,pair:true},body:`
+  <div class="eb">Модуль · Темп розмови</div>
+  <h2 class="t1">Як кожен з вас переживає <em>напругу</em>.</h2>
+  <p class="p">Три короткі ситуації. Відповідайте окремо, без підлаштування: відповіді відкриються одночасно.</p>
+  <div class="stats"><div><b>3</b><span>Питання</span></div><div><b>5</b><span>Хвилин</span></div><div><b>1</b><span>Домовленість</span></div></div>`,
+  foot:`<button class="btn" data-act="modStart">Почати свій бік${arrow}</button>`});
+
+V.mod=()=>{const i=S.couple.modI,m=MOD[i];return {bar:{back:true,pair:true},steps:[i+1,3],body:`
+  <div class="eb">Твій бік · ${i+1} з 3</div>
+  <h2 class="t2">${esc(m.q)}</h2>
+  <div class="stack" style="margin-top:20px">${m.o.map((o,k)=>opt(o,S.couple.mod[i]===k,"modAns",k)).join("")}</div>`,
+  foot:`<button class="btn" data-act="modNext" ${S.couple.mod[i]===undefined?"disabled":""}>${i<2?"Далі":"Здати відповіді"}${arrow}</button>`};};
+
+V.reveal=()=>{const c=S.couple,i=c.revI,m=MOD[i],a=c.mod[i],b=m.pt,same=a===b;return {bar:{back:true,pair:true},body:`
+  <div class="eb">Відкриття · ${i+1} / 3</div>
+  <h2 class="t2">${esc(m.q)}</h2>
+  <div class="pair"><div class="side a"><div class="lab">${esc(c.me)}</div><p>${esc(m.o[a])}</p></div><div class="side b"><div class="lab">${esc(c.partner)}</div><p>${esc(m.o[b])}</p></div></div>
+  <div class="rule"></div>
+  <div class="lab" style="color:${same?"var(--moss)":"var(--clay)"}">${same?"Збіг":"Різниця"}</div>
+  <p style="font-family:var(--display);font-size:18px;line-height:1.35;margin:8px 0 0">${same?"Тут ви дієте однаково — на це можна спиратися.":"Ви обоє бережете контакт, але по-різному."}</p>
+  ${same?"":`<p class="p">Питання для розмови: <i>«${i===0?"Що для тебе означає пауза — і скільки вона триває?":i===1?"Що тобі допомагає відчути, що ми знову разом?":"Як нам зупинятися так, щоб ніхто не відчував себе покинутим?"}»</i></p>`}`,
+  foot:`<button class="btn" data-act="revNext">${i<2?"Наступна відповідь":"Обрати домовленість"}${arrow}</button>`};};
+
+function agreeOptions(){return ["Пауза до 40 хвилин — потім повертаємося до теми","Називати, скільки часу потрібно: «мені треба 20 хвилин»","Своя домовленість"]}
+V.agree=()=>{const c=S.couple;return {bar:{back:true,pair:true},body:`
+  <div class="eb">Одна домовленість</div>
+  <h2 class="t2">Що спробуєте до перевірки?</h2>
+  <div class="stack" style="margin-top:18px">${agreeOptions().map((o,i)=>opt(o,c.agree===i,"agree",i)).join("")}</div>
+  ${c.agree===2?`<label for="own" class="lab" style="display:block;margin-top:14px">Ваша домовленість</label><input id="own" class="field" style="margin-top:8px" data-bind="couple.agreeText" value="${esc(c.agreeText)}" placeholder="Сформулюйте разом">`:""}
+  <div class="card" style="margin-top:14px;display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--graphite)">Перевірка</span><b style="font-weight:500">${fmtLong(addDays(12))}</b></div>`,
+  foot:`<button class="btn" data-act="agreeSave" ${c.agree===null||(c.agree===2&&!c.agreeText.trim())?"disabled":""}>Зафіксувати${arrow}</button>`};};
+
+V.pairHome=()=>{const c=S.couple,txt=c.agree===2?c.agreeText:agreeOptions()[c.agree],rows=mapCalc().sort((x,y)=>y.d-x.d);return {bar:{pair:true,homeBack:true},body:`
+  <div class="eb">Наш простір</div>
+  <h2 class="t2">${esc(c.me)} &amp; ${esc(c.partner)}</h2>
+  <div class="card dark" style="margin-top:18px;padding:18px">
+    <div class="lab">${c.checked===null?"Активна домовленість":"Перевірено · "+["спрацювало","частково","не вийшло"][c.checked]}</div>
+    <p style="font-family:var(--display);font-size:20px;line-height:1.3;margin:10px 0 0">${esc(txt)}</p>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px">
+      <div><div style="font-family:var(--display);font-size:30px;line-height:1">${c.checked===null?12:"✓"}</div><div class="lab" style="margin-top:4px">${c.checked===null?"днів до перевірки":"результат збережено"}</div></div>
+      <div class="lab">${fmt(addDays(12))}</div></div></div>
+  <div class="lab" style="margin-top:22px">Карта нас · за різницею</div>
+  <div class="tl" style="margin-top:12px">${rows.map((r,i)=>`<div class="tli ${i===0?"open":""}"><div class="h">${esc(r.n)}</div><div class="r" style="color:var(--graphite)">${esc(c.me)} ${r.me} · ${esc(c.partner)} ${r.pt}</div></div>`).join("")}</div>`,
+  foot:`${c.checked===null?`<button class="btn" data-go="checkin">Демо: минуло 12 днів${arrow}</button>`:""}<button class="link" data-act="toHome">Мій бік</button>`};};
+
+V.checkin=()=>{const c=S.couple;return {bar:{back:true,pair:true},body:`
+  <div class="eb">${fmtLong(addDays(12))} · перевірка</div>
+  <h2 class="t2">Що сталося з домовленістю?</h2>
+  <div class="stack" style="margin-top:18px">${["Спрацювало","Частково","Не вийшло"].map((o,i)=>opt(o,c.check===i,"check",i)).join("")}</div>
+  <label for="refl" class="lab" style="display:block;margin-top:18px">Що допомогло або заважало?</label>
+  <textarea id="refl" class="field" rows="3" style="margin-top:8px" placeholder="Коротко, своїми словами"></textarea>`,
+  foot:`<button class="btn" data-act="checkSave" ${c.check===null?"disabled":""}>Зберегти перевірку${arrow}</button>`};};
+
+/* ───────── render ───────── */
+const phone=$("#phone");
+function render(scrollTop){
+  const v=V[S.screen]();const b=v.bar||{};
+  const now=new Date(),time=now.getHours()+":"+String(now.getMinutes()).padStart(2,"0");
+  const left=b.back?`<button class="iconBtn" data-act="back" aria-label="Назад"><svg width="20" height="20"><use href="#back"/></svg></button>`
+    :b.homeBack?`<button class="iconBtn" data-act="toLanding" aria-label="На початок"><svg width="20" height="20"><use href="#home"/></svg></button>`:`<span></span>`;
+  const right=b.exit?`<button class="pillBtn solid right" data-act="quickExit">Швидкий вихід</button>`
+    :b.help?`<button class="pillBtn right" data-go="safety">Допомога</button>`
+    :b.pair?`<span class="av right"><i class="m">${esc(S.couple.me[0]||"Я")}</i><i class="c">${esc(S.couple.partner[0]||"П")}</i></span>`
+    :`<span></span>`;
+  const keepScroll=scrollTop?0:(phone.querySelector(".scroll")||{}).scrollTop||0;
+  phone.style.background=v.tone==="warm"?"var(--claySoft)":"";
+  phone.innerHTML=`<div class="status"><span>${time}</span><span class="bat"></span></div>
+    <div class="bar">${left}<span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span>${right}</div>
+    ${v.steps?stepsBar(v.steps[0],v.steps[1]):""}
+    <div class="scroll"><div class="${scrollTop?"screen":""}">${v.body}</div></div>
+    <div class="foot">${v.foot||""}</div>
+    ${S.toast?`<div class="toast" role="status">${esc(S.toast)}</div>`:""}`;
+  const sc=phone.querySelector(".scroll"); if(sc) sc.scrollTop=keepScroll;
+}
+
+function setPath(path,val){const ks=path.split(".");let o=S.c;if(ks[0]==="couple"){o=S.couple;ks.shift()}for(let i=0;i<ks.length-1;i++)o=o[ks[i]];o[ks[ks.length-1]]=val}
+
+phone.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset.bind){
+    setPath(t.dataset.bind,t.value);
+    if(t.dataset.bind==="text"){const a=analyse(t.value);$("#detect").innerHTML=detectChips(a,t.value.trim());$("#nextText").disabled=t.value.trim().length<12;}
+    if(t.dataset.bind.startsWith("draft.")){const el=$("#composed");if(el)el.textContent="«"+composed(S.c)+"»";const cs=$("#copySrc");if(cs)cs.value=composed(S.c);}
+    if(t.dataset.bind==="couple.agreeText"){const b=phone.querySelector('[data-act="agreeSave"]');if(b)b.disabled=!t.value.trim();}
+  }
+  if(t.dataset.slider){
+    const i=S.couple.mapI,a=AREAS[i];const v=S.couple.map[i]||{now:a.me[0],want:a.me[1]};v[t.dataset.slider]=+t.value;S.couple.map[i]=v;
+    $(t.dataset.slider==="now"?"#vNow":"#vWant").textContent=t.value;
+  }
+});
+
+phone.addEventListener("click",e=>{
+  const el=e.target.closest("[data-act],[data-go]"); if(!el||el.disabled) return;
+  if(el.dataset.go){go(el.dataset.go);return}
+  const v=el.dataset.v, c=S.c, cp=S.couple;
+  const A={
+    back, startSolo(){S.c=fresh();go("text")}, startCouple(){go("invite")},
+    toLanding(){S.stack=[];S.screen="landing";render(true)},
+    toHome(){S.stack=[];S.screen="home";render(true)},
+    toState(){go("state")},
+    distress(){c.distress=+v;render(false)},
+    toParse(){const a=analyse(c.text);c.opts=focusOptions(c.text,a);c.focus=c.opts[0].k;c.repeats=null;c.talks=null;c.failed=0;
+      if(RE.safety.test(c.text)){c.r=route(c);go("safety");return}
+      go("parse")},
+    focus(){c.focus=v;render(false)},
+    toClarify(){c.repeats=(c.focus==="change"||c.focus==="cycle")?guessRepeats(c.text):null;c.talks=c.focus==="change"?guessTalks(c.text):null;c.failed=0;c.meaning=null;
+      if(c.focus!=="say"&&c.focus!=="clarify")c.ask="";
+      if(c.distress===2){c.r=route(c);go("route");return}
+      go("clarify")},
+    repeats(){c.repeats=+v;render(false)}, talks(){c.talks=+v;if(c.talks===0)c.failed=0;render(false)}, failed(){c.failed=+v;render(false)},
+    meaning(){c.meaning=+v;render(false)},
+    toRoute(){c.r=route(c);if(c.r.job==="SAY")c.draft=draftFrom(c,analyse(c.text));if(c.r.job==="CHANGE")c.period=7;if(c.r.job==="DECIDE")c.period=30;go("route")},
+    wrongRoute(){S.stack=S.stack.filter(s=>s!=="clarify"&&s!=="route");S.screen="parse";render(true)},
+    tone(){c.tone=v;render(false)},
+    copyDraft(){copy(composed(c))},
+    copyQ(){copy($("#copySrc").value)},
+    pause(){c.pause=+v;render(false)}, period(){c.period=[7,14,30][+v];render(false)}, periodD(){c.period=[14,30,60][+v];render(false)},
+    breakStep(){c.breakStep=+v;render(false)},
+    saveCase(){const t=c.text.trim().replace(/\s+/g," ");const title=t.length>58?t.slice(0,58).replace(/\s\S*$/,"")+"…":t;
+      S.records.push({id:"r"+Date.now(),date:fmt(new Date()),title,job:c.r.job,outcome:null});
+      S.stack=[];S.screen="home";render(true);toast("Збережено. Нагадаємо завтра")},
+    openFollow(){S.openId=v;S.follow=null;go("follow")},
+    follow(){S.follow=+v;render(false)},
+    saveFollow(){const r=S.records.find(x=>x.id===S.openId);r.outcome=S.follow;S.stack=[];S.screen="home";render(true);toast("Результат додано до історії")},
+    newCase(){S.c=fresh();go("text")},
+    discard(){S.c=fresh();S.stack=[];S.screen="landing";render(true)},
+    quickExit(){S.c=fresh();S.stack=[];S.screen="landing";render(true)},
+    sendInvite(){if(!cp.sent){cp.sent=true;toast("Запрошення надіслано · демо");render(false);return}cp.mapI=0;go("map")},
+    mapNext(){const i=cp.mapI,a=AREAS[i];if(!cp.map[i])cp.map[i]={now:a.me[0],want:a.me[1]};if(i<AREAS.length-1){cp.mapI++;render(true)}else go("wait")},
+    modStart(){cp.modI=0;go("mod")},
+    modAns(){cp.mod[cp.modI]=+v;render(false)},
+    modNext(){if(cp.modI<2){cp.modI++;render(true)}else{cp.revI=0;go("reveal")}},
+    revNext(){if(cp.revI<2){cp.revI++;render(true)}else go("agree")},
+    agree(){cp.agree=+v;render(false)},
+    agreeSave(){cp.checked=null;cp.check=null;S.stack=[];S.screen="pairHome";render(true)},
+    check(){cp.check=+v;render(false)},
+    checkSave(){cp.checked=cp.check;S.stack=[];S.screen="pairHome";render(true);toast("Перевірку збережено")}
+  };
+  if(A[el.dataset.act]) A[el.dataset.act]();
+});
+
+/* in-phone back for map/mod steps */
+const origBack=back;
+back=function(){ if(S.screen==="map"&&S.couple.mapI>0){S.couple.mapI--;render(true);return}
+  if(S.screen==="mod"&&S.couple.modI>0){S.couple.modI--;render(true);return}
+  if(S.screen==="reveal"&&S.couple.revI>0){S.couple.revI--;render(true);return}
+  origBack(); };
+
+document.querySelectorAll("[data-scen]").forEach(b=>b.addEventListener("click",()=>{
+  const k=b.dataset.scen;
+  if(k==="couple"){S.stack=["landing"];S.screen="invite";render(true);}
+  else{S.c=fresh();S.c.text=SCEN[k];S.stack=["landing"];S.screen="text";render(true);}
+  if(window.matchMedia("(max-width:900px)").matches) phone.scrollIntoView({behavior:"smooth",block:"start"});
+}));
+
+render(true);
+})();
+</script>
