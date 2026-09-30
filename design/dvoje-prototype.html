@@ -267,6 +267,41 @@ svg text{font-family:var(--mono)}
 .tbl th{font-family:var(--mono);font-weight:400;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--graphite);text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule)}
 .tbl td{padding:12px 10px;border-bottom:1px solid var(--rule2);vertical-align:top}
 .tblWrap{overflow-x:auto}
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--rule);background:var(--sheet);padding:4px 6px calc(8px + env(safe-area-inset-bottom,0px))}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--mono);font-size:9px;letter-spacing:.04em;color:var(--faint);padding:6px 0;position:relative;text-align:center}
+.tabbar button.on{color:var(--ink)}
+.tabbar svg{width:21px;height:21px}
+.badge{position:absolute;top:1px;right:calc(50% - 18px);min-width:15px;height:15px;border-radius:99px;background:var(--clay);color:var(--sheet);font-family:var(--mono);font-size:9px;display:grid;place-items:center;padding:0 4px}
+.bell{position:relative}
+button.logo{background:none;border:0;color:inherit;font:inherit;font-family:var(--display);font-size:17px}
+.fab,.sheetBg,.sheet{display:none}
+.aiCard{border:1px solid var(--mossLine);background:var(--card);border-radius:18px;padding:14px 15px;margin-top:12px}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--moss);margin-right:8px;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.sig{font-family:var(--display);font-style:italic;font-size:22px;border-bottom:1px solid var(--ink);padding:4px 0;min-height:36px}
+.streak{display:flex;gap:4px;margin-top:8px}
+.streak i{flex:1;height:6px;border-radius:99px;background:var(--rule)}
+.streak i.on{background:var(--moss)}
+.bigCode{font-family:var(--display);font-size:40px;letter-spacing:.16em;text-align:center}
+.sheet .sb{border:1px solid var(--rule);border-radius:99px;padding:8px 12px;font-family:var(--mono);font-size:11px;margin:0 6px 6px 0;display:inline-block}
+.sheet .sb.on{background:var(--ink);color:var(--onInk);border-color:var(--ink)}
+@media (max-width:700px){
+  body{background:var(--sheet)}
+  .dev{display:none}
+  .stage{padding:0;display:block;max-width:none}
+  .side{display:none}
+  .device{position:static}
+  .phone{max-width:none;height:100vh;height:100dvh;min-height:0;border-radius:0;box-shadow:none}
+  .status{display:none}
+  .toast{bottom:120px}
+  .fab{display:block;position:fixed;left:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:30;border-radius:99px;background:var(--ink);color:var(--onInk);font-family:var(--mono);font-size:11px;padding:10px 14px;box-shadow:0 8px 20px -8px var(--shadow)}
+  .sheetBg{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40}
+  .sheet{display:block;position:fixed;left:0;right:0;bottom:0;max-height:85vh;overflow:auto;background:var(--sheet);border-radius:22px 22px 0 0;z-index:41;padding:18px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+  .site .navS nav a{display:none}
+  .site section{padding-block:44px}
+  .cab{padding-block:16px}
+  .cabMain{padding:16px}
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -463,7 +498,9 @@ function freshState(){return{
   psyLogged:false, psyOpen:null,
   deckI:0, timer:null,
   solo:{state:null,idx:0,ans:{},done:false,rewrites:{},stories:[],storyDraft:null,practice:null,practiceRes:null,paid:false,met:false},
-  toast:"", settings:{day:"Неділя",remind:true,lang:"Українська"}
+  toast:"", settings:{day:"Неділя",remind:true,lang:"Українська"},
+  daily:{p1:{},p2:{}}, promise:{picks:[0,1,3],sig:{}}, korotko:{}, mapHistory:[], seen:{}, ai:{}, soloAi:null,
+  sync:{code:null,role:null}, sheet:false, artImg:null
 };}
 let S=freshState();
 
@@ -528,6 +565,7 @@ const CATALOG=[
   ["Збереження і контент",[["F1","Наші домовленості"],["G1","Вечір розмов"],["G2","Колода в дії"],["G3","Блог"],["G4","Стаття"]]],
   ["Психолог і оплата",[["H1","Вибір психолога"],["H2","Письмовий розбір"],["H3","Згода на доступ"],["H4","Запис на сесію"],["H5","Оплата"]]],
   ["Безпека і система",[["S1","Попередження перед рівнем 3"],["S2","Екран допомоги"],["Z1","Приватність і мої дані"],["Z2","Налаштування"],["Z3","Порожні стани й помилки"]]],
+  ["Нове · утримання й удвох",[["DQ","Питання дня"],["NT","Сповіщення"],["ME","Профіль"],["O1","Обіцянка"],["KN","Коротко про нас"],["F2","Історія і прогрес"],["F3","Артефакт пари"],["SY","Два телефони"]]],
   ["Кабінет психолога",[["T1","Вхід психолога"],["T2","Мої пари"],["T3","Картка пари"]]]
 ];
 
@@ -602,6 +640,7 @@ V.A4=()=>{const c=S.couple,code="ДВ-24K7",link="dvoie.app/j/24k7";return {body
   <label class="lab" for="inv">Текст запрошення · можна змінити</label>
   <textarea id="inv" class="field" data-bind="couple.invite">${esc(c.invite)}</textarea>
   <div class="btnRow" style="margin-top:10px"><button class="btn ghost" data-act="copyInvite">Скопіювати</button><button class="btn ghost" data-act="sendInvite">Надіслати в месенджер</button></div>
+  <button class="card mod" data-go="SY" style="margin-top:12px"><span class="ic">⇄</span><span class="tx"><b>Пройти на двох телефонах</b><span>${S.sync.code?"Пара "+esc(S.sync.code)+" створена":"Справжнє посилання для партнера"}</span></span>${arrow}</button>
   ${c.inviteSent?`<div class="card soft" style="margin-top:12px;font-size:13px;line-height:1.5">Запрошення надіслано. Нагадаємо ${esc(nm("p2"))} на 2-й і 7-й день.<br><span style="color:var(--graphite)">Прототип: перемкніться на «${esc(nm("p2"))}» у верхній панелі.</span></div>`:""}`,
   foot:`<button class="btn" data-act="inviteNext">${c.inviteSent?"Далі — карта стосунків":"Надіслати й продовжити"}${arrow}</button><button class="btn ghost" data-act="skipInvite">Поки пропустити${arrow}</button>`};};
 
@@ -715,6 +754,9 @@ V.C1=()=>{const u=me(),c=S.couple,o=you();
     :`<button class="card" data-act="${mapDone(u)?"goB3":"goB1"}"><div class="lab">Карта стосунків</div><div class="t3" style="margin-top:6px">${mapDone(u)?`Чекаємо ${esc(nm(o))}`:"Пройти карту · 8 хвилин"}</div></button>`;
   blocks.push(mapBlock);
   if(mapDone("p1")&&mapDone("p2")){const r=recommendation();blocks.push(`<button class="card mod" data-act="openMod" data-v="${r.mod.id}"><span class="ic">${esc((r.mod.short||r.mod.n)[0])}</span><span class="tx"><b>Рекомендована тема: ${esc(r.mod.short||r.mod.n)}</b><span>Найбільша різниця «є — хочу» в обох</span></span>${arrow}</button>`)}
+  const dq=S.daily[u][dayKey()],dqo=S.daily[o][dayKey()];
+  blocks.splice((due?1:0)+(active?1:0),0,`<button class="card" data-tab="DQ" style="width:100%;text-align:left"><div class="between"><span class="lab">Питання дня · ${streak()} дн. поспіль</span>${dq&&dqo?'<span class="tag moss">відкрито</span>':dq?'<span class="tag">чекаємо '+esc(nm(o))+'</span>':'<span class="tag clay">нове</span>'}</div><div class="t3" style="margin-top:6px">${esc(dailyQ(dayKey()))}</div></button>`);
+  if(!(S.promise.sig.p1&&S.promise.sig.p2)) blocks.push(`<button class="card mod" data-go="O1"><span class="ic">✍</span><span class="tx"><b>Наша обіцянка</b><span>${S.promise.sig[u]?"Чекаємо підпис "+esc(nm(o)):"Три наміри й два підписи · безкоштовно"}</span></span>${arrow}</button>`);
   blocks.push(`<button class="card mod" data-go="G1"><span class="ic">✦</span><span class="tx"><b>Вечір розмов</b><span>Колода «Про нас сьогодні» · ${DECK.length} карток</span></span>${arrow}</button>`);
   const act=S.agreements.filter(a=>a.status==="active").length;
   blocks.push(`<button class="card" data-go="F1"><div class="lab">Наші домовленості</div><div class="between" style="margin-top:6px"><span style="font-size:14px">${act?`${act} активна · перевірка ${fS(nextA.check)}`:"Поки немає"}</span>${arrow}</div></button>`);
@@ -813,7 +855,8 @@ V.D5=()=>{const se=curSession();if(!se) return V.Z3empty();const f=computeFindin
   <div class="eb">Розбір · крок 3 / 5</div><h2 class="t2">Що ми побачили</h2>
   ${onlyMatch?`<div class="card soft" style="margin-top:14px"><p class="t3">У цій темі ви здебільшого збігаєтесь. Це теж результат.</p></div>`:""}
   ${types.map(block).join("")}
-  <p class="small" style="margin-top:12px">Показуємо тільки ті типи, що справді спрацювали. Текстові відповіді в прототипі розбираються правилами; у продукті їх формулюватиме ШІ.</p>
+  <p class="small" style="margin-top:12px">Показуємо тільки ті типи, що справді спрацювали. Шкали й вибори порівнюються арифметикою.</p>
+  ${aiBlock(se)}
   ${t5?`<div class="card warm" style="margin-top:12px;font-size:13.5px;line-height:1.5">Тут доречніша розмова з людиною, ніж домовленість. <button class="link" style="width:auto;padding:0;font-style:normal;text-decoration:underline" data-go="H1">Сесія з психологом</button></div>`:""}`,
   foot:`<button class="btn" data-go="D6">Поговоріть про це${arrow}</button>`};};
 
@@ -827,7 +870,7 @@ V.D6=()=>{const t=S.timer,left=t?Math.max(0,Math.round((t.end-Date.now())/1000))
   foot:`<button class="btn" data-act="talked">Ми поговорили${arrow}</button><button class="link" data-act="skipTalk">Пропустити</button>`};};
 
 V.D7=()=>{const se=curSession();if(!se) return V.Z3empty();const f=computeFindings(se);
-  if(f.safety||f.items.some(i=>i.t===5)) return {body:`<div class="eb">Домовленість</div><h2 class="t2">У цьому заході домовленості немає.</h2><p class="p">Тема потрапила в «спочатку зрозуміти». Тут доречніша розмова, а не крок.</p>`,foot:`<button class="btn" data-act="finishZ">Підсумок заходу${arrow}</button>`};
+  const ai=S.ai[se.id];if(f.safety||f.items.some(i=>i.t===5)||(ai&&ai.status==="done"&&(ai.safety||ai.items.some(i=>i.type===5)))) return {body:`<div class="eb">Домовленість</div><h2 class="t2">У цьому заході домовленості немає.</h2><p class="p">Тема потрапила в «спочатку зрозуміти». Тут доречніша розмова, а не крок.</p>`,foot:`<button class="btn" data-act="finishZ">Підсумок заходу${arrow}</button>`};
   if(se.agreementId) return {body:`<div class="eb">Домовленість</div><h2 class="t2">На цей захід домовленість уже є.</h2><p class="p">Максимум одна домовленість на захід.</p>`,foot:`<button class="btn" data-act="finishZ">Підсумок заходу${arrow}</button>`};
   const d=S.agDraft||(S.agDraft={pick:null,own:"",who:"Обоє",date:""});
   const ok=(d.pick!=null&&d.pick!==-1||(d.pick===-1&&d.own.trim()))&&d.date;
@@ -1085,7 +1128,7 @@ function soloFindings(){const out=[];const cr=criteria(),neg=cr.filter(isNeg);
 V.N2=()=>{const f=soloFindings();return {body:`
   <div class="eb">Соло-розбір</div><h2 class="t2">Що видно у ваших відповідях</h2>
   ${f.map(x=>`<div class="card ${x.mandatory?"soft":""}" style="margin-top:12px"><div class="lab" style="color:${x.mandatory?"var(--moss)":"var(--ink)"}">${esc(x.t)}</div><p style="font-family:var(--display);font-size:16px;line-height:1.45;margin:8px 0 0">${esc(x.txt)}</p></div>`).join("")}
-  <p class="small">Показуємо тільки ті типи, що спрацювали. «Ви шукаєте те, чого поки не даєте» і «Партнер на роль, яку закриває не партнер» потребують ШІ і в прототипі не рахуються.</p>`,
+  ${soloAiBlock()}<p class="small">Показуємо тільки ті типи, що спрацювали.</p>`,
   foot:`<button class="btn" data-go="N3">Одна дія на цей тиждень${arrow}</button>`};};
 V.N3=()=>{const P=["На наступному побаченні запитати: «Що для тебе означає надійність?» — і записати відповідь дослівно.","Після кожної зустрічі цього тижня записати одне: що в людині сподобалось — ствердженням.","Перед побаченням перечитати свій фільтр і після — позначити, які пункти підтвердились."];
   return {body:`
@@ -1114,7 +1157,7 @@ V.P1=()=>{const f=filterData();return {body:`
     <h4>Червоні лінії</h4><ul>${f.reds.map(x=>`<li>${esc(x)}</li>`).join("")||"<li>—</li>"}</ul></div>
   ${S.filterImg?`<p class="small">Картинка нижче — утримайте або клацніть правою кнопкою, щоб зберегти.</p><img src="${S.filterImg}" alt="Мій фільтр" style="width:100%;border-radius:16px;border:1px solid var(--rule)">`:""}
   <p class="small">Оновлюється після кожного модуля.</p>`,
-  foot:`<button class="btn" data-act="filterImg">Зберегти як картинку${arrow}</button>`};};
+  foot:`<button class="btn" data-act="filterImg">${DOWN?"Зберегти картинку":"Показати як картинку"}${arrow}</button>`};};
 V.P2=()=>({body:`
   <div class="eb">Міст</div><h2 class="t1">Ви зустріли когось</h2>
   <p class="p">Тоді половину роботи вже зроблено: ваші відповіді стають першою частиною спільної карти. Лишилось запросити другого.</p>
@@ -1194,46 +1237,74 @@ function siteView(){return `<div class="site">
 
 /* ═════════ render ═════════ */
 const root=document.getElementById("root");
-function devBar(){const u=S.user;return `<div class="dev">
+const ICON={
+  home:'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 8.5 10 4l6 4.5V16H4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
+  grid:'<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="3.5" width="5" height="5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="11.5" y="3.5" width="5" height="5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="3.5" y="11.5" width="5" height="5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="11.5" y="11.5" width="5" height="5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
+  sun:'<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  check:'<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="3.5" width="13" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="m7 10.2 2.2 2.2L13.3 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  user:'<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="7.5" r="3" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 16.5c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  bell:'<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M5.5 13.5V9a4.5 4.5 0 0 1 9 0v4.5l1.5 1.5H4z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8.5 16.5a1.6 1.6 0 0 0 3 0" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>'
+};
+const TABS=[["C1","Головна","home"],["C2","Теми","grid"],["DQ","День","sun"],["F1","Домовл.","check"],["ME","Профіль","user"]];
+function devBar(){const u=S.user,sy=S.sync.code;return `<div class="dev">
   <span class="brand"><svg width="26" height="16"><use href="#logoL"/></svg>Двоє · прототип</span>
   <div class="grp"><span>Вигляд</span><button class="${S.view==="site"?"on":""}" data-dev="site">Лендинг</button><button class="${S.view==="app"?"on":""}" data-dev="app">Застосунок</button><button class="${S.view==="cab"?"on":""}" data-dev="cab">Кабінет психолога</button></div>
-  <div class="grp"><span>Хто зараз</span><button class="${u==="p1"&&S.view==="app"?"on":""}" data-dev="p1">${esc(nm("p1"))}</button><button class="${u==="p2"&&S.view==="app"?"on":""}" data-dev="p2">${esc(nm("p2"))}</button></div>
-  <div class="grp"><span>Дії</span><button data-dev="fill">Автозаповнити за ${esc(nm(u))}</button><button data-dev="time">+14 днів</button><button data-dev="reset">Скинути</button></div>
+  ${sy?`<div class="grp"><span>Пара ${esc(sy)}</span><button class="on">Ви — ${esc(nm(u))}</button></div>`
+  :`<div class="grp"><span>Хто зараз</span><button class="${u==="p1"&&S.view==="app"?"on":""}" data-dev="p1">${esc(nm("p1"))}</button><button class="${u==="p2"&&S.view==="app"?"on":""}" data-dev="p2">${esc(nm("p2"))}</button></div>`}
+  <div class="grp"><span>Дії</span>${sy?"":`<button data-dev="fill">Автозаповнити за ${esc(nm(u))}</button>`}<button data-dev="time">+14 днів</button><button data-dev="reset">Скинути</button></div>
   <span class="sp"></span><span class="clock">${esc(fD(now()))}</span></div>`;}
+function mapIds(cur){return CATALOG.map(([g,items])=>`<div class="mapGrp"><span class="label">${g}</span><div class="ids">${items.map(([id,t])=>`<button class="sid ${id===cur?"cur":""}" data-jump="${id}" title="${esc(t)}"><b>${id}</b>${esc(t)}</button>`).join("")}</div></div>`).join("")}
 function sideView(){const cur=S.view==="app"?S.nav[S.user].s:S.nav.psy.s;return `<aside class="side">
   <div class="label">Клікабельний прототип · ТЗ від 21.09.2026</div>
   <h1>Пара відповідає окремо — <em>і бачить</em>, де розходиться.</h1>
-  <p class="lede">Дані живуть у пам’яті сторінки, без бекенду. Двох партнерів емулює перемикач «Хто зараз» угорі: у кожного свій екран і свої відповіді. Живого ШІ немає — розбір рахується правилами з вкладки «Механіка розбору».</p>
-  <div class="who"><span class="pillU">${av()} Зараз ви — <b style="font-weight:500">${esc(nm(S.user))}</b></span></div>
-  <div class="map">${CATALOG.map(([g,items])=>`<div class="mapGrp"><span class="label">${g}</span><div class="ids">${items.map(([id,t])=>`<button class="sid ${id===cur?"cur":""}" data-jump="${id}" title="${esc(t)}"><b>${id}</b>${esc(t)}</button>`).join("")}</div></div>`).join("")}</div>
-  <p class="note">Не в прототипі: F2 «Історія і прогрес», F3 «PDF пари», T4, T5 — етап «після тестів». Блог і оплата — заглушки. Промпт для Lovable у файлі відсутній.</p></aside>`;}
+  <p class="lede">Відкрийте це посилання на телефоні — застосунок займе весь екран. Щоб пройти удвох по-справжньому, у «Профіль → Два телефони» створіть пару й надішліть партнеру посилання. Без цього двох партнерів емулює перемикач «Хто зараз» угорі.</p>
+  <div class="who"><span class="pillU">${av()} Зараз ви — <b style="font-weight:500">${esc(nm(S.user))}</b></span>${S.sync.code?`<span class="tag moss">пара ${esc(S.sync.code)} · синхронізація</span>`:""}${SAMPLE?`<span class="tag moss">ШІ-розбір доступний</span>`:""}</div>
+  <div class="map">${mapIds(cur)}</div>
+  <p class="note">Не в прототипі: T4, T5. Оплата й блог — заглушки. Прогрес зберігається в цьому браузері; «Скинути» починає заново.</p></aside>`;}
+function tabbar(id){if(!S.couple.mode||!TABS.some(t=>t[0]===id))return "";const nb=unseen();return `<nav class="tabbar" aria-label="Розділи">${TABS.map(([t,l,ic])=>`<button class="${t===id?"on":""}" data-tab="${t}">${ICON[ic]}${l}${t==="DQ"&&!S.daily[me()][dayKey()]?'<span class="badge">1</span>':""}</button>`).join("")}</nav>`}
 function phoneView(keepScroll){
   const id=S.nav[S.user].s,f=V[id]||V.Z3empty,v=f();
   const n=S.nav[S.user],t=new Date(),time=t.getHours()+":"+String(t.getMinutes()).padStart(2,"0");
-  const left=v.homeBar?`<button class="iconBtn" data-go="Z2" aria-label="Налаштування"><svg width="20" height="20"><use href="#gear"/></svg></button>`
+  const isTab=S.couple.mode&&TABS.some(x=>x[0]===id);
+  const left=isTab?"<span></span>":v.homeBar?`<button class="iconBtn" data-go="Z2" aria-label="Налаштування"><svg width="20" height="20"><use href="#gear"/></svg></button>`
     :(!v.noBack&&n.st.length?`<button class="iconBtn" data-act="back" aria-label="Назад"><svg width="20" height="20"><use href="#back"/></svg></button>`:"<span></span>");
-  const inCouple=["C","D","F","G","H","B","Z","E","S"].includes(id[0]);
-  const right=inCouple&&S.couple.mode?`<button class="iconBtn right" data-act="toHome" aria-label="На головний"><svg width="20" height="20"><use href="#home"/></svg></button>`
+  const inCouple=["C","D","F","G","H","B","Z","E","S","O","K"].includes(id[0])&&!/^K[1-5]/.test(id);
+  const nb=unseen();
+  const right=isTab||id==="NT"?`<button class="iconBtn right bell" data-go="NT" aria-label="Сповіщення">${ICON.bell}${nb?`<span class="badge" style="right:2px;top:2px">${nb}</span>`:""}</button>`
+    :inCouple&&S.couple.mode?`<button class="iconBtn right" data-act="toHome" aria-label="На головний"><svg width="20" height="20"><use href="#home"/></svg></button>`
     :(id[0]==="K"||id[0]==="M"||id[0]==="N"||id[0]==="P")&&S.solo.state?`<button class="iconBtn right" data-go="N1" aria-label="Соло-трек"><svg width="20" height="20"><use href="#home"/></svg></button>`:"<span></span>";
   const c=activeConsent(),p=c?PSY.find(x=>x.id===c.psy):null;
   return `<div class="phone" id="phone"><div class="status"><span>${time}</span><span class="bat"></span></div>
-    <div class="bar">${left}<span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span>${right}</div>
+    <div class="bar">${left}<button class="logo" data-act="sheet" aria-label="Меню демо"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</button>${right}</div>
     ${v.steps?stepsBar(v.steps[0],v.steps[1]):""}
     ${c&&S.couple.mode?`<div class="plaque"><span>${esc(p.n)} бачить ваші відповіді в темі Межі до ${fD(c.until)}.</span><button data-act="revoke" data-v="${c.id}">Відкликати</button></div>`:""}
     ${S.offline?`<div class="offline">Немає зв’язку. Ваша відповідь збережена і відправиться, щойно з’явиться мережа.</div>`:""}
     <div class="scroll"><div class="${keepScroll?"":"screen"}">${v.body}</div></div>
     <div class="foot">${v.foot||""}</div>
+    ${tabbar(id)}
     ${S.toast?`<div class="toast" role="status">${esc(S.toast)}</div>`:""}</div>`;
 }
+function sheetView(){if(!S.sheet)return "";const u=S.user,sy=S.sync.code,cur=S.view==="app"?S.nav[u].s:"";return `<div class="sheetBg" data-act="sheetClose"></div><div class="sheet" role="dialog" aria-label="Меню демо">
+  <div class="between"><div class="eb">Меню демо</div><button class="chip" data-act="sheetClose">Закрити</button></div>
+  <div class="lab" style="margin:14px 0 8px">Вигляд</div><div>${[["site","Лендинг"],["app","Застосунок"],["cab","Кабінет психолога"]].map(([k,l])=>`<button class="sb ${S.view===k?"on":""}" data-dev="${k}">${l}</button>`).join("")}</div>
+  <div class="lab" style="margin:10px 0 8px">${sy?"Пара "+esc(sy):"Хто зараз"}</div><div>${sy?`<span class="sb on">Ви — ${esc(nm(u))}</span>`:["p1","p2"].map(k=>`<button class="sb ${u===k?"on":""}" data-dev="${k}">${esc(nm(k))}</button>`).join("")}</div>
+  <div class="lab" style="margin:10px 0 8px">Дії</div><div>${sy?"":`<button class="sb" data-dev="fill">Автозаповнити за ${esc(nm(u))}</button>`}<button class="sb" data-dev="time">+14 днів</button><button class="sb" data-jump="SY">Два телефони</button><button class="sb" data-dev="reset">Скинути</button></div>
+  <div class="map" style="margin-top:12px">${mapIds(cur)}</div></div>`}
 function render(fresh){
+  const ae=document.activeElement;
+  if(!fresh&&ae&&root.contains(ae)&&/^(INPUT|TEXTAREA)$/.test(ae.tagName)&&SYNC.remoteRender){SYNC.pendingRender=true;SYNC.remoteRender=false;return}
+  SYNC.remoteRender=false;
   const sc=document.querySelector(".scroll"),keep=!fresh&&sc?sc.scrollTop:0;
   let html=devBar();
   if(S.view==="site") html+=siteView();
   else if(S.view==="cab") html+=`<div class="stage" style="grid-template-columns:1fr">${cabView()}</div>`;
   else html+=`<div class="stage">${sideView()}<div class="device">${phoneView(!fresh)}</div></div>`;
+  if(S.view!=="app") html+=`<button class="fab" data-act="sheet">Демо</button>`;
+  html+=sheetView();
   root.innerHTML=html;
   const s2=document.querySelector(".scroll");if(s2) s2.scrollTop=keep;
   bindRank();
+  afterRender();
 }
 
 /* ═════════ data binding ═════════ */
@@ -1262,7 +1333,8 @@ function newSession(mod,kind){const n=kind==="trial"?0:kind==="z2"?2:1;
   const se={id:uid(),mod,n,trial:kind==="trial",qids:SETS[kind].slice(),created:now().toISOString(),ans:{p1:{},p2:{}},idx:{p1:0,p2:0},submitted:{p1:false,p2:false},revealed:null,done:false,talked:false,agreementId:null,s1ok:false};
   S.sessions.push(se);S.cur=se.id;return se;}
 function submitSession(se,u){se.submitted[u]=true;}
-function fillMap(u){MAP_DEMO[u].forEach((v,i)=>S.map[u][i]={now:v[0],want:v[1]});S.map.idx[u]=19;S.map.done[u]=true;S.couple.joined[u]=true;}
+function fillMap(u){const bump=S.mapHistory.length?2:0;MAP_DEMO[u].forEach((v,i)=>{const up=bump&&["svoboda","spilkuvannya","chas"].includes(MAPQ[i][0])?bump:0;S.map[u][i]={now:Math.min(10,v[0]+up),want:v[1]}});S.map.idx[u]=19;S.map.done[u]=true;S.couple.joined[u]=true;snapMap();}
+function snapMap(){if(!(S.map.done.p1&&S.map.done.p2))return;const a=sphereAvg("p1"),b=sphereAvg("p2"),last=S.mapHistory[S.mapHistory.length-1];const key=JSON.stringify([a,b]);if(last&&last.key===key)return;S.mapHistory.push({at:now().toISOString(),a,b,key});}
 function fillSession(se,u){se.qids.forEach(q=>{const v=MQ_DEMO[u][q];if(v!=null)se.ans[u][q]=Array.isArray(v)?v.slice():v;if(MQ_DEMO[u][q+"x"])se.ans[u][q+"x"]=MQ_DEMO[u][q+"x"]});se.idx[u]=se.qids.length-1;se.s1ok=true;submitSession(se,u);}
 function afterSubmit(se){go("D3");}
 function pay(sum,what,kind,extra){S.pay={sum,what,kind,extra};S.payResult=null;go("H5");}
@@ -1283,11 +1355,11 @@ const A={
   skipInvite(){S.couple.mode=S.couple.mode||"alone";go("B1")},
   devUnexpire(){S.couple.linkExpired=false;render(true)},
   warmStart(){S.couple.warmStep=1;render(true)}, warmNext(){S.couple.warmStep=2;render(true)},
-  p2Join(){S.couple.joined.p2=true;S.couple.warmStep=0;S.nav.p2.st=[];go("B1",{replace:true})},
+  p2Join(){if(S.pendingJoin&&DB){joinPair(S.pendingJoin);return}S.couple.joined.p2=true;S.couple.warmStep=0;S.nav.p2.st=[];go("B1",{replace:true})},
   mapStart(){go(S.map.done[me()]?"B3":"B2")},
   mapNow(v){const u=me(),i=S.map.idx[u];S.map[u][i]={...(S.map[u][i]||{}),now:+v};render(false)},
   mapWant(v){const u=me(),i=S.map.idx[u];S.map[u][i]={...(S.map[u][i]||{}),want:+v};render(false)},
-  mapNext(){const u=me();if(S.map.idx[u]<19){S.map.idx[u]++;render(true);return}S.map.done[u]=true;go(mapDone(other(u))?"B4":"B3")},
+  mapNext(){const u=me();if(S.map.idx[u]<19){S.map.idx[u]++;render(true);return}S.map.done[u]=true;S.couple.joined[u]=true;snapMap();go(mapDone(other(u))?"B4":"B3")},
   remind(){S.couple.remindAt=now().toISOString();toast("Нагадали пушем і листом");render(false)},
   startTrial(v){let se=sessionsOf(v).find(s=>s.trial);if(!se)se=newSession(v,"trial");S.cur=se.id;go("D1")},
   tariff(v){S.tariffSel=v;render(false)},
@@ -1378,7 +1450,7 @@ const A={
   practiceSave(){S.solo.practiceAt=addD(now(),14).toISOString();S.solo.practiceRes=null;toast("Нагадаємо через 14 днів");go("N1")},
   prRes(v){S.solo.pr=v;render(false)},
   prSave(){S.solo.practiceRes=S.solo.pr+(S.solo.prWhy?" — "+S.solo.prWhy:"");S.solo.pr=null;go("P1")},
-  filterImg(){S.filterImg=drawFilter();render(false)},
+  filterImg(){const url=drawFilter();saveImage("dvoie-mii-filtr.png",url,()=>{S.filterImg=url;render(false)})},
   soloToPair(){S.couple.mode="pair";pay(690,"Апгрейд соло → пара","upgrade")},
   /* site */
   siteStart(){S.view="app";S.user="p1";S.nav.p1={s:"A1",st:[]};render(true);window.scrollTo(0,0)},
@@ -1401,14 +1473,16 @@ function devAction(k){
   if(k==="site"){S.view="site";render(true);return}
   if(k==="app"){S.view="app";render(true);return}
   if(k==="cab"){S.view="cab";render(true);return}
+  if((k==="p1"||k==="p2")&&S.sync.code){toast("У режимі двох телефонів ви — "+nm(S.sync.role));return}
   if(k==="p1"||k==="p2"){S.user=k;S.view="app";
     if(k==="p2"&&!S.couple.joined.p2&&S.nav.p2.s!=="A5"){S.nav.p2={s:"A5",st:[]}}
     if(k==="p2"&&S.couple.joined.p2&&S.nav.p2.s==="A5"){S.nav.p2={s:"C1",st:[]}}
     render(true);return}
   if(k==="time"){S.shift+=14;toast("Минуло 14 днів · "+fD(now()));render(false);return}
-  if(k==="reset"){if(S.timer)clearInterval(S.timer.h);S=freshState();render(true);return}
+  if(k==="reset"){if(S.timer)clearInterval(S.timer.h);leavePair(true);S=freshState();try{localStorage.removeItem(LS_KEY)}catch(e){}render(true);return}
   if(k==="fill"){const u=S.user,id=S.nav[u].s;
     if(!S.couple.mode){S.couple.mode="pair"}
+    if(id==="DQ"){S.daily[u][dayKey()]=DAILY_DEMO[u];toast("Питання дня: відповідь "+nm(u));render(false);return}
     if(/^[KMNP]/.test(id)){Object.assign(S.solo.ans,JSON.parse(JSON.stringify(SOLO_DEMO)));S.solo.state=S.solo.state||"search";S.solo.done=true;S.solo.paid=true;S.solo.stories=JSON.parse(JSON.stringify(STORIES_DEMO));toast("Соло: відповіді й 3 історії заповнено");go("K4");return}
     S.couple.joined[u]=true;
     if(!mapDone(u)){fillMap(u);toast("Карту заповнено за "+nm(u));go(mapDone(other(u))?"B4":"B3");return}
@@ -1424,9 +1498,10 @@ function jump(id){
   S.view="app";
   const need=()=>{if(!S.couple.mode)S.couple.mode="pair";S.couple.joined.p1=true;S.couple.joined.p2=true};
   if(id==="A5"){S.user="p2";S.couple.joined.p2=false;S.couple.warmStep=0;S.nav.p2={s:"A5",st:[]};render(true);return}
-  if(/^[BEC]/.test(id)||/^[DFGHSZ]/.test(id)) need();
+  if(/^[BEC]/.test(id)||/^[DFGHSZ]/.test(id)||/^(NT|ME|O1|KN)$/.test(id)) need();
+  if(id==="F2"||id==="F3"){if(!mapDone("p1"))fillMap("p1");if(!mapDone("p2"))fillMap("p2")}
   if(["B4","B5","C1","C3"].includes(id)||/^[DH]/.test(id)){if(!mapDone("p1"))fillMap("p1");if(!mapDone("p2"))fillMap("p2")}
-  if(/^D[2-9]/.test(id)||id==="S1"||id==="H3"){
+  if((/^D[2-9]/.test(id)&&id!=="DQ")||id==="S1"||id==="H3"){
     if(id==="S1"){let se=sessionsOf("mezhi").find(s=>s.n===2);if(!se){if(!hasMod("mezhi"))S.couple.purchased.push("mezhi");se=newSession("mezhi","z2")}S.cur=se.id;se.s1ok=false;se.idx[S.user]=0;S.nav[S.user].s="D2";render(true);return}
     let se=curSession()||S.sessions.find(x=>!x.trial);if(!se){if(!hasMod("mezhi"))S.couple.purchased.push("mezhi");se=newSession("mezhi","z1")}S.cur=se.id;
     if(/^D[4-9]/.test(id)){["p1","p2"].forEach(u=>{if(!se.submitted[u])fillSession(se,u)});se.revealed=se.revealed||now().toISOString()}
@@ -1446,8 +1521,9 @@ function jump(id){
 
 /* global click */
 root.addEventListener("click",e=>{
-  const d=e.target.closest("[data-dev]");if(d){devAction(d.dataset.dev);return}
-  const j=e.target.closest("[data-jump]");if(j){jump(j.dataset.jump);return}
+  const d=e.target.closest("[data-dev]");if(d){S.sheet=false;devAction(d.dataset.dev);return}
+  const j=e.target.closest("[data-jump]");if(j){S.sheet=false;jump(j.dataset.jump);return}
+  const tb=e.target.closest("[data-tab]");if(tb){S.nav[S.user]={s:tb.dataset.tab,st:[]};S.sheet=false;render(true);return}
   const cb=e.target.closest("[data-cab]");if(cb){if(cb.dataset.cab==="T3"){A.psyOpen();return}S.nav.psy.s=cb.dataset.cab;render(true);return}
   const el=e.target.closest("[data-act],[data-go]");if(!el||el.disabled) return;
   if(el.tagName==="A"&&el.getAttribute("href")&&el.getAttribute("href").startsWith("#")) return;
@@ -1458,6 +1534,302 @@ root.addEventListener("click",e=>{
 let tx=null;root.addEventListener("touchstart",e=>{if(e.target.closest(".deck"))tx=e.touches[0].clientX},{passive:true});
 root.addEventListener("touchend",e=>{if(tx!=null){const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>50)A.deckNext()}},{passive:true});
 
+/* ═════════ v2: retention, two phones, AI, downloads ═════════ */
+let DB=null,USER=null,SAMPLE=null,DOWN=null;
+const LS_KEY="dvoie-proto-v2";
+const ART_URL="https://claude.ai/artifact/NNPhgmCE4gQvSzYsRFjhze";
+const SYNC={unsub:[],mem:{},lastMine:"",lastShared:"",lastRemote:"",writing:false,again:false,t:null,mineLoaded:false,remoteRender:false,pendingRender:false,readOnly:false,aiCtl:null};
+const DAILY=["Що сьогодні було найприємнішим у нашому дні?","За що я вдячний(на) тобі цього тижня?","Яку маленьку річ я хотів(ла) б, щоб ми робили частіше?","Коли я востаннє відчув(ла), що ми команда?","Що мені зараз найбільше допомагає відпочити?","Який наш спільний спогад я згадую найчастіше?","Що мені було непросто сказати тобі останнім часом?","Як мені найкраще показати, що я поруч, коли тобі важко?","Яку нашу традицію я хочу зберегти назавжди?","Що мене в тобі досі дивує?","Чого мені зараз бракує в наших вихідних?","Яке слово описує наш тиждень?","Що я хотів(ла) б спробувати разом цього місяця?","Коли я відчуваю себе найбільш почутим(ою) тобою?"];
+const DAILY_DEMO={p1:"Вечеря без телефонів і твій сміх над моєю історією з роботи.",p2:"Що ти сама запропонувала піти гуляти, хоча була втомлена."};
+const PROMISE=["Відповідати чесно, навіть коли незручно","Не використовувати відповіді одне проти одного","Спершу дочитувати, потім коментувати","Робити один захід на тиждень у наш день","Казати «стоп», якщо стає забагато — і повертатися","Пам’ятати, що різниця — не конфлікт"];
+const KN_Q=["Коли ми вперше відчули, що це більше, ніж просто симпатія?","Як би ми описали себе як пару у трьох словах?","Яка наша «суперсила пари»?","Які наші улюблені маленькі «ритуали» разом?","Який момент з наших стосунків ми хочемо пам’ятати завжди?"];
+const dayKey=()=>iso(now());
+const dailyQ=k=>DAILY[Math.floor(new Date(k).getTime()/DAY)%DAILY.length];
+function streak(){let n=0,d=now();if(!(S.daily.p1[iso(d)]&&S.daily.p2[iso(d)]))d=addD(d,-1);while(S.daily.p1[iso(d)]&&S.daily.p2[iso(d)]){n++;d=addD(d,-1)}return n}
+function notes(){const u=me(),o=you(),L=[];if(!S.couple.mode)return L;
+  if(S.couple.joined[o]) L.push({id:"join"+o,t:`${nm(o)} приєднався(лась) до пари`,go:"C1"});
+  if(mapDone(o)) L.push({id:"map"+o+S.mapHistory.length,t:`${nm(o)} пройшов(ла) карту стосунків`,go:mapDone(u)?"B4":"B1"});
+  S.sessions.forEach(se=>{if(se.submitted[o]) L.push({id:"sub"+se.id+o,t:`${nm(o)} відповів(ла): «${modById(se.mod).short||modById(se.mod).n}» · ${se.trial?"пробний":"захід "+se.n}`,act:"resume"})});
+  if(S.daily[o][dayKey()]) L.push({id:"dq"+dayKey()+o,t:`${nm(o)} відповів(ла) на питання дня`,tab:"DQ"});
+  S.agreements.filter(a=>a.status==="active"&&new Date(a.check)<=now()).forEach(a=>L.push({id:"ck"+a.id+a.check,t:`Настала перевірка: «${a.text}»`,act:"openCheck",v:a.id}));
+  S.consents.filter(c=>!c.revoked&&c[o]&&!c[u]).forEach(c=>L.push({id:"cs"+c.id,t:`${nm(o)} погодив(ла) доступ психолога — чекаємо вашої згоди`,act:"openConsent",v:c.id}));
+  if(S.promise.sig[o]&&!S.promise.sig[u]) L.push({id:"pr"+o,t:`${nm(o)} підписав(ла) обіцянку`,go:"O1"});
+  return L.reverse();}
+const unseen=()=>notes().filter(n=>!S.seen[n.id]).length;
+
+/* ── new screens ── */
+V.DQ=()=>{const u=me(),o=you(),k=dayKey(),q=dailyQ(k),mine=S.daily[u][k],his=S.daily[o][k];
+  const hist=Object.keys(S.daily[u]).filter(d=>d!==k&&S.daily[o][d]).sort().reverse().slice(0,5);
+  return {noBack:true,body:`
+  <div class="eb">Питання дня · ${esc(fD(now()))}</div><h2 class="t2">${esc(q)}</h2>
+  <div class="streak" aria-label="Останні 7 днів">${[...Array(7)].map((_,i)=>{const d=iso(addD(now(),i-6));return `<i class="${S.daily.p1[d]&&S.daily.p2[d]?"on":""}"></i>`}).join("")}</div>
+  <p class="small">${streak()} дн. поспіль відповідаєте обоє · дві хвилини на день</p>
+  ${!mine?`<label class="lab" for="dqa">Ваша відповідь</label><textarea id="dqa" class="field" data-bind="dqDraft" placeholder="Пишіть як говорите. Довжина не має значення.">${esc(S.dqDraft||"")}</textarea><p class="small">${lockI} ${esc(nm(o))} побачить вашу відповідь, коли відповість сам(а).</p>`
+  :his?`<div class="cols" style="margin-top:14px"><div class="col a"><div class="lab">${esc(nm("p1"))}</div>${esc(S.daily.p1[k])}</div><div class="col b"><div class="lab">${esc(nm("p2"))}</div>${esc(S.daily.p2[k])}</div></div><p class="small">Обговоріть увечері — одне питання, без висновків.</p>`
+  :`<div class="card" style="margin-top:14px"><div class="lab">Ваша відповідь</div><p style="font-size:14px;line-height:1.5;margin:6px 0 0">${esc(mine)}</p></div><div class="card soft" style="margin-top:10px;font-size:13.5px;line-height:1.5">Чекаємо ${esc(nm(o))}. Відповіді відкриються одночасно.</div>`}
+  ${hist.length?`<div class="blk"><span class="lab">Попередні дні</span>${hist.map(d=>`<div class="qBlock"><div class="small" style="margin:0">${esc(fD(d))} · ${esc(dailyQ(d))}</div><div class="cols"><div class="col a">${esc(S.daily.p1[d])}</div><div class="col b">${esc(S.daily.p2[d])}</div></div></div>`).join("")}</div>`:""}`,
+  foot:!mine?`<button class="btn" data-act="dqSave" id="dqBtn" ${(S.dqDraft||"").trim()?"":"disabled"}>Відповісти${arrow}</button>`:his?"":`<button class="btn ghost" data-act="dqNudge">Нагадати ${esc(nm(o))}${arrow}</button>`};};
+
+V.NT=()=>{const L=notes();return {body:`
+  <div class="eb">Сповіщення</div><h2 class="t2">Що нового</h2>
+  ${L.length?`<div class="stack" style="margin-top:14px">${L.map(n=>`<button class="card" data-act="openNote" data-v="${esc(n.id)}"><div class="between"><span style="font-size:14px;line-height:1.4">${esc(n.t)}</span>${S.seen[n.id]?"":'<span class="tag clay">нове</span>'}</div></button>`).join("")}</div>`
+  :`<p class="p">Поки тихо. Тут з’являться відповіді партнера, перевірки домовленостей і згоди.</p>`}`};};
+
+V.ME=()=>{const u=me(),o=you(),row=(go,ic,t,s,act)=>`<button class="card mod" ${act?`data-act="${act}"`:`data-go="${go}"`}><span class="ic">${ic}</span><span class="tx"><b>${t}</b><span>${s}</span></span>${arrow}</button>`;
+  return {noBack:true,body:`
+  <div class="between"><div><div class="eb">Профіль</div><h2 class="t2" style="margin-top:6px">${esc(nm(u))}</h2><p class="small" style="margin:2px 0 0">у парі з ${esc(nm(o))}${S.couple.joined[o]?"":" · ще не приєднався(лась)"}</p></div>${av()}</div>
+  <div class="stack" style="margin-top:16px">
+    ${row("SY","⇄","Два телефони",S.sync.code?"Пара "+esc(S.sync.code)+" · синхронізація":"Кожен відповідає на своєму телефоні")}
+    ${row("O1","✍","Наша обіцянка",S.promise.sig.p1&&S.promise.sig.p2?"Підписано обома":"Три наміри й два підписи")}
+    ${row("KN","♡","Коротко про нас","Заповнюємо разом, сидячи поруч")}
+    ${row("F2","↗","Історія і прогрес",S.mapHistory.length+" замір(и) карти")}
+    ${row("F3","▣","Артефакт пари","Одна сторінка: карта, домовленості, обіцянка")}
+    ${row("H1","☏","Психолог","Письмовий розбір або сесія")}
+    ${row("Z1","⚿","Приватність і мої дані",activeConsent()?"Доступ психолога відкрито":"Відповіді бачите тільки ви двоє")}
+    ${row("Z2","⚙","Налаштування","День заходу: "+esc(S.settings.day))}
+  </div>`};};
+
+V.O1=()=>{const P=S.promise,u=me(),o=you(),locked=!!(P.sig.p1||P.sig.p2),both=P.sig.p1&&P.sig.p2;
+  const sigCol=x=>`<div class="col ${x==="p1"?"a":"b"}"><div class="lab">${esc(nm(x))}</div><div class="sig">${P.sig[x]?esc(P.sig[x].name):"&nbsp;"}</div><div class="small" style="margin:4px 0 0">${P.sig[x]?esc(fD(P.sig[x].at)):"ще не підписано"}</div></div>`;
+  return {body:`
+  <div class="eb">Обіцянка · безкоштовно</div><h2 class="t2">Три наміри, які ви даєте одне одному.</h2>
+  <p class="p">Не правила й не контракт. Декларація того, як ви хочете проходити цей шлях. ${locked?"Наміри зафіксовано першим підписом.":"Оберіть три."}</p>
+  <div class="stack" style="margin-top:14px">${locked?P.picks.map(i=>`<div class="card" style="font-family:var(--display);font-size:17px;line-height:1.35">${esc(PROMISE[i])}</div>`).join("")
+    :PROMISE.map((t,i)=>opt(esc(t),P.picks.includes(i),"prPick",i)).join("")}</div>
+  <div class="cols" style="margin-top:16px">${sigCol("p1")}${sigCol("p2")}</div>
+  ${both?`<div class="card darkCard" style="margin-top:14px"><div class="lab">Підписано обома</div><p style="font-family:var(--display);font-size:17px;margin:6px 0 0;color:var(--onInk)">Ця сторінка буде в артефакті пари.</p></div>`:""}`,
+  foot:!P.sig[u]?`<button class="btn" data-act="prSign" ${P.picks.length===3?"":"disabled"}>Підписати як ${esc(nm(u))}${arrow}</button>`:both?`<button class="btn ghost" data-go="F3">Артефакт пари${arrow}</button>`:`<button class="btn ghost" data-act="prNudge">Нагадати ${esc(nm(o))}${arrow}</button>`};};
+
+V.KN=()=>({body:`
+  <div class="eb">Коротко про нас · безкоштовно</div><h2 class="t2">Єдиний розділ, який заповнюєте разом.</h2>
+  <p class="p">Сядьте поруч. Одна відповідь на двох — без ризику, просто щоб згадати.</p>
+  ${KN_Q.map((q,i)=>`<label class="lab" for="kn${i}">${esc(q)}</label><textarea id="kn${i}" class="field" style="min-height:80px" data-bind="korotko.${i}">${esc(S.korotko[i]||"")}</textarea>`).join("")}`,
+  foot:`<button class="btn" data-act="knSave">Зберегти для нас обох${arrow}</button>`});
+
+V.F2=()=>{if(!S.mapHistory.length) return {body:`<div class="eb">Історія і прогрес</div><h2 class="t2">Спершу карта — обоє.</h2><p class="p">Тут з’явиться карта в динаміці: перший замір і поточний.</p>`,foot:`<button class="btn" data-act="goB1">До карти${arrow}</button>`};
+  const f=S.mapHistory[0],l=S.mapHistory[S.mapHistory.length-1],many=S.mapHistory.length>1;
+  const ck=S.checkins,ok=ck.filter(c=>c.result==="Спрацювало").length,done=S.sessions.filter(s=>s.done&&!s.trial).length,dq=Object.keys(S.daily.p1).filter(d=>S.daily.p2[d]).length;
+  const d=(a,b)=>{const x=b-a;return x>0.05?`<span style="color:var(--moss)">+${x.toFixed(1)}</span>`:x<-0.05?`<span style="color:var(--clay)">${x.toFixed(1)}</span>`:`<span style="color:var(--faint)">0</span>`};
+  return {body:`
+  <div class="eb">Історія і прогрес</div><h2 class="t2">${many?"Що змінилось між замірами.":"Перший замір зафіксовано."}</h2>
+  <p class="small">${esc(fD(f.at))}${many?" → "+esc(fD(l.at)):""} · «як є зараз», середнє по сфері</p>
+  <div class="tblWrap" style="margin-top:10px"><table class="tbl"><thead><tr><th>Сфера</th><th>${esc(nm("p1"))}</th><th>${esc(nm("p2"))}</th></tr></thead><tbody>
+  ${SPHERES.map(s=>`<tr><td>${esc(s.n)}</td><td class="mono" style="font-size:12px">${f.a[s.id].now.toFixed(1)}${many?" → "+l.a[s.id].now.toFixed(1)+" "+d(f.a[s.id].now,l.a[s.id].now):""}</td><td class="mono" style="font-size:12px">${f.b[s.id].now.toFixed(1)}${many?" → "+l.b[s.id].now.toFixed(1)+" "+d(f.b[s.id].now,l.b[s.id].now):""}</td></tr>`).join("")}</tbody></table></div>
+  <div class="stats"><div><b>${done}</b><span>Заходів</span></div><div><b>${ok}/${ck.length}</b><span>Спрацювало</span></div><div><b>${dq}</b><span>Днів удвох</span></div></div>
+  ${!many?`<p class="small" style="margin-top:12px">Повторний замір має сенс через 4–6 тижнів.</p>`:""}`,
+  foot:`<button class="btn ghost" data-act="mapRetake">Повторний замір карти${arrow}</button>`};};
+
+V.F3=()=>({body:`
+  <div class="eb">Артефакт пари</div><h2 class="t2">Одна сторінка про вас двох.</h2>
+  <p class="p">Карта стосунків, ваші домовленості й обіцянка. Можна роздрукувати або поставити на заставку. PDF для друку — після тестів.</p>
+  ${S.artImg?`<img src="${S.artImg}" alt="Артефакт пари" style="width:100%;border-radius:16px;border:1px solid var(--rule);margin-top:14px">`:`<div class="placeholder" style="margin-top:14px;text-align:center">Натисніть «Створити», щоб зібрати сторінку з ваших даних.</div>`}`,
+  foot:S.artImg?`<button class="btn" data-act="artSave">${DOWN?"Зберегти картинку":"Утримайте картинку, щоб зберегти"}${arrow}</button><button class="link" data-act="artMake">Оновити</button>`:`<button class="btn" data-act="artMake">Створити${arrow}</button>`});
+
+V.SY=()=>{const o=you(),code=S.sync.code;
+  if(!DB) return {body:`
+  <div class="eb">Два телефони</div><h2 class="t2">Пройти удвох по-справжньому.</h2>
+  <p class="p">Цей режим працює, коли застосунок відкрито в claude.ai під вашим обліковим записом. У цьому перегляді спільні дані недоступні — працює локальний режим: партнерів перемикає меню демо (натисніть на логотип).</p>`};
+  if(!code) return {body:`
+  <div class="eb">Два телефони</div><h2 class="t2">Кожен — на своєму телефоні.</h2>
+  <div class="tl" style="margin-top:14px">
+    <div class="tli"><div class="h">Створіть пару тут</div><div class="r">Ви станете «${esc(nm("p1"))}».</div></div>
+    <div class="tli"><div class="h">Надішліть партнеру посилання</div><div class="r">Воно відкриє екран запрошення одразу з кодом пари.</div></div>
+    <div class="tli"><div class="h">Відповідайте окремо</div><div class="r">Відповіді відкриються, коли відповісте обоє.</div></div></div>
+  <div class="card warm" style="margin-top:6px;font-size:13px;line-height:1.5">Партнеру потрібен вхід у claude.ai і доступ до цього застосунку з правом «Contributor» або «Editor» (меню Share на сторінці).</div>
+  <div class="rule"></div>
+  <label class="lab" for="jc">Маю код від партнера</label><input id="jc" class="field mono" data-bind="joinCode" value="${esc(S.joinCode||"")}" placeholder="Наприклад, K7Q2MX" maxlength="6" style="text-transform:uppercase;letter-spacing:.2em">`,
+  foot:`<button class="btn" data-act="createPair">Створити пару${arrow}</button><button class="btn ghost" data-act="joinByCode">Приєднатися за кодом${arrow}</button>`};
+  const link=ART_URL+"#join"+code;
+  return {body:`
+  <div class="eb">Пара створена · синхронізація</div><h2 class="t2">Ви — ${esc(nm(S.sync.role))}.</h2>
+  <div class="card" style="margin-top:14px;text-align:center"><div class="lab">Код пари</div><div class="bigCode" style="margin-top:6px">${esc(code)}</div></div>
+  <label class="lab" for="pl">Посилання для партнера</label><input id="pl" class="field mono" readonly value="${esc(link)}" style="font-size:12px">
+  <div class="card ${S.couple.joined[o]?"soft":""}" style="margin-top:12px;font-size:13.5px;line-height:1.5">${S.couple.joined[o]?`${esc(nm(o))} у парі. Відповіді синхронізуються.`:`Чекаємо ${esc(nm(o))}. Щойно партнер відкриє посилання, ви побачите це тут.`}</div>
+  ${SYNC.readOnly?`<div class="card warm" style="margin-top:10px;font-size:13px">Немає права запису. Попросіть власника застосунку дати доступ «Contributor» або «Editor».</div>`:""}
+  <p class="small">Відповіді зберігаються в спільній базі цього застосунку. Інтерфейс не показує відповідей партнера до відкриття.</p>`,
+  foot:`<button class="btn" data-act="copyPairLink">Скопіювати посилання${arrow}</button><button class="link" data-act="leavePair">Вийти з пари на цьому телефоні</button>`};};
+
+/* B3 when partner already finished */
+const _B3=V.B3;V.B3=()=>mapDone(you())&&mapDone(me())?{body:`<div class="eb">Карта стосунків</div><h2 class="t1">${esc(nm(you()))} теж відповів(ла).</h2><p class="p">Радар готовий.</p>`,foot:`<button class="btn" data-go="B4">Подивитись результат${arrow}</button>`}:_B3();
+
+/* ── AI (sample) ── */
+const AI_OFF=["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"];
+function aiErr(e){const c=e&&e.code;if(c==="cancelled")return null;if(AI_OFF.includes(c))return {status:"error",msg:"ШІ-розбір недоступний у цьому перегляді."};
+  if(c==="rate_limited")return {status:"error",msg:"Забагато запитів. Спробуйте трохи пізніше.",retry:true};
+  if(c==="refused")return {status:"error",msg:"Ці відповіді ШІ розбирати не буде. Спробуйте поговорити з психологом.",retry:false};
+  return {status:"error",msg:"Не вдалося отримати розбір.",retry:true};}
+const textPairs=se=>se.qids.filter(q=>MQ[q].f==="text"&&typeof se.ans.p1[q]==="string"&&se.ans.p1[q]!=="skip"&&typeof se.ans.p2[q]==="string"&&se.ans.p2[q]!=="skip");
+function aiBlock(se){if(!SAMPLE&&!(S.ai[se.id]&&S.ai[se.id].status==="done"))return "";const texts=textPairs(se);if(!texts.length)return "";const r=S.ai[se.id];
+  if(!r) return `<div class="aiCard"><div class="lab" style="color:var(--moss)">ШІ-розбір текстових відповідей</div><p style="font-size:13.5px;line-height:1.5;margin:6px 0 10px">Текстових пар відповідей: ${texts.length}. Claude віднесе кожну до одного з п’яти типів і процитує ваші слова. Показує тільки те, що справді є.</p><button class="chip on" data-act="aiRun" data-v="${se.id}">Розібрати тексти</button></div>`;
+  if(r.status==="loading") return `<div class="aiCard"><span class="pulse"></span><span style="font-size:13.5px">Читаємо ваші відповіді…</span> <button class="chip" data-act="aiStop">Стоп</button></div>`;
+  if(r.status==="error") return `<div class="aiCard"><p style="font-size:13.5px;margin:0 0 8px">${esc(r.msg)}</p>${r.retry?`<button class="chip" data-act="aiRun" data-v="${se.id}">Спробувати ще раз</button>`:""}</div>`;
+  if(r.safety) return `<div class="aiCard warm"><div class="lab" style="color:var(--clay)">ШІ-розбір · зупинка</div><p style="font-size:13.5px;line-height:1.5;margin:6px 0 10px">У текстах є те, з чим не варто розбиратись через застосунок.</p><button class="chip on" data-go="S2">Що робити</button></div>`;
+  if(!r.items.length) return `<div class="aiCard"><div class="lab" style="color:var(--moss)">ШІ-розбір</div><p class="t3" style="margin-top:6px">У текстах ви здебільшого збігаєтесь. Це теж результат.</p></div>`;
+  return r.items.map(it=>`<div class="aiCard"><div class="lab" style="color:${it.type===5?"var(--clay)":it.type===1?"var(--moss)":"var(--ink)"}">Тип ${it.type} · ШІ</div><div class="t3" style="margin-top:6px">${TYPE_T[it.type]}</div><div style="font-size:13.5px;line-height:1.4;margin-top:10px">${esc(MQ[it.q].t)}</div><div class="cols"><div class="col a"><div class="lab">${esc(nm("p1"))}</div>«${esc(se.ans.p1[it.q])}»</div><div class="col b"><div class="lab">${esc(nm("p2"))}</div>«${esc(se.ans.p2[it.q])}»</div></div><p style="font-size:13.5px;line-height:1.5;margin:10px 0 0">${esc(it.insight)}</p></div>`).join("");}
+async function runAi(id){const se=S.sessions.find(x=>x.id===id);if(!se||!SAMPLE)return;const texts=textPairs(se);
+  S.ai[id]={status:"loading"};SYNC.aiCtl=new AbortController();render(false);
+  const lines=texts.map(q=>`[${q}] Питання: ${MQ[q].t}\n${nm("p1")}: «${String(se.ans.p1[q]).slice(0,1500)}»\n${nm("p2")}: «${String(se.ans.p2[q]).slice(0,1500)}»`).join("\n\n");
+  const prompt=`Ти допомагаєш парному психотерапевту в застосунку «Двоє». Пара окремо відповіла на питання з теми «${modById(se.mod).n}». Для кожної пари текстових відповідей визнач, чи справді спрацював один із п’яти типів знахідок. Показуй ТІЛЬКИ те, що справді є. Якщо тип не спрацював — не включай питання. Не вигадуй розбіжностей.
+
+Типи:
+1 — «Тут ви майже повністю збігаєтесь»: обидва називають ті самі потреби й приклади.
+2 — «Тут ваші потреби різні»: обидва описують, чого хочуть, і це різні речі. Без винного: не «ви не зійшлись», а «вам потрібне різне».
+3 — «Один із вас описує те, що другий майже не помічає»: один пише розгорнуто про біль, другий коротко або «все нормально». Формулюй «це не видно ззовні», НІКОЛИ «ти не помічаєш».
+4 — «Ви обоє незадоволені — але пропонуєте протилежне»: обидва пишуть, що так далі не можна, але пропонують протилежні кроки.
+5 — «Цю тему варто спочатку зрозуміти, а не вирішувати»: сильна емоція без конкретики; згадка дитинства або минулого досвіду; страх, сором чи провина.
+
+Постав "safety": true, якщо в будь-якій відповіді є ознаки насильства, примусу чи загрози.
+Правила тону: не діагностуй, не оцінюй, хто правий, не давай порад. Українською, звертайся до пари на «ви», 1–2 речення на знахідку, спирайся на їхні слова.
+
+Відповідай ТІЛЬКИ JSON без іншого тексту:
+{"items":[{"q":"<id у квадратних дужках>","type":<1-5>,"insight":"<1–2 речення>"}],"safety":false}
+
+Відповіді:
+${lines}`;
+  try{const r=await SAMPLE.json(prompt,{signal:SYNC.aiCtl.signal});
+    const items=(r&&Array.isArray(r.items)?r.items:[]).filter(i=>i&&texts.includes(String(i.q))&&[1,2,3,4,5].includes(Number(i.type))&&i.insight).map(i=>({q:String(i.q),type:Number(i.type),insight:String(i.insight).slice(0,500)}));
+    S.ai[id]={status:"done",items,safety:!!(r&&r.safety)};
+  }catch(e){const x=aiErr(e);if(x)S.ai[id]=x;else delete S.ai[id]}
+  render(false);}
+function soloAiBlock(){const r=S.soloAi;if(!SAMPLE&&!(r&&r.status==="done"))return "";
+  if(!r) return `<div class="aiCard"><div class="lab" style="color:var(--moss)">Ще два типи — через ШІ</div><p style="font-size:13.5px;line-height:1.5;margin:6px 0 10px">«Ви шукаєте те, чого поки не даєте» і «Партнер на роль, яку закриває не партнер» потребують уважного читання ваших текстів.</p><button class="chip on" data-act="soloAiRun">Розібрати</button></div>`;
+  if(r.status==="loading") return `<div class="aiCard"><span class="pulse"></span><span style="font-size:13.5px">Читаємо ваші відповіді…</span> <button class="chip" data-act="aiStop">Стоп</button></div>`;
+  if(r.status==="error") return `<div class="aiCard"><p style="font-size:13.5px;margin:0 0 8px">${esc(r.msg)}</p>${r.retry?`<button class="chip" data-act="soloAiRun">Спробувати ще раз</button>`:""}</div>`;
+  if(!r.items.length) return `<div class="aiCard"><div class="lab" style="color:var(--moss)">ШІ</div><p style="font-size:14px;line-height:1.5;margin:6px 0 0">Цих двох типів у ваших відповідях не видно. Це теж результат.</p></div>`;
+  return r.items.map(it=>`<div class="aiCard"><div class="lab">${esc(it.type)} · ШІ</div><p style="font-family:var(--display);font-size:16px;line-height:1.45;margin:8px 0 0">${esc(it.text)}</p></div>`).join("");}
+async function runSoloAi(){if(!SAMPLE)return;const a=S.solo.ans;S.soloAi={status:"loading"};SYNC.aiCtl=new AbortController();render(false);
+  const st=S.solo.stories.map((s,i)=>`Історія ${i+1}: ${s.len} міс.; привабило: ${s.attr.join(", ")||"—"}; дратувало: ${s.irr.join(", ")||"—"}`).join("\n");
+  const T1="Ви шукаєте те, чого поки не даєте",T2="Партнер на роль, яку закриває не партнер";
+  const prompt=`Ти допомагаєш терапевту в соло-треку застосунку «Двоє» для людей, які поки не в парі. Теза продукту: з людиною, швидше за все, все гаразд — розмитий фокус, а не вона. Перевір лише два типи знахідок і включи тип ТІЛЬКИ якщо він справді видно з відповідей:
+«${T1}»: людина просить у партнера якість, яку в описі себе називає найважчою для себе або не згадує серед того, що дає.
+«${T2}»: людина очікує, що партнер дасть сенс життя, впевненість, коло спілкування чи інше, що зазвичай дає не партнер.
+Тон: спостереження, ніколи докір чи нотація. Українською, на «ви», 1–2 речення, спирайся на слова людини.
+Відповідай ТІЛЬКИ JSON: {"items":[{"type":"<точна назва типу>","text":"<1–2 речення>"}]}
+Кого шукає: «${String(a.k1||"").slice(0,1500)}»
+Що дає людині поруч: «${String(a.k8||"").slice(0,800)}»
+Червоні лінії: «${String(a.k5||"").slice(0,500)}»
+${st}`;
+  try{const r=await SAMPLE.json(prompt,{signal:SYNC.aiCtl.signal});
+    S.soloAi={status:"done",items:(r&&Array.isArray(r.items)?r.items:[]).filter(i=>i&&[T1,T2].includes(i.type)&&i.text).map(i=>({type:i.type,text:String(i.text).slice(0,500)}))};
+  }catch(e){const x=aiErr(e);S.soloAi=x}
+  render(false);}
+
+/* ── images & downloads ── */
+function dataURLtoBlob(u){const i=u.indexOf(","),bin=atob(u.slice(i+1)),arr=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)arr[k]=bin.charCodeAt(k);return new Blob([arr],{type:"image/png"})}
+function saveImage(fn,url,after){if(!DOWN){after();return}DOWN.save({filename:fn,data:dataURLtoBlob(url)}).then(()=>{toast("Збережено");after()}).catch(e=>{toast(e&&e.code==="declined"?"Збереження скасовано":"Не вдалося зберегти — утримайте картинку");after()})}
+function drawArt(){const W=1080,H=1560,cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");
+  const mono="Geist Mono, monospace",disp="Lora, Georgia, serif",body="IBM Plex Serif, Georgia, serif";
+  x.fillStyle="#FBF9F4";x.fillRect(0,0,W,H);
+  x.fillStyle="#A9644C";x.font="500 26px "+mono;x.fillText("ДВОЄ · НАША КАРТА",80,110);
+  x.fillStyle="#1F1E1B";x.font="400 66px "+disp;x.fillText(nm("p1")+" & "+nm("p2"),80,200);
+  x.fillStyle="#6F695F";x.font="400 24px "+mono;x.fillText(fD(now()).toUpperCase(),80,248);
+  const cx=W/2,cy=600,R=240,n=SPHERES.length,a=sphereAvg("p1"),b=sphereAvg("p2");
+  const pt=(i,v)=>{const g=-Math.PI/2+i*2*Math.PI/n;return[cx+Math.cos(g)*R*v/10,cy+Math.sin(g)*R*v/10]};
+  x.strokeStyle="#DDD6C9";x.lineWidth=2;[2.5,5,7.5,10].forEach(v=>{x.beginPath();SPHERES.forEach((s,i)=>{const[p,q]=pt(i,v);i?x.lineTo(p,q):x.moveTo(p,q)});x.closePath();x.stroke()});
+  x.font="400 21px "+mono;x.fillStyle="#6F695F";SPHERES.forEach((s,i)=>{const[p,q]=pt(i,12.2);x.textAlign=p<cx-5?"right":p>cx+5?"left":"center";x.fillText(s.n,p,q+8)});x.textAlign="left";
+  [[a,"#3F5446"],[b,"#A9644C"]].forEach(([d,c])=>{x.beginPath();SPHERES.forEach((s,i)=>{const[p,q]=pt(i,d[s.id].now||0);i?x.lineTo(p,q):x.moveTo(p,q)});x.closePath();x.globalAlpha=.14;x.fillStyle=c;x.fill();x.globalAlpha=1;x.strokeStyle=c;x.lineWidth=4;x.stroke()});
+  x.font="400 22px "+mono;x.fillStyle="#3F5446";x.fillText("● "+nm("p1"),80,960);x.fillStyle="#A9644C";x.fillText("● "+nm("p2"),360,960);
+  let y=1050;const sec=t=>{x.fillStyle="#6F695F";x.font="400 22px "+mono;x.fillText(t,80,y);y+=50};
+  const line=(t,f,c)=>{x.fillStyle=c||"#1F1E1B";x.font=f;let l="";t.split(" ").forEach(w=>{if(x.measureText(l+w).width>920){x.fillText(l,80,y);y+=44;l=""}l+=w+" "});x.fillText(l,80,y);y+=50};
+  sec("НАШІ ДОМОВЛЕНОСТІ");const ags=S.agreements.slice(-3);if(ags.length)ags.forEach(g=>line("— "+g.text+(g.status==="closed"?" · спрацювало":""),"400 32px "+body));else line("З’являться після першого заходу.","400 30px "+body,"#6F695F");
+  y+=12;sec("НАША ОБІЦЯНКА");S.promise.picks.forEach(i=>line("— "+PROMISE[i],"400 30px "+body));
+  y=Math.min(Math.max(y+40,1420),H-60);x.font="italic 400 40px "+disp;x.fillStyle="#1F1E1B";
+  ["p1","p2"].forEach((u,k)=>{const X=80+k*480;x.fillText(S.promise.sig[u]?S.promise.sig[u].name:"",X,y);x.fillStyle="#DDD6C9";x.fillRect(X,y+14,400,2);x.fillStyle="#1F1E1B"});
+  return cv.toDataURL("image/png");}
+
+/* ── two phones (db) ── */
+function exportShared(){return {v:1,couple:S.couple,sessions:S.sessions.map(s=>({id:s.id,mod:s.mod,n:s.n,trial:s.trial,qids:s.qids,created:s.created,revealed:s.revealed,done:s.done,talked:s.talked,agreementId:s.agreementId})),
+  agreements:S.agreements,checkins:S.checkins,consents:S.consents,log:S.log,orders:S.orders,promise:S.promise,korotko:S.korotko,mapHistory:S.mapHistory,
+  ai:Object.fromEntries(Object.entries(S.ai).filter(([k,v])=>v&&v.status==="done"))}}
+function exportMine(u){return {v:1,joined:!!S.couple.joined[u],name:S.couple.names[u],map:S.map[u],idx:S.map.idx[u],done:!!S.map.done[u],daily:S.daily[u],
+  sess:Object.fromEntries(S.sessions.map(s=>[s.id,{ans:s.ans[u],idx:s.idx[u],sub:!!s.submitted[u]}]))}}
+function importMember(u,m){if(!m)return;S.map[u]=m.map||{};S.map.idx[u]=m.idx||0;S.map.done[u]=!!m.done;S.couple.joined[u]=!!m.joined;S.daily[u]=m.daily||{};if(m.name)S.couple.names[u]=m.name;
+  S.sessions.forEach(s=>{const x=m.sess&&m.sess[s.id];if(x){s.ans[u]=x.ans||{};s.idx[u]=x.idx||0;s.submitted[u]=!!x.sub}})}
+function importShared(d){if(!d)return;const old={};S.sessions.forEach(x=>old[x.id]=x);
+  if(d.couple)S.couple=d.couple;
+  S.sessions=(d.sessions||[]).map(m=>{const o=old[m.id];return Object.assign({},m,{ans:o?o.ans:{p1:{},p2:{}},idx:o?o.idx:{p1:0,p2:0},submitted:o?o.submitted:{p1:false,p2:false},s1ok:o?o.s1ok:false})});
+  ["agreements","checkins","consents","log","orders","mapHistory"].forEach(k=>{if(Array.isArray(d[k]))S[k]=d[k]});
+  if(d.promise)S.promise=d.promise;if(d.korotko)S.korotko=d.korotko;if(d.ai)Object.assign(S.ai,d.ai);
+  if(S.sync.role)S.couple.joined[S.sync.role]=true;
+  ["p1","p2"].forEach(u=>{if(SYNC.mem[u]&&u!==S.sync.role)importMember(u,SYNC.mem[u])});
+  if(S.cur&&!S.sessions.find(x=>x.id===S.cur))S.cur=null;}
+async function writeDoc(path,obj){for(let t=0;t<2;t++){try{await DB.doc(path).set(obj);return true}catch(e){const c=e&&e.code;
+  if(c==="invalid_argument"){SYNC.readOnly=true;toast("Немає права запису. Потрібен доступ «Contributor» або «Editor».");return false}
+  if(c==="quota_exceeded"){toast("Сховище застосунку заповнене.");return false}
+  if(c!=="unavailable")return false;await new Promise(r=>setTimeout(r,700+Math.random()*900))}}return false}
+function persist(force){if(!DB||!S.sync.code||SYNC.readOnly)return;if(force){clearTimeout(SYNC.t);SYNC.t=null;flush();return}if(SYNC.t)return;SYNC.t=setTimeout(()=>{SYNC.t=null;flush()},400)}
+async function flush(){if(SYNC.writing){SYNC.again=true;return}SYNC.writing=true;
+  try{const code=S.sync.code,role=S.sync.role;if(!code)return;
+    const mine=JSON.stringify(exportMine(role));if(mine!==SYNC.lastMine&&await writeDoc(`pairs/${code}/members/${role}`,{m:mine,at:new Date().toISOString()}))SYNC.lastMine=mine;
+    const sh=JSON.stringify(exportShared());if(sh!==SYNC.lastShared&&await writeDoc(`pairs/${code}`,{s:sh,at:new Date().toISOString()})){SYNC.lastShared=sh;SYNC.lastRemote=sh}
+  }finally{SYNC.writing=false;if(SYNC.again){SYNC.again=false;flush()}}}
+function remoteRender(){SYNC.remoteRender=true;render(false)}
+function subscribe(){SYNC.unsub.forEach(f=>{try{f()}catch(e){}});SYNC.unsub=[];const code=S.sync.code;if(!DB||!code)return;
+  const onErr=e=>{if(e&&e.code==="revoked")toast("Доступ до спільних даних закрито")};
+  SYNC.unsub.push(DB.doc("pairs/"+code).onSnapshot(sn=>{if(!sn.exists||sn.metadata.hasPendingWrites)return;const d=sn.data();if(!d||typeof d.s!=="string"||d.s===SYNC.lastRemote)return;SYNC.lastRemote=d.s;
+    if(SYNC.lastShared&&JSON.stringify(exportShared())!==SYNC.lastShared)return;
+    try{importShared(JSON.parse(d.s))}catch(e){return}SYNC.lastShared=JSON.stringify(exportShared());remoteRender()},onErr));
+  ["p1","p2"].forEach(u=>SYNC.unsub.push(DB.doc(`pairs/${code}/members/${u}`).onSnapshot(sn=>{if(!sn.exists||sn.metadata.hasPendingWrites)return;const d=sn.data();if(!d||typeof d.m!=="string")return;
+    if(u===S.sync.role){if(SYNC.mineLoaded)return;SYNC.mineLoaded=true}
+    let m;try{m=JSON.parse(d.m)}catch(e){return}SYNC.mem[u]=m;importMember(u,m);if(u===S.sync.role)SYNC.lastMine=JSON.stringify(exportMine(u));remoteRender()},onErr)));}
+function genCode(){const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="";const r=new Uint32Array(6);crypto.getRandomValues(r);r.forEach(v=>c+=A[v%A.length]);return c}
+async function createPair(){if(!DB)return;const code=genCode();S.sync={code,role:"p1"};S.user="p1";S.couple.mode=S.couple.mode||"pair";S.couple.joined.p1=true;
+  SYNC.mineLoaded=true;SYNC.readOnly=false;SYNC.lastShared="";SYNC.lastMine="";SYNC.mem={};
+  const sh=JSON.stringify(exportShared());
+  if(!await writeDoc("pairs/"+code,{s:sh,at:new Date().toISOString()})){S.sync={code:null,role:null};render(false);return}
+  SYNC.lastShared=sh;SYNC.lastRemote=sh;subscribe();persist(true);toast("Пару створено");render(false)}
+async function joinPair(raw){const code=String(raw||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(!DB){toast("Спільні дані недоступні в цьому перегляді");return}if(code.length!==6){toast("Код має 6 символів");return}
+  let sn;try{sn=await DB.doc("pairs/"+code).get()}catch(e){toast("Не вдалося з’єднатися. Спробуйте ще раз");return}
+  if(!sn.exists){toast("Пару з таким кодом не знайдено");return}
+  const d=sn.data();S.sync={code,role:"p2"};S.user="p2";S.view="app";SYNC.mineLoaded=false;SYNC.readOnly=false;SYNC.mem={};
+  try{importShared(JSON.parse(d.s))}catch(e){}
+  S.couple.mode="pair";S.couple.joined.p2=true;S.couple.warmStep=0;S.pendingJoin=null;
+  SYNC.lastShared=JSON.stringify(exportShared());SYNC.lastRemote=d.s;subscribe();
+  S.nav.p2={s:"B1",st:[]};persist(true);render(true);toast("Ви в парі з "+nm("p1"))}
+function leavePair(silent){SYNC.unsub.forEach(f=>{try{f()}catch(e){}});SYNC.unsub=[];SYNC.mem={};SYNC.lastMine="";SYNC.lastShared="";SYNC.lastRemote="";SYNC.readOnly=false;
+  if(S.sync)S.sync={code:null,role:null};if(!silent){toast("Ви вийшли з пари на цьому телефоні");render(true)}}
+
+/* ── local persistence ── */
+function saveLocal(){clearTimeout(saveLocal.t);saveLocal.t=setTimeout(()=>{try{const c=Object.assign({},S,{toast:"",timer:null,sheet:false,filterImg:null,artImg:null,pendingJoin:null});localStorage.setItem(LS_KEY,JSON.stringify({v:2,S:c}))}catch(e){}},400)}
+function loadLocal(){try{const x=JSON.parse(localStorage.getItem(LS_KEY)||"null");if(x&&x.v===2&&x.S){S=Object.assign(freshState(),x.S);S.toast="";S.timer=null;S.sheet=false;
+  Object.keys(S.ai||{}).forEach(k=>{if(S.ai[k].status==="loading")delete S.ai[k]});if(S.soloAi&&S.soloAi.status==="loading")S.soloAi=null}}catch(e){}}
+function afterRender(){saveLocal();persist();if(S.view==="app"&&S.nav[S.user].s==="NT"){let ch=false;notes().forEach(n=>{if(!S.seen[n.id]){S.seen[n.id]=1;ch=true}});if(ch)saveLocal()}}
+root.addEventListener("focusout",()=>{if(SYNC.pendingRender){SYNC.pendingRender=false;setTimeout(()=>render(false),0)}});
+
+/* ── actions ── */
+Object.assign(A,{
+  sheet(){S.sheet=true;render(false)}, sheetClose(){S.sheet=false;render(false)},
+  dqSave(){const t=(S.dqDraft||"").trim();if(!t)return;S.daily[me()][dayKey()]=t;S.dqDraft="";toast(S.daily[you()][dayKey()]?"Відкрито — читайте обидві відповіді":"Збережено. Відкриється, коли відповість "+nm(you()));render(true)},
+  dqNudge(){toast("Нагадали "+nm(you()))}, prNudge(){toast("Нагадали "+nm(you()))},
+  prPick(v){const P=S.promise;if(P.sig.p1||P.sig.p2)return;const i=+v;if(P.picks.includes(i))P.picks=P.picks.filter(x=>x!==i);else if(P.picks.length<3)P.picks=[...P.picks,i];else toast("Можна обрати три");render(false)},
+  prSign(){S.promise.sig[me()]={name:nm(me()),at:now().toISOString()};toast("Підписано");render(false)},
+  knSave(){toast("Збережено для вас обох")},
+  mapRetake(){const u=me();S.map[u]={};S.map.idx[u]=0;S.map.done[u]=false;toast("Повторний замір. "+nm(you())+" отримає запрошення");go("B1")},
+  artMake(){S.artImg=drawArt();render(false)},
+  artSave(){if(!S.artImg)S.artImg=drawArt();saveImage("dvoie-nasha-karta.png",S.artImg,()=>render(false))},
+  createPair(){createPair()}, joinByCode(){joinPair(S.joinCode)}, leavePair(){leavePair(false)},
+  copyPairLink(){copyText(S.couple.invite+"\n\n"+ART_URL+"#join"+S.sync.code)},
+  aiRun(v){runAi(v)}, soloAiRun(){runSoloAi()}, aiStop(){if(SYNC.aiCtl)SYNC.aiCtl.abort()},
+  openConsent(v){S.consentId=v;go("H3")},
+  openNote(v){const n=notes().find(x=>x.id===v);S.seen[v]=1;if(!n){render(false);return}if(n.tab){S.nav[S.user]={s:n.tab,st:[]};render(true);return}if(n.go){go(n.go);return}if(n.act&&A[n.act])A[n.act](n.v)},
+  copyInvite(){copyText(S.couple.invite+"\n\n"+(S.sync.code?ART_URL+"#join"+S.sync.code:"dvoie.app/j/24k7"))}
+});
+root.addEventListener("input",e=>{const b=e.target.dataset.bind;if(b==="dqDraft"){const x=document.getElementById("dqBtn");if(x)x.disabled=!e.target.value.trim()}});
+
+/* ── boot ── */
+loadLocal();
+(function(){const m=/^#join([A-Za-z0-9]{6})$/.exec(location.hash||"");if(m){const code=m[1].toUpperCase();if(S.sync.code!==code){S.pendingJoin=code;S.view="app";S.user="p2";S.couple.joined.p2=false;S.couple.warmStep=0;S.nav.p2={s:"A5",st:[]}}}})();
+if(S.sync.code)S.user=S.sync.role;
+if(S.view==="site"&&window.matchMedia("(max-width:700px)").matches&&S.couple.mode)S.view="app";
+
 render(true);
+if(window.claude&&typeof window.claude.use==="function"){
+  claude.use("sample").then(x=>{SAMPLE=x;if(x)remoteRender()}).catch(()=>{});
+  claude.use("downloads").then(x=>{DOWN=x;if(x)remoteRender()}).catch(()=>{});
+  claude.use("db").then(async x=>{DB=x;if(!x)return;try{USER=await claude.use("user")}catch(e){}
+    if(S.sync.code){SYNC.mineLoaded=false;subscribe()}
+    else if(S.pendingJoin){try{const sn=await DB.doc("pairs/"+S.pendingJoin).get();if(sn.exists){const d=JSON.parse(sn.data().s);if(d.couple){S.couple.names.p1=d.couple.names.p1;S.couple.invite=d.couple.invite}}}catch(e){}}
+    remoteRender()}).catch(()=>{});
+}
 })();
 </script>
