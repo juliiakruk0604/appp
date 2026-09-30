@@ -448,11 +448,35 @@ html,body{overflow-x:clip}
 .heroCta .cta{margin:0 auto}
 .site .under{text-align:center}
 @media (max-width:700px){.heroSeg{margin-bottom:40px}.heroH{font-size:40px!important}.heroSub{font-size:16px!important;padding-inline:4px}}
+/* UI-аудит: теги історій не вилазять за картку; шкала 0–10 по центру; тиха подія замість екрану на весь телефон */
+.story .s .t{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:top;font-size:10.5px}
+.scale button{display:grid;place-items:center;padding:0;text-align:center;height:38px;font-size:12px}
+.mod .ic svg{display:block}
+.celebrate{position:absolute;inset:auto 16px auto 16px;top:64px;z-index:20;display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--solid);border:1px solid var(--rule);box-shadow:0 12px 30px -18px rgba(0,0,0,.4);-webkit-backdrop-filter:none;backdrop-filter:none;text-align:left;cursor:pointer;animation:in .25s}
+.celebrate .ring{width:9px;height:9px;margin:5px 0 0;flex:none;border-radius:50%;background:var(--clay);box-shadow:none;animation:none}
+.celebrate .cel{padding:0;text-align:left}
+.celebrate .celT{font-family:var(--display);font-size:15.5px;line-height:1.3;margin-top:4px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <symbol id="logo" viewBox="0 0 30 18"><circle cx="10" cy="9" r="7.3" fill="none" stroke="var(--moss)" stroke-width="1.4"/><circle cx="20" cy="9" r="7.3" fill="none" stroke="var(--clay)" stroke-width="1.4"/></symbol>
   <symbol id="logoL" viewBox="0 0 30 18"><circle cx="10" cy="9" r="7.3" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="20" cy="9" r="7.3" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".6"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11M12 4l3 3-3 3M16 13H5M8 10l-3 3 3 3"/></g></symbol>
+  <symbol id="i-cards" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="9.5" height="11.5" rx="2"/><path d="M7.5 3h6.5a2 2 0 0 1 2 2v9"/></g></symbol>
+  <symbol id="i-book" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.2c2.4-1 4.6-.9 6.5.6v10.4c-1.9-1.5-4.1-1.6-6.5-.6zM16.5 5.2c-2.4-1-4.6-.9-6.5.6v10.4c1.9-1.5 4.1-1.6 6.5-.6z"/></g></symbol>
+  <symbol id="i-person" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7" r="3"/><path d="M4.5 16.5c.9-2.9 3-4.4 5.5-4.4s4.6 1.5 5.5 4.4"/></g></symbol>
+  <symbol id="i-pen" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l.9-3.6L13.2 4.1l2.7 2.7-8.3 8.3zM11.6 5.7l2.7 2.7"/></g></symbol>
+  <symbol id="i-target" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"/><circle cx="10" cy="10" r="2.3"/></g></symbol>
+  <symbol id="i-timeline" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v10M10 5h6M10 10h6M10 15h4"/><circle cx="6" cy="5" r="1.4"/><circle cx="6" cy="10" r="1.4"/><circle cx="6" cy="15" r="1.4"/></g></symbol>
+  <symbol id="i-sheet" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="10" height="14" rx="1.6"/><path d="M8 7h4M8 10h4M8 13h2.5"/></g></symbol>
+  <symbol id="i-moon" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12.6A6 6 0 0 1 7.4 5a6 6 0 1 0 7.6 7.6z"/></g></symbol>
+  <symbol id="i-heart" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16s-6-3.6-6-8a3.2 3.2 0 0 1 6-1.7A3.2 3.2 0 0 1 16 8c0 4.4-6 8-6 8z"/></g></symbol>
+  <symbol id="i-trend" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 14.5 8 10l3 3 5.5-6M12.5 7h4v4"/></g></symbol>
+  <symbol id="i-frame" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="13" height="12" rx="1.6"/><rect x="6.5" y="7" width="7" height="6" rx="1"/></g></symbol>
+  <symbol id="i-phone" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h2.2l1.2 3.2-1.6 1a8 8 0 0 0 3.5 3.5l1-1.6 3.2 1.2V13a2 2 0 0 1-2 2A10 10 0 0 1 4 5.5a2 2 0 0 1 2-2z"/></g></symbol>
+  <symbol id="i-two" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="10" r="4.8"/><circle cx="12.5" cy="10" r="4.8"/></g></symbol>
+  <symbol id="i-lockL" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="9" width="11" height="8" rx="2"/><path d="M7 9V6.8a3 3 0 0 1 6 0V9"/></g></symbol>
+  <symbol id="i-gearL" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.6"/><path d="M10 2.8v2M10 15.2v2M2.8 10h2M15.2 10h2M4.9 4.9l1.4 1.4M13.7 13.7l1.4 1.4M4.9 15.1l1.4-1.4M13.7 6.3l1.4-1.4"/></g></symbol>
   <symbol id="back" viewBox="0 0 20 20"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="home" viewBox="0 0 20 20"><path d="M4 8.5 10 4l6 4.5V16H4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
   <symbol id="gear" viewBox="0 0 20 20"><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M10 2.8v2M10 15.2v2M2.8 10h2M15.2 10h2M4.9 4.9l1.4 1.4M13.7 13.7l1.4 1.4M4.9 15.1l1.4-1.4M13.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
@@ -467,10 +491,11 @@ html,body{overflow-x:clip}
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
-const APP_VERSION="9 · компас+";
+const APP_VERSION="10 · ui-аудит";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const arrow='<svg width="18" height="18" aria-hidden="true"><use href="#arrow"/></svg>';
 const checkI='<svg width="12" height="12" aria-hidden="true"><use href="#check"/></svg>';
+const I=n=>`<svg width="20" height="20" aria-hidden="true"><use href="#i-${n}"/></svg>`;
 const lockI='<svg width="13" height="13" aria-hidden="true" style="vertical-align:-2px"><use href="#lock"/></svg>';
 const DAY=864e5;
 const now=()=>new Date(Date.now()+S.shift*DAY);
@@ -772,12 +797,12 @@ V.A2=()=>({body:`
   <div class="eb">Крок 1</div><h2 class="t1">Хто ви зараз?</h2>
   <div class="big3" style="margin-top:20px">
     <button class="opt" data-act="role" data-v="pair"><div><b>Ми пара</b><small>Обидва готові відповідати</small></div></button>
-    <button class="opt" data-act="role" data-v="alone"><div><b>Поки без партнера</b><small>Партнер поки не знає або не готовий</small></div></button>
+    <button class="opt" data-act="role" data-v="alone"><div><b>Я сам</b><small>Партнер поки не знає або не готовий</small></div></button>
     <button class="opt" data-act="role" data-v="psy"><div><b>Я психолог</b><small>Хочу працювати з клієнтами</small></div></button>
   </div>
   <p class="small">Змінити вибір можна пізніше в налаштуваннях.</p>
   <div class="rule"></div>
-  <button class="link" data-act="goSolo">Ви поки не в парі? Карта пошуку для тих, хто без пари</button>`});
+  <button class="link" data-act="goSolo">Зараз не в стосунках? Карта пошуку — окремий соло-трек</button>`});
 
 V.A3=()=>{const c=S.couple;return {body:`
   <div class="eb">Коротко про вас</div><h2 class="t2">Щоб питання були доречними.</h2>
@@ -799,7 +824,7 @@ V.A4=()=>{const c=S.couple,code="ДВ-24K7",link="dvoie.app/j/24k7";return {body
   <label class="lab" for="inv">Текст запрошення · можна змінити</label>
   <textarea id="inv" class="field" data-bind="couple.invite">${esc(c.invite)}</textarea>
   <div class="btnRow" style="margin-top:10px"><button class="btn ghost" data-act="copyInvite">Скопіювати</button><button class="btn ghost" data-act="sendInvite">Надіслати в месенджер</button></div>
-  <button class="card mod" data-go="SY" style="margin-top:12px"><span class="ic">⇄</span><span class="tx"><b>Пройти на двох телефонах</b><span>${S.sync.code?"Пара "+esc(S.sync.code)+" створена":"Справжнє посилання для партнера"}</span></span>${arrow}</button>
+  <button class="card mod" data-go="SY" style="margin-top:12px"><span class="ic">${I("swap")}</span><span class="tx"><b>Пройти на двох телефонах</b><span>${S.sync.code?"Пара "+esc(S.sync.code)+" створена":"Справжнє посилання для партнера"}</span></span>${arrow}</button>
   ${c.inviteSent?`<div class="card soft" style="margin-top:12px;font-size:13px;line-height:1.5">Запрошення надіслано. Нагадаємо ${esc(nmDat("p2"))} на 2-й і 7-й день.<br><span style="color:var(--graphite)">Прототип: перемкніться на «${esc(nm("p2"))}» у верхній панелі.</span></div>`:""}`,
   foot:`<button class="btn" data-act="inviteNext">${c.inviteSent?"Далі — карта стосунків":"Надіслати й продовжити"}${arrow}</button><button class="btn ghost" data-act="skipInvite">Поки пропустити${arrow}</button>`};};
 
@@ -807,7 +832,7 @@ V.A5=()=>{const c=S.couple,inv=nm("p1");
   if(c.linkExpired) return {noBack:true,body:`<div class="eb">Запрошення</div><h2 class="t2">Це запрошення більше не діє. Попросіть ${esc(inv)} надіслати нове.</h2>`,foot:`<button class="btn ghost" data-act="devUnexpire">Прототип: оновити посилання${arrow}</button>`};
   const step=c.warmStep||0;
   if(step===0) return {noBack:true,body:`
-  <div class="eb">Запрошення</div><h2 class="t1">${esc(inv)} запрошує вас</h2>
+  <div class="eb">Запрошення</div><h2 class="t1">${esc(inv)} запросив(ла) вас</h2>
   <p class="p">Це не тест і не перевірка. Питання, на які ви відповідаєте окремо, а потім дивитесь разом.</p>
   <div class="card" style="margin-top:16px"><div class="lab">${esc(inv)} пише</div><p style="font-family:var(--display);font-size:16.5px;line-height:1.45;margin:8px 0 0">«${esc(c.invite)}»</p></div>
   <div class="stack" style="margin-top:14px;font-size:13.5px;line-height:1.45;color:var(--graphite)">
@@ -845,9 +870,9 @@ V.B3=()=>{const o=you(),can=!S.couple.remindAt||now()-new Date(S.couple.remindAt
   <div class="eb">Карта стосунків</div><h2 class="t1">Ви відповіли. Партнер ще ні</h2>
   <p class="p">Ми напишемо, щойно ${esc(nm(o))} закінчить. Зазвичай це займає день-два.</p>
   <div class="blk"><span class="lab">Що можна зробити поки</span>
-    <button class="card mod" data-go="G1"><span class="ic">✦</span><span class="tx"><b>Вечір розмов</b><span>Колода легких питань. Нічого не зберігається</span></span>${arrow}</button>
-    <button class="card mod" data-go="G3" style="margin-top:8px"><span class="ic">¶</span><span class="tx"><b>Почитати</b><span>Статті терапевта</span></span>${arrow}</button>
-    <button class="card mod" data-go="E2" style="margin-top:8px"><span class="ic">◐</span><span class="tx"><b>Що ви самі про себе сказали</b><span>Ваша сторона карти</span></span>${arrow}</button></div>`,
+    <button class="card mod" data-go="G1"><span class="ic">${I("cards")}</span><span class="tx"><b>Вечір розмов</b><span>Колода легких питань. Нічого не зберігається</span></span>${arrow}</button>
+    <button class="card mod" data-go="G3" style="margin-top:8px"><span class="ic">${I("book")}</span><span class="tx"><b>Почитати</b><span>Статті терапевта</span></span>${arrow}</button>
+    <button class="card mod" data-go="E2" style="margin-top:8px"><span class="ic">${I("person")}</span><span class="tx"><b>Що ви самі про себе сказали</b><span>Ваша сторона карти</span></span>${arrow}</button></div>`,
   foot:`<button class="btn ghost" data-act="remind" ${can?"":"disabled"}>${can?"Нагадати":"Нагадування надіслано · наступне завтра"}${arrow}</button>`};};
 
 V.E2=()=>{const d=sphereAvg(me()),rows=SPHERES.map(s=>({s,g:d[s.id].want-d[s.id].now,n:d[s.id].now,w:d[s.id].want})).sort((x,y)=>y.g-x.g);
@@ -879,7 +904,7 @@ V.B4=()=>{
     <div class="card"><div class="lab">3 · Хочеться інакше обом</div><p style="margin:6px 0 0;font-size:13.5px;line-height:1.5">«${esc(r.sphere.n)}» — найбільша різниця між «є» і «хочу» в обох.</p></div>
   </div>
   <div class="card darkCard" style="margin-top:12px"><div class="lab">Рекомендація</div><p style="font-family:var(--display);font-size:17px;line-height:1.35;margin:8px 0 0">Почніть з теми «${esc(r.mod.short||r.mod.n)}». У вас тут найбільша різниця між тим, як є, і тим, як хочеться — причому в обох.</p></div>`,
-  foot:`${hasMod(r.mod.id)?"":`<button class="btn ${showPay?"ghost":""}" data-act="startTrial" data-v="${r.mod.id}">Спробувати 3 питання безкоштовно${arrow}</button>`}
+  foot:`${hasMod(r.mod.id)?"":`<button class="btn ${showPay?"ghost":""}" data-act="startTrial" data-v="${r.mod.id}">«${esc(r.mod.short||r.mod.n)}»: 3 питання безкоштовно${arrow}</button>`}
   ${showPay?`<button class="btn" data-go="B5">Відкрити «${esc(r.mod.short||r.mod.n)}» повністю${arrow}</button>`:`<button class="btn ${hasMod(r.mod.id)?"":"ghost"}" data-act="toHome">На головний${arrow}</button>`}`};};
 
 const PRICE_FULL=890,PRICE_FULL_REG=1290,PRICE_MOD=390;
@@ -890,7 +915,7 @@ V.B5=()=>{const r=recommendation(),sel=S.tariffSel||"full";
   <div class="card" style="margin-top:8px"><div class="lab">Коли ${esc(nm("p1"))} відкриє доступ</div><p style="margin:6px 0 0;font-size:14px;line-height:1.5">Ви отримаєте сповіщення. Відповіді кожного залишаються приватними, поки обидва не відповіли.</p></div>`,
   foot:`${hasMod(r.mod.id)?"":`<button class="btn" data-act="startTrial" data-v="${r.mod.id}">Спробувати 3 питання${arrow}</button>`}<button class="btn ${hasMod(r.mod.id)?"":"ghost"}" data-act="toHome">На головний${arrow}</button>`};
   const T=[{id:r.mod.id,n:"Один модуль",sub:"«"+(r.mod.short||r.mod.n)+"»",p:PRICE_MOD,li:["Одна тема повністю: усі заходи","Розбори, домовленості, перевірки"]},
-    {id:"full",n:"Пара, повний доступ",sub:"Разово, назавжди, на двох",p:PRICE_FULL_REG,launch:PRICE_FULL,rec:true,li:["Усі 14 модулів","ШІ-розбори, домовленості, перевірки","PDF пари, усі колоди"]},
+    {id:"full",n:"Пара, повний доступ",sub:"Разово, назавжди, на двох",p:PRICE_FULL_REG,launch:PRICE_FULL,rec:true,li:["Усі 14 модулів","ШІ-розбори, домовленості, перевірки","Усі колоди · PDF пари — після тестів"]},
     {id:"card",n:"Карта стосунків",sub:"Вже у вас",p:0,li:["Радар по 8 сферах","3 пробні питання"]}];
   return {body:`
   <div class="eb">Продовжити глибше</div><h2 class="t2">Почніть з «${esc(r.mod.short||r.mod.n)}» — або відкрийте все.</h2>
@@ -918,7 +943,7 @@ function nextAction(){const u=me(),o=you();
   return {k:"deck",lab:"Зараз · на вечір",t:"Вечір розмов",s:`Колода «Про нас сьогодні» · ${DECK.length} карток`,a:`data-go="G1"`};}
 
 V.C1=()=>{const u=me(),c=S.couple,o=you();
-  const blocks=[],na=nextAction();
+  const blocks=[],extra=[],na=nextAction();
   const active=S.sessions.find(x=>!x.done);
   const due=S.agreements.find(a=>a.status==="active"&&new Date(a.check)<=now());
   const nextA=S.agreements.filter(a=>a.status==="active").sort((x,y)=>new Date(x.check)-new Date(y.check))[0];
@@ -932,12 +957,13 @@ V.C1=()=>{const u=me(),c=S.couple,o=you();
   if(na.k!=="map") blocks.push(mapBlock);
   if(mapDone("p1")&&mapDone("p2")&&na.k!=="topic"){const r=recommendation();blocks.push(`<button class="card mod" data-act="openMod" data-v="${r.mod.id}"><span class="ic">${esc((r.mod.short||r.mod.n)[0])}</span><span class="tx"><b>Рекомендована тема: ${esc(r.mod.short||r.mod.n)}</b><span>Найбільша різниця «є — хочу» в обох</span></span>${arrow}</button>`)}
   const dq=S.daily[u][dayKey()],dqo=S.daily[o][dayKey()];
-  if(na.k!=="daily") blocks.splice(blocks.length?Math.min(blocks.length,1):0,0,`<button class="card" data-tab="DQ" style="width:100%;text-align:left"><div class="between"><span class="lab">Питання дня · ${streak()} дн. поспіль</span>${dq&&dqo?'<span class="tag moss">відкрито</span>':dq?'<span class="tag">чекаємо '+esc(nm(o))+'</span>':'<span class="tag clay">нове</span>'}</div><div class="t3" style="margin-top:6px">${esc(dailyQ(dayKey()))}</div></button>`);
-  if(!(S.promise.sig.p1&&S.promise.sig.p2)) blocks.push(`<button class="card mod" data-go="O1"><span class="ic">✍</span><span class="tx"><b>Наша обіцянка</b><span>${S.promise.sig[u]?"Чекаємо підпис "+esc(nm(o)):"Три наміри й два підписи · безкоштовно"}</span></span>${arrow}</button>`);
-  blocks.push(`<button class="card mod" data-go="G1"><span class="ic">✦</span><span class="tx"><b>Вечір розмов</b><span>Колода «Про нас сьогодні» · ${DECK.length} карток</span></span>${arrow}</button>`);
+  if(na.k!=="daily") extra.push(`<button class="card" data-tab="DQ" style="width:100%;text-align:left"><div class="between"><span class="lab">Питання дня · ${streak()} дн. поспіль</span>${dq&&dqo?'<span class="tag moss">відкрито</span>':dq?'<span class="tag">чекаємо '+esc(nm(o))+'</span>':'<span class="tag clay">нове</span>'}</div><div class="t3" style="margin-top:6px">${esc(dailyQ(dayKey()))}</div></button>`);
+  if(!(S.promise.sig.p1&&S.promise.sig.p2)) extra.push(`<button class="card mod" data-go="O1"><span class="ic">${I("pen")}</span><span class="tx"><b>Наша обіцянка</b><span>${S.promise.sig[u]?"Чекаємо підпис "+esc(nm(o)):"Три наміри й два підписи · безкоштовно"}</span></span>${arrow}</button>`);
+  blocks.push(`<button class="card mod" data-go="G1"><span class="ic">${I("cards")}</span><span class="tx"><b>Вечір розмов</b><span>Колода «Про нас сьогодні» · ${DECK.length} карток</span></span>${arrow}</button>`);
   const act=S.agreements.filter(a=>a.status==="active").length;
   blocks.push(`<button class="card" data-go="F1"><div class="lab">Наші домовленості</div><div class="between" style="margin-top:6px"><span style="font-size:14px">${act?`${act} активна · перевірка ${fS(nextA.check)}`:"Поки немає"}</span>${arrow}</div></button>`);
-  blocks.push(`<button class="card mod" data-go="G3"><span class="ic">¶</span><span class="tx"><b>Почитати</b><span>${POSTS.length} статті терапевта</span></span>${arrow}</button>`);
+  blocks.push(`<button class="card mod" data-go="G3"><span class="ic">${I("book")}</span><span class="tx"><b>Почитати</b><span>${POSTS.length} статті терапевта</span></span>${arrow}</button>`);
+  blocks.push(...extra);
   const partnerLine=!c.joined[o]?`<div class="card" style="margin-top:12px;font-size:13px;line-height:1.45">${esc(nm(o))} поки не приєднався. Можна почекати або пройти тему самому — відповіді збережуться. <button class="link" style="width:auto;padding:0" data-go="A4">Запросити</button></div>`:"";
   return {noBack:true,homeBar:true,body:`
   <div class="between"><div><div class="eb">Наш простір</div><h2 class="t2" style="margin-top:6px">${esc(nm("p1"))} & ${esc(nm("p2"))}</h2></div>${av()}</div>
@@ -1074,7 +1100,8 @@ V.D7=()=>{const se=curSession();if(!se) return V.Z3empty();const f=computeFindin
   ${opt("Написати свою",d.pick===-1,"agPick",-1)}</div>
   ${d.pick===-1?`<label class="lab" for="own">Ваша домовленість</label><input id="own" class="field" data-bind="agDraft.own" value="${esc(d.own)}" placeholder="Сформулюйте разом">`:""}
   <div class="lab" style="margin:14px 0 6px">Хто відповідальний</div>${seg(["Обоє",nm("p1"),nm("p2")],d.who,"agWho")}
-  <label class="lab" for="dl">До якої дати пробуємо</label><input id="dl" class="field" type="date" data-bind="agDraft.date" value="${esc(d.date)}" min="${iso(now())}">
+  <div class="lab" style="margin:14px 0 6px">Коли перевіряємо</div><div class="chips">${[10,14].map(n=>`<button class="chip ${d.date===iso(addD(now(),n))?"on":""}" data-act="agQuick" data-v="${n}">Через ${n} днів · ${esc(fS(addD(now(),n)))}</button>`).join("")}</div>
+  <label class="lab" for="dl">Або своя дата</label><input id="dl" class="field" type="date" lang="uk" data-bind="agDraft.date" value="${esc(d.date)}" min="${iso(now())}">
   <p class="small">Перевірка — через 10–14 днів. Готову домовленість не можна просто «прийняти» — треба поставити дату.</p>`,
   foot:`<button class="btn" data-act="agSave" id="agBtn" ${ok?"":"disabled"}>Домовились${arrow}</button>`};};
 
@@ -1132,7 +1159,7 @@ V.G1=()=>({body:`
   <div class="eb">Вечір розмов</div><h2 class="t2">Колоди</h2>
   <p class="p">Одне легке питання — відповідь вголос. Нічого не зберігається. Партнеру не треба бути в застосунку, достатньо сидіти поруч.</p>
   <div class="stack" style="margin-top:14px">
-    <button class="card mod" data-act="deck"><span class="ic">✦</span><span class="tx"><b>Про нас сьогодні</b><span>${DECK.length} карток · безкоштовно</span></span>${arrow}</button>
+    <button class="card mod" data-act="deck"><span class="ic">${I("cards")}</span><span class="tx"><b>Про нас сьогодні</b><span>${DECK.length} карток · безкоштовно</span></span>${arrow}</button>
     ${["Перше побачення","Трохи незручні","Про тіло"].map(n=>`<div class="card mod" style="opacity:.7"><span class="ic lock">${lockI}</span><span class="tx"><b>${n}</b><span>У повному доступі</span></span></div>`).join("")}</div>`});
 V.G2=()=>({body:`<div class="deck"><div class="lab" style="color:var(--faint)">Про нас сьогодні</div><p>${esc(DECK[S.deckI%DECK.length])}</p><div class="mono" style="font-size:11px;opacity:.7">${S.deckI%DECK.length+1} / ${DECK.length}</div></div>
   <p class="small" style="text-align:center">Свайпніть або натисніть «Наступна». Працює офлайн.</p>`,
@@ -1256,7 +1283,12 @@ V.K3=()=>{const i=S.solo.idx,Q=SOLO_Q[i],v=S.solo.ans[Q.id],x=S.solo.ans[Q.id+"x
   return {steps:[i+1,SOLO_Q.length],body:`<div class="between"><div class="eb">Карта пошуку${Q.key?" · ключове питання":""}</div><div class="eb">${i+1} / ${SOLO_Q.length}</div></div><h2 class="t2">${esc(Q.t)}</h2>${input}
   <div style="text-align:right;margin-top:10px"><button class="link" style="width:auto" data-act="soloSkip">Пропустити це питання</button></div>`,
   foot:`<button class="btn" data-act="soloNext" id="soloNextBtn" ${ok?"":"disabled"}>${i<SOLO_Q.length-1?"Далі":"Побачити результат"}${arrow}</button>`};};
-function criteria(){const t=S.solo.ans.k1||"";return t.split(/[.;,\n]|\s+і\s+|\s+та\s+/).map(s=>s.trim()).filter(s=>s.length>2)}
+function criteria(){const t=S.solo.ans.k1||"",out=[];
+  /* «Не хочу, щоб…» і «людину, яка…» — одна думка, а не дві: кома тут не розділяє критерії */
+  const LEAD=/^(я\s+)?(не\s+)?(хочу|треба|потрібн\S*|важливо|люблю|шукаю|хотілося б|мені\s+\S+)$/i,SUB=/^(що|який|яка|яке|які|якого|якої|кого|коли|якщо|бо|де)\s/i;
+  t.split(/[.;!?\n]+/).forEach(sen=>{let first=true;sen.split(/,|\s+і\s+|\s+та\s+/).map(x=>x.trim()).filter(Boolean).forEach(x=>{const pv=out[out.length-1];
+    if(!first&&pv&&(LEAD.test(pv)||SUB.test(x)))out[out.length-1]=pv+", "+x;else out.push(x);first=false})});
+  return out.filter(x=>x.length>2)}
 const isNeg=s=>/(^|\s)(не|без|ні)\s/i.test(" "+s+" ")||/^не/i.test(s);
 V.K4=()=>{const cr=criteria(),neg=cr.filter(isNeg),M=cr.length,Nn=neg.length,clar=M?Math.round((1-Nn/M)*10):0,pos=cr.filter(c=>!isNeg(c));
   return {body:`
@@ -1327,11 +1359,11 @@ V.N1=()=>({noBack:false,homeBar:true,body:`
     <div class="tli ${S.solo.practice&&!S.solo.practiceRes?"hot":""}"><div class="d">3</div><div class="h">Практика тижня</div>${S.solo.practice?`<div class="r">${esc(S.solo.practice)}</div>`:""}</div>
     <div class="tli"><div class="d">4</div><div class="h">Перевірка через 10–14 днів</div>${S.solo.practiceRes?`<div class="r">${esc(S.solo.practiceRes)}</div>`:""}</div></div>
   <div class="stack" style="margin-top:8px">
-    <button class="card mod" data-act="${S.solo.done?"goK4":"soloStart"}"><span class="ic">◎</span><span class="tx"><b>Карта пошуку</b><span>${S.solo.done?"Результат":"20 питань · безкоштовно"}</span></span>${arrow}</button>
-    <button class="card mod" data-act="goM"><span class="ic ${S.solo.paid?"":"lock"}">${S.solo.paid?"✎":lockI}</span><span class="tx"><b>Моя історія</b><span>${S.solo.stories.length} історій</span></span>${arrow}</button>
-    <button class="card mod" data-act="goN2"><span class="ic ${S.solo.paid?"":"lock"}">${S.solo.paid?"◐":lockI}</span><span class="tx"><b>Соло-розбір</b><span>Знахідки за шістьма типами</span></span>${arrow}</button>
-    <button class="card mod" data-act="goP1"><span class="ic ${S.solo.paid?"":"lock"}">${S.solo.paid?"▤":lockI}</span><span class="tx"><b>Мій фільтр</b><span>Один аркуш</span></span>${arrow}</button>
-    <button class="card mod" data-go="P2"><span class="ic">∞</span><span class="tx"><b>Я зустрів(ла) людину</b><span>Міст у парний продукт</span></span>${arrow}</button></div>`});
+    <button class="card mod" data-act="${S.solo.done?"goK4":"soloStart"}"><span class="ic">${I("target")}</span><span class="tx"><b>Карта пошуку</b><span>${S.solo.done?"Результат":"20 питань · безкоштовно"}</span></span>${arrow}</button>
+    <button class="card mod" data-act="goM"><span class="ic ${S.solo.paid?"":"lock"}">${S.solo.paid?I("timeline"):lockI}</span><span class="tx"><b>Моя історія</b><span>${S.solo.stories.length} історій</span></span>${arrow}</button>
+    <button class="card mod" data-act="goN2"><span class="ic ${S.solo.paid?"":"lock"}">${S.solo.paid?I("person"):lockI}</span><span class="tx"><b>Соло-розбір</b><span>Знахідки за шістьма типами</span></span>${arrow}</button>
+    <button class="card mod" data-act="goP1"><span class="ic ${S.solo.paid?"":"lock"}">${S.solo.paid?I("sheet"):lockI}</span><span class="tx"><b>Мій фільтр</b><span>Один аркуш</span></span>${arrow}</button>
+    <button class="card mod" data-go="P2"><span class="ic">${I("two")}</span><span class="tx"><b>Я зустрів(ла) людину</b><span>Міст у парний продукт</span></span>${arrow}</button></div>`});
 function soloFindings(){const out=[];const cr=criteria(),neg=cr.filter(isNeg);
   out.push({t:"Тут з вами все гаразд",mandatory:true,txt:(()=>{const v=S.solo.ans.k6;const map=["Ви написали про потребу в часі наодинці як про свою ваду. Але те, що ви описали, — не вада, а умова. Її не треба лікувати, її треба назвати вголос тому, з ким ви будете поруч.","Ви називаєте повільну довіру вадою. Це не вада, а темп. Його варто назвати на початку — і шукати людину, якій він не заважає.","Ви вважаєте швидку закоханість вадою. Це не вада, а інтенсивність. Важливо лише не ухвалювати рішень на її піку.","Вам важко просити про допомогу — і ви називаєте це вадою. Це не вада, а звичка покладатися на себе. Її можна поступово розширювати, а не ламати."];return map[v??0]})()});
   if(cr.length&&neg.length>=cr.length/2) out.push({t:"Розмитий фокус",txt:`${neg.length} з ${cr.length} ваших критеріїв сформульовані через «не». Ви точно знаєте, кого НЕ хочете — і майже не описали, кого хочете.`});
@@ -1354,16 +1386,18 @@ V.N3=()=>{const P=["На наступному побаченні запитат�
   <div class="stack" style="margin-top:14px">${P.map((p,i)=>opt(esc(p),S.solo.practice===p,"practice",i)).join("")}</div>`,
   foot:`<button class="btn" data-act="practiceSave" ${S.solo.practice?"":"disabled"}>Зберегти · перевірка ${esc(fS(addD(now(),14)))}${arrow}</button>`};};
 V.N4=()=>({body:`
-  <div class="eb">Перевірка практики</div><h2 class="t2">Ви мали: «${esc(S.solo.practice||"—")}». Вийшло?</h2>
+  <div class="eb">Перевірка практики</div><h2 class="t2">Вийшло?</h2><div class="card soft" style="margin-top:12px"><div class="lab">Ваша практика</div><p style="font-size:14.5px;line-height:1.45;margin:6px 0 0">${esc(S.solo.practice||"—")}</p></div>
   <div class="stack" style="margin-top:14px">${["Спрацювало","Частково","Не вийшло"].map(x=>opt(x,S.solo.pr===x,"prRes",x)).join("")}</div>
   ${S.solo.pr==="Не вийшло"?`<p class="p">Це нормально і трапляється частіше, ніж здається. Що саме завадило?</p>`:""}
   ${S.solo.pr?`<textarea class="field" style="margin-top:8px" data-bind="solo.prWhy" placeholder="Що заважало або допомогло">${esc(S.solo.prWhy||"")}</textarea>`:""}`,
   foot:`<button class="btn" data-act="prSave" ${S.solo.pr?"":"disabled"}>Зберегти${arrow}</button>`});
 function filterData(){const k2=S.solo.ans.k2||[0,1,2,3,4,5],o=SOLO_Q[1].o;const rw=Object.values(S.solo.rewrites).map(s=>s.trim()).filter(Boolean);
   const pos=criteria().filter(c=>!isNeg(c));
-  return {must:k2.slice(0,3).map(i=>o[i]).concat(rw).slice(0,5),minor:k2.slice(-2).map(i=>o[i]),
+  const lead=x=>{x=x.replace(/^(я\s+)?(хочу|шукаю)\s*,?\s*/i,"");x=x.charAt(0).toLowerCase()+x.slice(1);return /^(щоб|з\s+як|яка\s|який\s|хто\s|котр)/i.test(x)?x:"яка "+x};
+  const parts=[rw[0]||pos[0],rw[1]].filter(Boolean).map(lead).map((x,i)=>i&&/^яка /.test(x)?x.slice(4):x);
+  return {must:k2.slice(0,3).map(i=>o[i]).concat(rw).slice(0,5),minor:k2.slice(3).map(i=>o[i]),
     reds:(S.solo.ans.k5||"").split("\n").map(s=>s.trim()).filter(Boolean).slice(0,3),
-    one:"Я шукаю людину, "+(rw[0]||pos[0]||"з якою спокійно").replace(/^[А-ЯІЇЄҐ]/,c=>c.toLowerCase())+(rw[1]?", "+rw[1].charAt(0).toLowerCase()+rw[1].slice(1):"")+"."};}
+    one:"Я шукаю людину, "+(parts.length?parts.join(" і "):"з якою спокійно")+"."};}
 V.P1=()=>{const f=filterData();return {body:`
   <div class="eb">Артефакт</div><h2 class="t2">Ваш фільтр</h2>
   <p class="p">Одна сторінка замість списку з тридцяти пунктів. Це те, з чим можна йти на побачення.</p>
@@ -1377,7 +1411,7 @@ V.P1=()=>{const f=filterData();return {body:`
   foot:`<button class="btn" data-act="filterImg">${DOWN?"Зберегти картинку":"Показати як картинку"}${arrow}</button>`};};
 V.P2=()=>{const sh=S.solo.share;return {body:`
   <div class="eb">Міст</div><h2 class="t2">Ви зустріли когось</h2>
-  <p class="p">Ваші соло-відповіді й історії залишаються тільки вашими. Партнер побачить лише те, що ви оберете самі.</p>
+  <p class="p">Тоді половину роботи вже зроблено: ваші відповіді стають першою частиною спільної карти. Лишилось запросити другого.</p><p class="p">Ваші соло-відповіді й історії залишаються тільки вашими. Партнер побачить лише те, що ви оберете самі.</p>
   <div class="lab" style="margin:14px 0 6px">Що показати партнеру</div>
   <div class="stack">${[["none","Нічого","Починаємо з чистого аркуша"],["course","Лише фразу «Кого я шукаю»","Одне речення з вашого курсу"],["side","Мою сторону карти стосунків","Коли партнер пройде свою"]].map(([k,t,d])=>`<button class="opt ${sh===k?"on":""}" data-act="shareSet" data-v="${k}"><div><b>${t}</b><small>${d}</small></div></button>`).join("")}</div>
   <div class="card" style="margin-top:14px"><div class="between"><span class="lab">Апгрейд соло → пара</span><span class="price" style="font-size:22px">+690 ₴</span></div>
@@ -1440,11 +1474,11 @@ V.N1=()=>{const s=S.solo,c=compass(),nx=nextSoloStep(),open=s.state!=="hard"||s.
   <div class="stack">${chapters().map(([n,t,sub,st,ok,go],i)=>`<button class="card chap ${ok?"":"lock"} ${(i===0&&s.state==="hard"&&!s.point)||(i===1&&open&&!s.done)?"on":""}" ${ok?`data-go="${go}"`:"disabled"}><span class="n">${n}</span><span><b style="font-weight:500">${t}</b><span class="small" style="display:block;margin:2px 0 0">${sub} · ${st}</span></span>${ok?arrow:lockI}</button>`).join("")}</div>
   <div class="lab" style="margin:20px 0 8px">Ще</div>
   <div class="stack">
-    <button class="card mod" data-act="goM"><span class="ic ${s.paid?"":"lock"}">${s.paid?"✎":lockI}</span><span class="tx"><b>Моя історія</b><span>${(s.stories||[]).length} історій</span></span>${arrow}</button>
-    <button class="card mod" data-act="goN2"><span class="ic ${s.paid?"":"lock"}">${s.paid?"◐":lockI}</span><span class="tx"><b>Соло-розбір</b><span>Знахідки за типами</span></span>${arrow}</button>
-    <button class="card mod" data-go="N8"><span class="ic ${s.paid?"":"lock"}">${s.paid?"☾":lockI}</span><span class="tx"><b>Перед наступним побаченням</b><span>Одна сторінка на вечір</span></span>${arrow}</button>
-    <button class="card mod" data-act="goP1"><span class="ic">▤</span><span class="tx"><b>Мій курс</b><span>Один аркуш: кого я шукаю</span></span>${arrow}</button>
-    <button class="card mod" data-go="P2"><span class="ic">∞</span><span class="tx"><b>Ви зустріли когось</b><span>Міст у парний режим</span></span>${arrow}</button></div>`}};
+    <button class="card mod" data-act="goM"><span class="ic ${s.paid?"":"lock"}">${s.paid?I("timeline"):lockI}</span><span class="tx"><b>Моя історія</b><span>${(s.stories||[]).length} історій</span></span>${arrow}</button>
+    <button class="card mod" data-act="goN2"><span class="ic ${s.paid?"":"lock"}">${s.paid?I("person"):lockI}</span><span class="tx"><b>Соло-розбір</b><span>Знахідки за типами</span></span>${arrow}</button>
+    <button class="card mod" data-go="N8"><span class="ic ${s.paid?"":"lock"}">${s.paid?I("moon"):lockI}</span><span class="tx"><b>Перед наступним побаченням</b><span>Одна сторінка на вечір</span></span>${arrow}</button>
+    <button class="card mod" data-act="goP1"><span class="ic">${I("sheet")}</span><span class="tx"><b>Мій курс</b><span>Один аркуш: кого я шукаю</span></span>${arrow}</button>
+    <button class="card mod" data-go="P2"><span class="ic">${I("two")}</span><span class="tx"><b>Ви зустріли когось</b><span>Міст у парний режим</span></span>${arrow}</button></div>`}};
 V.N1c=()=>V.N1();
 
 /* chapter 1: the point */
@@ -1583,7 +1617,7 @@ function siteView(){return `<div class="site">
     <div class="heroArt" aria-hidden="true"><div class="silk heroSilk"><i></i><i></i><i></i></div>
       <svg class="heroDial" viewBox="0 18 320 96">${dialInner(4,8)}</svg>
       <div class="dualStat heroStat"><div>Ти · як є<b>4</b></div><i></i><div>Партнер · як є<b>8</b></div></div></div>
-    <div class="heroCta"><button class="cta" data-act="siteStart">Пройти карту стосунків безкоштовно${arrow}</button>
+    <div class="heroCta"><button class="cta" data-act="siteStart">Пройти карту безкоштовно${arrow}</button>
     <div class="under">8 хвилин. Без оплати. Відповіді партнера закриті, доки не відповісте обидва</div></div>
   </section>
   <section><h3 class="h">Більшість пар не сваряться через великі речі. Вони роками не промовляють дрібні — і ті стають великими</h3>
@@ -1810,6 +1844,7 @@ const A={
   doDelete(){S.delAsk=false;toast("Акаунт позначено до видалення · через 30 днів");render(false)},
   setDay(v){S.settings.day=v;render(false)}, setRemind(v){S.settings.remind=v==="Увімкнено";render(false)}, setLang(v){if(v==="English"){toast("Англійська — після тестів")}else S.settings.lang=v;render(false)},
   changeRole(){go("A2")},
+  agQuick(v){S.agDraft.date=iso(addD(now(),+v));render(false)},
   devOffline(){S.offline=!S.offline;render(false)}, devPayFail(){S.payFail=!S.payFail;render(false)},
   devExpire(){S.couple.linkExpired=true;S.couple.joined.p2=false;S.user="p2";S.nav.p2={s:"A5",st:[]};S.view="app";render(true)},
   /* solo */
@@ -1992,14 +2027,14 @@ V.ME=()=>{const u=me(),o=you(),row=(go,ic,t,s,act)=>`<button class="card mod" ${
   return {noBack:true,body:`
   <div class="between"><div><div class="eb">Профіль</div><h2 class="t2" style="margin-top:6px">${esc(nm(u))}</h2><p class="small" style="margin:2px 0 0">у парі з ${esc(nm(o))}${S.couple.joined[o]?"":" · ще не приєднався(лась)"}</p></div>${av()}</div>
   <div class="stack" style="margin-top:16px">
-    ${row("SY","⇄","Два телефони",S.sync.code?"Пара "+esc(S.sync.code)+" · синхронізація":"Кожен відповідає на своєму телефоні")}
-    ${row("O1","✍","Наша обіцянка",S.promise.sig.p1&&S.promise.sig.p2?"Підписано обома":"Три наміри й два підписи")}
-    ${row("KN","♡","Коротко про нас","Заповнюємо разом, сидячи поруч")}
-    ${row("F2","↗","Історія і прогрес",S.mapHistory.length+" замір(и) карти")}
-    ${row("F3","▣","Артефакт пари","Одна сторінка: карта, домовленості, обіцянка")}
-    ${row("H1","☏","Психолог","Письмовий розбір або сесія")}
-    ${row("Z1","⚿","Приватність і мої дані",activeConsent()?"Доступ психолога відкрито":"Відповіді бачите тільки ви двоє")}
-    ${row("Z2","⚙","Налаштування","День заходу: "+esc(S.settings.day))}
+    ${row("SY",I("swap"),"Два телефони",S.sync.code?"Пара "+esc(S.sync.code)+" · синхронізація":"Кожен відповідає на своєму телефоні")}
+    ${row("O1",I("pen"),"Наша обіцянка",S.promise.sig.p1&&S.promise.sig.p2?"Підписано обома":"Три наміри й два підписи")}
+    ${row("KN",I("heart"),"Коротко про нас","Заповнюємо разом, сидячи поруч")}
+    ${row("F2",I("trend"),"Історія і прогрес",S.mapHistory.length+" замір(и) карти")}
+    ${row("F3",I("frame"),"Артефакт пари","Одна сторінка: карта, домовленості, обіцянка")}
+    ${row("H1",I("phone"),"Психолог","Письмовий розбір або сесія")}
+    ${row("Z1",I("lockL"),"Приватність і мої дані",activeConsent()?"Доступ психолога відкрито":"Відповіді бачите тільки ви двоє")}
+    ${row("Z2",I("gearL"),"Налаштування","День заходу: "+esc(S.settings.day))}
   </div>`};};
 
 V.O1=()=>{const P=S.promise,u=me(),o=you(),locked=!!(P.sig.p1||P.sig.p2),both=P.sig.p1&&P.sig.p2;
@@ -2284,9 +2319,9 @@ function levelCard(){const L=level(),pct=L.to?(L.x-L.from)/(L.to-L.from):1;
   return `<button class="card levelCard" data-go="ME" style="margin-top:14px;width:100%;text-align:left"><div class="between"><span class="lab">Рівень ${L.n} · ${L.x} XP</span><span class="lab">${L.to?"ще "+(L.to-L.x)+" до рівня "+(L.n+1):"найвищий рівень"}</span></div>
   <div class="t2" style="margin-top:6px">${esc(L.name)}</div><div class="ticks">${[...Array(32)].map((_,i)=>`<i class="${i<Math.round(pct*32)?"on":""}"></i>`).join("")}</div></button>`}
 function badgesHTML(){const got=BADGES.filter(b=>b.ok()).length;return `<div class="blk"><span class="lab">Відкриття пари · ${got} з ${BADGES.length}</span><div class="badgeGrid">${BADGES.map(b=>`<div class="badge2 ${b.ok()?"":"off"}"><div class="dotB"></div><b>${esc(b.t)}</b><span>${esc(b.d)}</span></div>`).join("")}</div></div>`}
-function celebrateView(){const b=S.celebrate;return `<div class="celebrate" data-act="celebrateClose" role="status"><div class="burst"></div><div class="cel"><div class="ring"></div><div class="eb">Нове відкриття пари</div><h3 class="t1" style="margin-top:10px">${esc(b.t)}</h3><p class="p">${esc(b.d)}</p><p class="small">+ досвід пари · торкніться, щоб продовжити</p></div></div>`}
+function celebrateView(){const b=S.celebrate;return `<div class="celebrate" data-act="celebrateClose" role="status"><div class="ring"></div><div class="cel"><div class="eb">Нове у вашій історії</div><div class="celT">${esc(b.t)}</div><div class="small">${esc(b.d)}</div></div></div>`}
 A.celebrateClose=()=>{S.celebrate=null;render(false)};
-const _C1=V.C1;V.C1=()=>{const r=_C1();r.body=r.body.replace('<div class="stack" style="margin-top:14px">',levelCard()+'<div class="stack" style="margin-top:14px">');return r};
+/* рівень пари живе в профілі, не на головному: головний — за порядком ТЗ */
 const _ME=V.ME;V.ME=()=>{const r=_ME();r.body+=`<div style="margin-top:14px">${levelCard()}</div>`+badgesHTML();return r};
 const _afterRender=afterRender;afterRender=function(){_afterRender();if(S.view!=="app"||!S.couple.mode||S.celebrate)return;S.badgesSeen=S.badgesSeen||[];
   const nw=BADGES.filter(b=>b.ok()&&!S.badgesSeen.includes(b.id));if(!nw.length)return;nw.forEach(b=>S.badgesSeen.push(b.id));
