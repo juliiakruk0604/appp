@@ -1,0 +1,178 @@
+<title>Дыры в логике Двоє</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one shared list, one question per row; each row has the problem, a decision field and two switches (status, in prototype). */
+:root{
+  --bg:#ECEEE9; --paper:#FAFAF7; --ink:#161615; --muted:#5C5C56; --line:rgba(22,22,21,.12);
+  --open:#B4552F; --openSoft:rgba(180,85,47,.12); --talk:#8A6212; --talkSoft:rgba(196,150,60,.18); --done:#3F6B52; --doneSoft:rgba(63,107,82,.14);
+  --focus:#2F5BD3;
+  --display:"Inter Tight",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151514; --paper:#1F1F1D; --ink:#EEEEE9; --muted:#A5A59D; --line:rgba(238,238,233,.14);
+  --open:#E88A62; --openSoft:rgba(232,138,98,.16); --talk:#E2B45C; --talkSoft:rgba(226,180,92,.16); --done:#86B898; --doneSoft:rgba(134,184,152,.16); --focus:#8AA8FF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151514; --paper:#1F1F1D; --ink:#EEEEE9; --muted:#A5A59D; --line:rgba(238,238,233,.14);
+  --open:#E88A62; --openSoft:rgba(232,138,98,.16); --talk:#E2B45C; --talkSoft:rgba(226,180,92,.16); --done:#86B898; --doneSoft:rgba(134,184,152,.16); --focus:#8AA8FF; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5;padding-inline:clamp(16px,4vw,48px);padding-block:36px 80px}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+.eb{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(34px,5.4vw,56px);line-height:1.02;letter-spacing:-.03em;font-weight:500;margin:8px 0 0;text-wrap:balance}
+.lead{color:var(--muted);max-width:62ch;margin:10px 0 0;font-size:17px}
+.sum{display:flex;flex-wrap:wrap;gap:10px}
+.sum .s{background:var(--paper);border-radius:16px;padding:12px 16px;min-width:130px}
+.sum .n{font-size:28px;font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.sum .l{font-size:13px;color:var(--muted)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.pill{border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:8px 14px;font-size:14px;min-height:40px}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pill .c{font-family:var(--mono);font-size:11.5px;opacity:.7;margin-left:4px}
+.add{background:var(--ink);color:var(--bg);border:0;border-radius:99px;padding:10px 18px;font-weight:500;min-height:42px}
+.conn{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.conn b{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
+.conn.live b{background:var(--done)} .conn.off b{background:var(--open)}
+
+.list{display:flex;flex-direction:column;gap:12px;list-style:none;margin:0;padding:0}
+.row{background:var(--paper);border-radius:20px;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 24px;border-left:5px solid var(--open)}
+.row.st-talk{border-left-color:var(--talk)} .row.st-done{border-left-color:var(--done)}
+.qcol,.dcol{display:flex;flex-direction:column;gap:8px;min-width:0}
+.lb{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.q{font-size:18px;font-weight:500;line-height:1.35;border:0;background:transparent;padding:0;width:100%;resize:none;overflow:hidden;min-height:26px}
+.why{font-size:14.5px;color:var(--muted);border:0;background:transparent;padding:0;width:100%;resize:none;overflow:hidden;min-height:22px}
+.dec{border:1.5px dashed var(--line);background:var(--bg);border-radius:12px;padding:10px 12px;min-height:70px;width:100%;resize:vertical;font-size:15px;line-height:1.45}
+.dec:not(:placeholder-shown){border-style:solid;background:var(--paper)}
+textarea::placeholder{color:var(--muted);opacity:.8}
+.ctrls{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;border-top:1px solid var(--line);padding-top:12px}
+.grp{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.grp > span{font-size:13px;color:var(--muted);margin-right:2px}
+.seg{border:1px solid var(--line);background:transparent;border-radius:99px;padding:6px 12px;font-size:13.5px;min-height:36px}
+.seg[aria-pressed="true"].o{background:var(--openSoft);border-color:var(--open);color:var(--open)}
+.seg[aria-pressed="true"].t{background:var(--talkSoft);border-color:var(--talk);color:var(--talk)}
+.seg[aria-pressed="true"].d{background:var(--doneSoft);border-color:var(--done);color:var(--done)}
+.meta{margin-left:auto;font-size:12.5px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.del{border:0;background:transparent;color:var(--muted);text-decoration:underline;font-size:12.5px;min-height:32px}
+.saved{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.empty{background:var(--paper);border-radius:20px;padding:28px;color:var(--muted);text-align:center}
+@media (max-width:720px){.row{grid-template-columns:1fr}.meta{margin-left:0}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eb">Двоє · общий список команды</div>
+    <h1>Дыры в логике продукта</h1>
+    <p class="lead">Сюда пишем всё, что в продукте пока не сходится: вопрос или слабое место, что решили и внесено ли это в прототип. Без деления на дизайн, тексты и прочее. Всё сохраняется само и видно всей команде.</p>
+  </header>
+
+  <div class="sum" aria-live="polite">
+    <div class="s"><div class="n" id="nOpen">0</div><div class="l">не решено</div></div>
+    <div class="s"><div class="n" id="nTalk">0</div><div class="l">обсуждаем</div></div>
+    <div class="s"><div class="n" id="nDone">0</div><div class="l">решено</div></div>
+    <div class="s"><div class="n" id="nNotIn">0</div><div class="l">решено, но нет в прототипе</div></div>
+  </div>
+
+  <div class="bar">
+    <div class="filters" id="filters" role="group" aria-label="Показать"></div>
+    <button class="add" id="addBtn">+ Добавить вопрос</button>
+  </div>
+  <div class="conn" id="conn"><b></b><span>Подключаемся к общему списку…</span></div>
+
+  <ol class="list" id="list"></ol>
+</div>
+
+<script>
+const ST=[["open","Не решено","o"],["talk","Обсуждаем","t"],["done","Решено","d"]];
+const PR=[["no","Нет","o"],["part","Частично","t"],["yes","Да","d"]];
+const FILT=[["all","Все"],["open","Не решено"],["talk","Обсуждаем"],["done","Решено"],["notin","Решено, но не в прототипе"]];
+const S={rows:{},filter:"all",db:null,user:null,me:null,profiles:{},canWrite:null};
+const $=q=>document.querySelector(q);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const order={open:0,talk:1,done:2};
+const list=()=>Object.entries(S.rows).map(([id,d])=>({id,...d})).sort((a,b)=>(order[a.status||"open"]-order[b.status||"open"])||String(a.createdAt||"").localeCompare(String(b.createdAt||"")));
+const pass=r=>{const f=S.filter,st=r.status||"open";if(f==="all")return true;if(f==="notin")return st==="done"&&r.proto!=="yes";return st===f};
+function setConn(k,t){const c=$("#conn");c.className="conn "+k;c.querySelector("span").textContent=t}
+
+function renderSum(){const L=list();
+  $("#nOpen").textContent=L.filter(r=>(r.status||"open")==="open").length;
+  $("#nTalk").textContent=L.filter(r=>r.status==="talk").length;
+  $("#nDone").textContent=L.filter(r=>r.status==="done").length;
+  $("#nNotIn").textContent=L.filter(r=>r.status==="done"&&r.proto!=="yes").length;
+  $("#filters").innerHTML=FILT.map(([k,l])=>{const o=S.filter;S.filter=k;const n=L.filter(pass).length;S.filter=o;return `<button class="pill" data-filter="${k}" aria-pressed="${S.filter===k}">${esc(l)}<span class="c">${n}</span></button>`}).join("");
+}
+function who(id){if(!id)return "";const p=S.profiles[id];return esc((p&&p.name)||"участник")}
+function rowHTML(r,i){
+  const st=r.status||"open",pr=r.proto||"no",ro=S.canWrite===false||!S.db;
+  return `<li class="row st-${st}" data-id="${r.id}">
+    <div class="qcol"><span class="lb">Вопрос или слабое место</span>
+      <textarea class="q" id="q_${r.id}" data-f="q" rows="1" placeholder="Что не сходится?" ${ro?"readonly":""}>${esc(r.q)}</textarea>
+      <textarea class="why" id="w_${r.id}" data-f="why" rows="1" placeholder="Почему это важно (по желанию)" ${ro?"readonly":""}>${esc(r.why)}</textarea></div>
+    <div class="dcol"><label class="lb" for="d_${r.id}">Решение</label>
+      <textarea class="dec" id="d_${r.id}" data-f="decision" placeholder="Пока не решили. Напишите вариант или итог обсуждения." ${ro?"readonly":""}>${esc(r.decision)}</textarea></div>
+    <div class="ctrls">
+      <div class="grp" role="group" aria-label="Статус"><span>Статус:</span>${ST.map(([k,l,c])=>`<button class="seg ${c}" data-set="status" data-v="${k}" aria-pressed="${st===k}" ${ro?"disabled":""}>${l}</button>`).join("")}</div>
+      <div class="grp" role="group" aria-label="Внесено в прототип"><span>В прототипе:</span>${PR.map(([k,l,c])=>`<button class="seg ${c}" data-set="proto" data-v="${k}" aria-pressed="${pr===k}" ${ro?"disabled":""}>${l}</button>`).join("")}</div>
+      <div class="meta"><span class="saved" id="sv_${r.id}">${r.updatedBy?"изменил(а): "+who(r.updatedBy):""}</span>${!ro?`<button class="del" data-del="${r.id}">удалить</button>`:""}</div>
+    </div></li>`;
+}
+function grow(t){t.style.height="auto";t.style.height=t.scrollHeight+"px"}
+function renderList(){
+  const L=list().filter(pass),box=$("#list");
+  const active=document.activeElement&&document.activeElement.closest&&document.activeElement.closest(".row");
+  if(active){ // keep the row being edited; refresh values of the others
+    L.forEach(r=>{const el=box.querySelector(`[data-id="${r.id}"]`);if(!el||el===active)return;el.outerHTML=rowHTML(r)});
+    box.querySelectorAll(".row").forEach(el=>{if(!L.some(r=>r.id===el.dataset.id)&&el!==active)el.remove()});
+  } else {
+    box.innerHTML=L.length?L.map(rowHTML).join(""):`<li class="empty">${Object.keys(S.rows).length?"Под этот фильтр ничего не подходит.":S.db?"Список пуст. Нажмите «+ Добавить вопрос», чтобы записать первый.":"Общий список откроется на claude.ai после входа в аккаунт."}</li>`;
+  }
+  box.querySelectorAll(".q,.why").forEach(grow);
+}
+function renderAll(){renderSum();renderList()}
+
+const timers={};
+async function save(id,patch){
+  S.rows[id]={...(S.rows[id]||{}),...patch};
+  if(!S.db)return;
+  const sv=document.getElementById("sv_"+id);
+  try{await S.db.doc("gaps/"+id).update({...patch,updatedBy:S.me||null,updatedAt:new Date().toISOString()});if(sv)sv.textContent="сохранено"}
+  catch(e){try{await S.db.doc("gaps/"+id).set({...S.rows[id],updatedBy:S.me||null,updatedAt:new Date().toISOString()});if(sv)sv.textContent="сохранено"}
+    catch(e2){if(sv)sv.textContent=e2&&e2.code==="permission_denied"?"нет прав на изменения":"не сохранилось, попробуйте ещё раз"}}
+}
+document.addEventListener("input",e=>{const t=e.target,row=t.closest&&t.closest(".row");if(!row||!t.dataset.f)return;
+  if(t.classList.contains("q")||t.classList.contains("why"))grow(t);
+  const id=row.dataset.id,f=t.dataset.f,v=t.value;S.rows[id]={...S.rows[id],[f]:v};
+  const sv=document.getElementById("sv_"+id);if(sv)sv.textContent="сохраняем…";
+  clearTimeout(timers[id+f]);timers[id+f]=setTimeout(()=>save(id,{[f]:v}),700)});
+document.addEventListener("click",async e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.filter){S.filter=b.dataset.filter;renderAll();return}
+  if(b.dataset.set){const id=b.closest(".row").dataset.id;await save(id,{[b.dataset.set]:b.dataset.v});document.activeElement.blur();renderAll();return}
+  if(b.dataset.del){if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="точно удалить? нажмите ещё раз";return}
+    const id=b.dataset.del;delete S.rows[id];renderAll();try{await S.db.doc("gaps/"+id).delete()}catch(err){};return}
+  if(b.id==="addBtn"){if(!S.db){setConn("off","Добавлять можно на claude.ai после входа в аккаунт.");return}
+    const id="g"+Date.now().toString(36),row={q:"",why:"",decision:"",status:"open",proto:"no",createdAt:new Date().toISOString(),createdBy:S.me||null};
+    S.rows[id]=row;S.filter="all";renderAll();
+    try{await S.db.doc("gaps/"+id).set(row)}catch(err){setConn("off","Не удалось добавить: нет прав на изменения.")}
+    const q=document.getElementById("q_"+id);if(q){q.focus();q.scrollIntoView({block:"center"})}}
+});
+
+renderAll();
+(async()=>{
+  const c=window.claude;if(!c||!c.use){setConn("off","Общий список работает только на claude.ai.");return}
+  const [db,user]=await Promise.all([c.use("db"),c.use("user")]);S.user=user;
+  if(user){try{S.me=await user.id()}catch(e){}try{S.canWrite=await user.can("data.write")}catch(e){}}
+  if(!db){setConn("off","Общий список недоступен: войдите в claude.ai.");renderAll();return}
+  S.db=db;
+  db.collection("gaps").onSnapshot(async snap=>{
+    const next={};snap.docs.forEach(d=>{next[d.id]=d.data()||{}});S.rows=next;renderAll();
+    setConn(S.canWrite===false?"":"live",S.canWrite===false?"Только просмотр. Изменять могут участники с правами на изменения.":"Общий список · обновляется сразу у всех");
+    const ids=[...new Set(Object.values(next).map(r=>r.updatedBy).filter(Boolean))].filter(id=>!S.profiles[id]);
+    if(ids.length&&S.user){try{Object.assign(S.profiles,await S.user.profiles(ids)||{});renderSum()}catch(e){}}
+  },()=>setConn("off","Связь с данными прервалась. Обновите страницу."));
+})();
+</script>

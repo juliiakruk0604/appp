@@ -1,0 +1,517 @@
+<title>Карта продукту «Двоє»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a journey grid, product tracks as rows and user stages as columns; each card opens a shared editing sheet. */
+:root{
+  --bg:#E9EBE6; --surface:#F6F7F3; --raised:#FFFFFF; --ink:#151514; --muted:#5E5E58; --line:rgba(21,21,20,.12);
+  --clay:#B85A36; --claySoft:rgba(184,90,54,.12); --moss:#3F5446; --mossSoft:rgba(63,84,70,.12); --amber:#8A6212; --amberSoft:rgba(196,150,60,.18);
+  --focus:#2F5BD3;
+  --display:"Inter Tight",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161615; --surface:#1F1F1D; --raised:#272724; --ink:#EDEDE8; --muted:#A3A39B; --line:rgba(237,237,232,.13);
+  --clay:#E0835F; --claySoft:rgba(224,131,95,.16); --moss:#8FB39A; --mossSoft:rgba(143,179,154,.16); --amber:#E0B25A; --amberSoft:rgba(224,178,90,.16);
+  --focus:#8AA8FF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161615; --surface:#1F1F1D; --raised:#272724; --ink:#EDEDE8; --muted:#A3A39B; --line:rgba(237,237,232,.13);
+  --clay:#E0835F; --claySoft:rgba(224,131,95,.16); --moss:#8FB39A; --mossSoft:rgba(143,179,154,.16); --amber:#E0B25A; --amberSoft:rgba(224,178,90,.16);
+  --focus:#8AA8FF; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--display);font-size:15px;line-height:1.45;padding-inline:clamp(16px,3vw,40px);padding-block:28px 64px}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1480px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:500;font-size:clamp(30px,4.4vw,52px);line-height:1.02;letter-spacing:-.03em;margin:6px 0 0;text-wrap:balance}
+h2{font-weight:500;font-size:22px;letter-spacing:-.015em;margin:0;text-wrap:balance}
+.lead{color:var(--muted);max-width:62ch;margin:10px 0 0}
+header.top{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end;justify-content:space-between}
+.stats{display:flex;gap:28px;flex-wrap:wrap}
+.stat .n{font-size:30px;font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.bar{height:4px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:6px;width:140px}
+.bar i{display:block;height:100%;background:var(--moss)}
+.conn{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.conn b{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
+.conn.live b{background:var(--moss)} .conn.off b{background:var(--clay)}
+
+/* canvas */
+.canvas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cv{background:var(--surface);padding:14px 16px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cv label{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cv .hint{font-size:12.5px;color:var(--muted)}
+.cv textarea{border:0;background:transparent;resize:vertical;min-height:64px;padding:0;line-height:1.45;width:100%}
+.cv textarea::placeholder,.sheet textarea::placeholder,.sheet input::placeholder{color:var(--muted);opacity:.75}
+.sectionHead{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 14px;font-size:13.5px;min-height:38px;display:inline-flex;align-items:center;gap:6px}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pill .c{font-family:var(--mono);font-size:11px;opacity:.7;font-variant-numeric:tabular-nums}
+
+/* map */
+.mapScroll{overflow-x:auto;border-radius:16px}
+.map{display:grid;grid-template-columns:150px repeat(5,minmax(200px,1fr));min-width:1180px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.map .hd{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:14px 14px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.map .hd .arrow{opacity:.5}
+.lane{padding:14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.lane b{font-weight:500;font-size:16px}
+.lane span{font-size:12px;color:var(--muted)}
+.cell{padding:10px;border-bottom:1px solid var(--line);border-left:1px solid var(--line);display:flex;flex-direction:column;gap:8px;min-width:0}
+.map > :nth-last-child(-n+6){border-bottom:0}
+.add{border:1px dashed var(--line);background:transparent;border-radius:10px;min-height:36px;font-size:12.5px;color:var(--muted);opacity:0;transition:opacity .15s}
+.cell:hover .add,.add:focus-visible{opacity:1}
+@media (hover:none){.add{opacity:.8}}
+
+.card{display:flex;flex-direction:column;gap:8px;text-align:left;width:100%;background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:11px 12px;position:relative;transition:transform .12s,box-shadow .12s}
+.card:hover{transform:translateY(-1px);box-shadow:0 6px 18px -10px rgba(0,0,0,.35)}
+.card.dim{opacity:.28}
+.card .t{font-weight:500;font-size:14.5px;line-height:1.25;padding-right:26px}
+.card .scr{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.card .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ring{position:absolute;top:10px;right:10px;width:20px;height:20px}
+.ring circle{fill:none;stroke-width:3}
+.ring .bg{stroke:var(--line)} .ring .fg{stroke:var(--moss);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
+.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;border-radius:99px;padding:3px 8px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.s-idea{color:var(--muted)}
+.chip.s-design,.chip.s-proto{color:var(--amber);border-color:var(--amber);background:var(--amberSoft)}
+.chip.s-dev,.chip.s-test{color:var(--focus);border-color:var(--focus)}
+.chip.s-done{color:var(--moss);border-color:var(--moss);background:var(--mossSoft)}
+.chip.p0{color:var(--clay);border-color:var(--clay);background:var(--claySoft)}
+.chip.q{color:var(--clay);border-color:transparent;background:var(--claySoft)}
+.who{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.who img{width:18px;height:18px;border-radius:50%}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:10}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--surface);z-index:11;display:flex;flex-direction:column;box-shadow:-20px 0 60px -30px rgba(0,0,0,.5);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet .sh{padding:20px 22px 14px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.sheet .sb{padding:18px 22px 28px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+.x{border:1px solid var(--line);background:var(--raised);border-radius:99px;min-width:40px;height:40px;font-size:18px;line-height:1}
+.fld{display:flex;flex-direction:column;gap:7px}
+.fld > label,.fld > .lb{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.fld textarea,.fld input[type=text]{border:1px solid var(--line);background:var(--raised);border-radius:12px;padding:10px 12px;width:100%;line-height:1.45}
+.fld textarea{min-height:84px;resize:vertical}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--raised);border-radius:99px;padding:7px 12px;font-size:13px;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.people{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--raised);padding:4px}
+.people button{display:flex;align-items:center;gap:8px;border:0;background:transparent;padding:8px;border-radius:8px;text-align:left;min-height:40px}
+.people button:hover{background:var(--bg)}
+.people img{width:22px;height:22px;border-radius:50%}
+.saved{font-family:var(--mono);font-size:11px;color:var(--muted);min-height:16px}
+.desc{color:var(--muted);margin:6px 0 0;font-size:14px}
+.danger{border:1px solid var(--clay);color:var(--clay);background:transparent;border-radius:99px;padding:8px 14px;align-self:flex-start;min-height:38px}
+.note{font-size:13px;color:var(--muted)}
+.banner{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--muted)}
+
+@media (max-width:1000px){.canvas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.canvas{grid-template-columns:1fr}}
+
+/* service flow */
+.flowScroll{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--surface);-webkit-overflow-scrolling:touch}
+#flow svg{display:block;color:var(--ink)}
+.fl-lane{fill:var(--bg)} .fl-lane.alt{fill:var(--surface)}
+.fl-laneT{font:500 13px var(--display);fill:var(--ink)} .fl-laneS{font:11px var(--mono);fill:var(--muted)}
+.fl-col{font:10.5px var(--mono);fill:var(--muted);letter-spacing:.08em}
+.fl-node{cursor:pointer}
+.fl-node rect{fill:var(--raised);stroke:var(--line);stroke-width:1}
+.fl-node.sys rect{fill:var(--mossSoft);stroke:var(--moss);stroke-dasharray:4 3}
+.fl-node.alert rect{fill:var(--claySoft);stroke:var(--clay)}
+.fl-node:hover rect,.fl-node:focus rect{stroke:var(--ink);stroke-width:1.6}
+.fl-node:focus{outline:none}
+.fl-node.hl rect{stroke:var(--focus);stroke-width:2}
+.fl-t{font:500 12.5px var(--display);fill:var(--ink)} .fl-s{font:10.5px var(--mono);fill:var(--muted)}
+.fl-e{fill:none;stroke:var(--muted);stroke-width:1.4}
+.fl-e.data{stroke:var(--moss);stroke-dasharray:5 4}
+.fl-e.alert{stroke:var(--clay);stroke-dasharray:3 3}
+.fl-e.back,.fl-e.jump{stroke:var(--amber)}
+.fl-e.dim,.fl-el.dim{opacity:.15}
+.fl-e.hl{stroke:var(--focus);stroke-width:2.2;opacity:1}
+.fl-el rect{fill:var(--surface)} .fl-el text{font:10.5px var(--display);fill:var(--muted)}
+.fl-el.hl text{fill:var(--focus)}
+.fl-dot.s-proto,.fl-dot.s-design{fill:var(--amber)} .fl-dot.s-dev,.fl-dot.s-test{fill:var(--focus)} .fl-dot.s-done{fill:var(--moss)} .fl-dot.s-idea,.fl-dot.s-none{fill:var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{display:inline-block;width:26px;height:0;border-top:1.6px solid var(--muted)}
+.lg.data{border-top:1.6px dashed var(--moss)} .lg.alert{border-top:1.6px dotted var(--clay)} .lg.back{border-color:var(--amber)}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.links ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.links li{font-size:13.5px;line-height:1.35;background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.links li small{display:block;color:var(--muted);font-size:12px}
+@media (max-width:560px){.links{grid-template-columns:1fr}}
+/* phone: lanes stack, stages become labelled blocks */
+@media (max-width:760px){
+  .mapScroll{overflow:visible}
+  .map{display:flex;flex-direction:column;min-width:0;border:0;background:transparent;gap:22px}
+  .map .hd{display:none}
+  .laneBlock{display:flex;flex-direction:column;gap:10px}
+  .lane{border:0;padding:0}
+  .cell{border:0;padding:0}
+  .cell.empty{display:none}
+  .cell[data-stage]::before{content:attr(data-stage);font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+  .sheet .sh,.sheet .sb{padding-inline:16px}
+}
+@media (min-width:761px){.laneBlock{display:contents}}
+@media (prefers-reduced-motion:reduce){.card,.add{transition:none}.card:hover{transform:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Двоє · робоча карта команди</div>
+      <h1>Карта продукту</h1>
+      <p class="lead">Усі частини застосунку на одному полі: пара, соло, безпека, психолог і гроші. Відкрийте картку й заповніть порожні місця. Зміни одразу бачать усі, хто відкрив цю сторінку.</p>
+    </div>
+    <div class="stats" aria-live="polite">
+      <div class="stat"><div class="n" id="stFill">0%</div><div class="l">заповнено</div><div class="bar"><i id="stBar" style="width:0"></i></div></div>
+      <div class="stat"><div class="n" id="stQ">0</div><div class="l">відкриті питання</div></div>
+      <div class="stat"><div class="n" id="stNoOwner">0</div><div class="l">без відповідального</div></div>
+    </div>
+  </header>
+  <div class="conn" id="conn"><b></b><span>Підключаємось до спільних даних…</span></div>
+
+  <section class="fld" aria-labelledby="cvH" style="gap:12px">
+    <div class="sectionHead"><h2 id="cvH">Основа продукту</h2><span class="saved" id="cvSaved"></span></div>
+    <div class="canvas" id="canvas"></div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px" aria-labelledby="flowH">
+    <div class="sectionHead"><h2 id="flowH">Карта сервісу: що звідки куди</h2>
+      <div class="legend"><span><i class="lg solid"></i>перехід</span><span><i class="lg data"></i>дані між людьми</span><span><i class="lg alert"></i>тривога</span><span><i class="lg back"></i>повернення</span></div></div>
+    <p class="lead" style="margin:0">Рядки — хто діє: два партнери, система, оплата, психолог і соло. Стрілки показують, куди людина потрапляє далі і що передається між телефонами. Натисніть на крок, щоб побачити, звідки в нього приходять і куди він веде, і заповнити поля.</p>
+    <div class="flowScroll" id="flowScroll"><div id="flow"></div></div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px" aria-labelledby="mapH">
+    <div class="sectionHead"><h2 id="mapH">Усі картки за етапами</h2>
+      <div class="filters" id="filters" role="group" aria-label="Фільтр карток"></div></div>
+    <div class="mapScroll"><div class="map" id="map"></div></div>
+    <p class="note">Коло в кутку картки показує, скільки полів заповнено. Екрани в дужках відповідають прототипу.</p>
+  </section>
+</div>
+<div id="sheetRoot"></div>
+
+<script>
+const STAGES=[["entry","Вхід"],["diag","Діагностика"],["work","Робота"],["result","Результат"],["keep","Утримання"]];
+const LANES=[["pair","Пара","основний трек, двоє телефонів"],["solo","Соло","людина без пари"],["safe","Безпека і довіра","насильство, приватність, дані"],["psy","Психолог","згода, кабінет, запис"],["money","Гроші","тарифи, пейволи, оплата"]];
+const STATUS=[["idea","Ідея"],["design","Дизайн"],["proto","Прототип"],["dev","Розробка"],["test","Тест"],["done","Готово"]];
+const PRIO=[["p0","P0 · зараз"],["p1","P1 · наступне"],["p2","P2 · потім"]];
+const BASE=[
+ ["landing","pair","entry","Лендинг","сайт","Пояснює, що це, і веде до старту удвох або соло."],
+ ["onboard","pair","entry","Вхід і роль","A1–A2","Вхід без пароля і вибір: пара, без партнера, психолог."],
+ ["profile","pair","entry","Профіль пари","A3","Імена, скільки разом, діти. Щоб питання були доречними."],
+ ["invite","pair","entry","Запрошення партнера","A4–A5","Текст запрошення, посилання, прийняття другим партнером."],
+ ["sync","pair","entry","Два телефони","SY","Код пари і синхронізація відповідей між телефонами."],
+ ["map","pair","diag","Карта стосунків","B1–B3","8 сфер, шкала «як є / як хочу» для кожного окремо."],
+ ["radar","pair","diag","Радар і рекомендація","B4, E2–E3","Спільний радар, три висновки, з якої теми почати."],
+ ["home","pair","work","Головний екран пари","C1","Рівень, питання дня, радар, рекомендована тема, обіцянка."],
+ ["modules","pair","work","14 модулів","C2–C3","Бібліотека тем. У прототипі наповнена лише «Межі»."],
+ ["session","pair","work","Сесія питань","D1–D3","Питання рівнів 1–3, відповіді окремо, очікування партнера."],
+ ["reveal","pair","work","Розкриття відповідей","D4–D5","Відповіді обох поруч і розбір за правилами «Механіки розбору»."],
+ ["talk","pair","work","Розмова 15 хвилин","D6","Таймер і підказки для розмови вголос."],
+ ["agree","pair","result","Домовленості","D7","Одна маленька домовленість з датою перевірки."],
+ ["check","pair","result","Перевірка через 2 тижні","D8–D9","Чи вийшло, що заважало, переписати домовленість."],
+ ["progress","pair","result","Прогрес пари","F1–F3","Історія радарів і пройдених тем."],
+ ["daily","pair","keep","Питання дня","DQ","Одне питання на день, серія днів поспіль."],
+ ["promise","pair","keep","Наша обіцянка","O1","Три наміри і два підписи."],
+ ["decks","pair","keep","Колоди для розмов","G1","«Про нас сьогодні» та інші колоди карток."],
+ ["levels","pair","keep","Рівні й бейджі","ME","XP, рівні пари, 8 бейджів, святкування."],
+ ["notify","pair","keep","Сповіщення","NT","Що зробив партнер і що чекає на вас."],
+ ["soloStart","solo","entry","Хто ви зараз","K1","Три стани: важко після розриву, готуюсь, шукаю."],
+ ["soloMap","solo","diag","Карта пошуку","K2–K4","Питання про себе і результат з патернами."],
+ ["story","solo","work","Моя історія","M1–M3","Минулі стосунки: як почались, чим закінчились."],
+ ["beliefs","solo","work","Перепис переконань","N1–N4","Знайти заперечення і переписати їх своїми словами."],
+ ["bridge","solo","result","Міст у пару","P1–P2","«Я зустрів(ла) людину»: перехід у парний трек."],
+ ["stop","safe","work","Стоп-сигнал насильства","S2","Ознаки насильства в будь-якому тексті ведуть до екрана допомоги."],
+ ["lvl3","safe","work","Попередження перед рівнем 3","S1","Глибокі питання тільки після згоди обох."],
+ ["privacy","safe","keep","Приватність і мої дані","Z1","Що зберігаємо, хто бачить, як видалити."],
+ ["consent","psy","result","Згода обох і журнал доступу","Z1","Психолог бачить відповіді лише за згодою обох партнерів."],
+ ["cabinet","psy","keep","Кабінет психолога","T1–T3","Список пар, їхні радари, нотатки фахівця."],
+ ["booking","psy","result","Запис до психолога","H1","Перша розмова безкоштовна."],
+ ["paywallPair","money","diag","Пейвол пари","B5","Модуль 390 ₴ або все за 890 ₴ (далі 1290 ₴)."],
+ ["pay","money","work","Оплата","H5","Екран оплати і результат."],
+ ["paywallSolo","money","diag","Пейвол соло","K5","Доступ до соло-треку."],
+];
+const CANVAS=[
+ ["problem","Проблема","Що болить у пар, які прийдуть до нас?"],
+ ["audience","Для кого","Хто перший користувач: вік, стаж стосунків, ситуація."],
+ ["promise","Обіцянка","Що людина отримає за перший тиждень."],
+ ["northStar","Головна метрика","Одна цифра, яка показує, що продукт працює."],
+ ["model","Бізнес-модель","Як заробляємо і скільки коштує залучення."],
+ ["risks","Головні ризики","Що може вбити продукт: безпека, довіра, утримання."],
+ ["competitors","Конкуренти","Paired, Lasting, Gottman Card Decks, живі психологи."],
+ ["focus","Фокус на місяць","Одна річ, яку команда доводить до кінця цього місяця."],
+];
+const FIELDS=["status","owner","goal","metric","questions","notes"];
+
+const state={cards:{},canvas:{},filter:"all",open:null,me:null,db:null,user:null,profiles:{},canWrite:null,people:null};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cardList=()=>{const custom=Object.entries(state.cards).filter(([id,d])=>d.custom&&d.title).map(([id,d])=>[id,d.lane,d.stage,d.title,"нова",d.desc||""]);return BASE.concat(custom)};
+const dataOf=id=>state.cards[id]||{};
+const filled=d=>FIELDS.filter(f=>String(d[f]||"").trim()).length;
+const hasQ=d=>String(d.questions||"").trim().length>0;
+
+function setConn(kind,text){const c=$("#conn");c.className="conn "+kind;c.querySelector("span").textContent=text}
+
+function renderStats(){
+  const L=cardList();let tot=0,q=0,no=0;
+  L.forEach(([id])=>{const d=dataOf(id);tot+=filled(d);if(hasQ(d))q++;if(!d.owner)no++});
+  const pct=Math.round(tot/(L.length*FIELDS.length)*100);
+  $("#stFill").textContent=pct+"%";$("#stBar").style.width=pct+"%";$("#stQ").textContent=q;$("#stNoOwner").textContent=no;
+}
+
+function renderCanvas(){
+  const box=$("#canvas");
+  if(!box.children.length){
+    box.innerHTML=CANVAS.map(([k,l,h])=>`<div class="cv"><label for="cv_${k}">${esc(l)}</label><textarea id="cv_${k}" data-cv="${k}" placeholder="${esc(h)}"></textarea></div>`).join("");
+  }
+  CANVAS.forEach(([k])=>{const t=$("#cv_"+k);if(document.activeElement!==t)t.value=state.canvas[k]||""});
+}
+
+const FILTERS=[["all","Усі"],["mine","Мої"],["q","З питаннями"],["noOwner","Без відповідального"],["p0","P0"]];
+function passes(id){const d=dataOf(id),f=state.filter;
+  if(f==="mine")return state.me&&d.owner===state.me;
+  if(f==="q")return hasQ(d);
+  if(f==="noOwner")return !d.owner;
+  if(f==="p0")return d.prio==="p0";
+  return true}
+function renderFilters(){
+  const L=cardList(),count=f=>{const o=state.filter;state.filter=f;const n=L.filter(([id])=>passes(id)).length;state.filter=o;return n};
+  $("#filters").innerHTML=FILTERS.filter(([f])=>f!=="mine"||state.me).map(([f,l])=>`<button class="pill" data-filter="${f}" aria-pressed="${state.filter===f}">${esc(l)} <span class="c">${count(f)}</span></button>`).join("");
+}
+
+function ring(n){const r=7,c=2*Math.PI*r;return `<svg class="ring" viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="${r}"/><circle class="fg" cx="10" cy="10" r="${r}" stroke-dasharray="${c*n/FIELDS.length} ${c}"/></svg>`}
+function whoHTML(id){if(!id)return "";const p=state.profiles[id];const name=(p&&p.name)||"Учасник";return `<span class="who">${p&&p.avatarUrl?`<img src="${esc(p.avatarUrl)}" alt="">`:""}${esc(name)}</span>`}
+function cardHTML([id,lane,stage,title,scr]){
+  const d=dataOf(id),st=STATUS.find(s=>s[0]===d.status),n=filled(d);
+  return `<button class="card ${passes(id)?"":"dim"}" data-card="${id}" aria-label="${esc(title)}, заповнено ${n} з ${FIELDS.length}">
+    ${ring(n)}<span class="t">${esc(title)}</span><span class="scr">${esc(scr)}</span>
+    <span class="meta">${st?`<span class="chip s-${st[0]}">${esc(st[1])}</span>`:`<span class="chip">без статусу</span>`}
+    ${d.prio?`<span class="chip ${d.prio==="p0"?"p0":""}">${esc(d.prio.toUpperCase())}</span>`:""}
+    ${hasQ(d)?`<span class="chip q">? питання</span>`:""}${whoHTML(d.owner)}</span></button>`}
+function renderMap(){
+  const L=cardList();
+  let h=`<div class="hd">Трек</div>`+STAGES.map(([k,l],i)=>`<div class="hd">${esc(l)}${i<STAGES.length-1?'<span class="arrow">→</span>':""}</div>`).join("");
+  LANES.forEach(([lk,ln,ls])=>{
+    h+=`<div class="laneBlock"><div class="lane"><b>${esc(ln)}</b><span>${esc(ls)}</span></div>`;
+    STAGES.forEach(([sk,sl])=>{
+      const cs=L.filter(c=>c[1]===lk&&c[2]===sk);
+      h+=`<div class="cell ${cs.length?"":"empty"}" data-stage="${esc(sl)}">${cs.map(cardHTML).join("")}<button class="add" data-add="${lk}|${sk}" aria-label="Додати картку: ${esc(ln)}, ${esc(sl)}">+ Додати</button></div>`;
+    });
+    h+=`</div>`;
+  });
+  $("#map").innerHTML=h;
+}
+
+async function resolveProfiles(){
+  if(!state.user)return;
+  const ids=[...new Set(Object.values(state.cards).flatMap(d=>[d.owner,d.updatedBy]).filter(Boolean))].filter(id=>!state.profiles[id]);
+  if(!ids.length)return;
+  try{const ps=await state.user.profiles(ids);Object.assign(state.profiles,ps||{});renderMap();if(state.open)renderSheet()}catch(e){}
+}
+
+
+/* ── service flow ── */
+const FL_LANES=[["p1","Партнер 1","почав першим"],["pay","Оплата","тариф і доступ"],["p2","Партнер 2","прийшов за запрошенням"],["sys","Система","дані, розбір, сповіщення"],["psy","Психолог","за згодою обох"],["day","Щодня","звички пари"],["solo","Соло","людина без пари"]];
+const FL_COLS=["Прихід","Вхід","Профіль","Запрошення","Карта","Радар","Доступ","Головна","Сесія","Розбір","Розмова","Домовленість","Перевірка"];
+const FL_NODES=[
+ ["land","p1",0,"Лендинг","сайт","landing"],["auth","p1",1,"Вхід і роль","A1–A2","onboard"],["prof","p1",2,"Профіль пари","A3","profile"],
+ ["inv","p1",3,"Запрошення","A4","invite"],["map1","p1",4,"Карта стосунків","B1–B3","map"],["radar","p1",5,"Радар","B4, E2–E3","radar"],
+ ["home","p1",7,"Головний екран","C1","home"],["ses1","p1",8,"Сесія питань","D1–D3","session"],["rev","p1",9,"Розкриття","D4–D5","reveal"],
+ ["talk","p1",10,"Розмова 15 хв","D6","talk"],["agree","p1",11,"Домовленість","D7","agree"],["check","p1",12,"Перевірка","D8–D9","check"],
+ ["paywall","pay",6,"Пейвол","B5 · 390 / 890 ₴","paywallPair"],["paid","pay",7,"Оплата","H5","pay"],
+ ["join","p2",3,"Приймає запрошення","A5","invite"],["map2","p2",4,"Карта стосунків","B1–B3","map"],["ses2","p2",8,"Сесія питань","D1–D3","session"],
+ ["sync","sys",3,"Код пари","SY","sync","sys"],["calc","sys",5,"Радар рахується","коли відповіли обоє","radar","sys"],
+ ["notif","sys",7,"Сповіщення","NT","notify","sys"],["ai","sys",9,"Розбір і ШІ","після обох","reveal","sys"],
+ ["stop","sys",10,"Стоп-сигнал","S2 · будь-який текст","stop","alert"],["remind","sys",11,"Нагадування","через 14 днів","check","sys"],
+ ["consent","psy",10,"Згода обох","Z1","consent"],["cab","psy",11,"Кабінет психолога","T1–T3","cabinet"],["book","psy",12,"Запис","H1","booking"],
+ ["daily","day",8,"Питання дня","DQ","daily"],["promise","day",9,"Наша обіцянка","O1","promise"],["decks","day",10,"Колоди","G1","decks"],
+ ["levels","day",11,"Рівні й бейджі","ME","levels"],["progress","day",12,"Прогрес пари","F1–F3","progress"],
+ ["k1","solo",0,"Хто ви зараз","K1","soloStart"],["k2","solo",1,"Карта пошуку","K2–K4","soloMap"],["k5","solo",2,"Пейвол соло","K5","paywallSolo"],
+ ["m","solo",3,"Моя історія","M1–M3","story"],["n","solo",4,"Переконання","N1–N4","beliefs"],["bridge","solo",5,"Міст у пару","P1–P2","bridge"],
+];
+const FL_EDGES=[
+ ["land","auth","Ми пара"],["land","k1","Я без пари"],["auth","prof","роль: пара"],["prof","inv",""],
+ ["inv","join","посилання з кодом","data"],["join","sync","пару з’єднано","data"],["inv","map1","не чекає"],["join","map2",""],
+ ["map1","calc","оцінки","data"],["map2","calc","оцінки","data"],["calc","radar","бачать обоє"],
+ ["radar","paywall","з чого почати"],["paywall","paid","тариф"],["paid","home","доступ обом"],["radar","ses1","3 пробні питання"],
+ ["home","ses1","тема"],["ses1","notif","здав → партнеру","data"],["notif","ses2",""],
+ ["ses1","ai","відповіді","data"],["ses2","ai","відповіді","data"],["ai","rev","обидва здали"],
+ ["ses1","stop","ознаки насильства","alert"],["ses2","stop","","alert"],["stop","book","допомога","alert"],
+ ["rev","talk",""],["talk","agree",""],["agree","remind","дата перевірки","data"],["remind","check","нагадує обом"],
+ ["check","home","наступна тема","back"],["check","progress","в історію"],["rev","consent","хочемо фахівця"],["consent","cab","доступ до відповідей","data"],
+ ["home","daily","щодня"],
+ ["k1","k2",""],["k2","k5","результат"],["k5","m","доступ"],["m","n",""],["n","bridge",""],["bridge","auth","зустрів людину → Вхід і роль","jump"],
+];
+const FG={L:176,CW:192,RH:104,T:40,W:138,H:52};
+const flRow=l=>FL_LANES.findIndex(x=>x[0]===l);
+function flBox(id){const n=FL_NODES.find(x=>x[0]===id),r=flRow(n[1]);return {x:FG.L+n[2]*FG.CW+13,y:FG.T+r*FG.RH+26,w:FG.W,h:FG.H,col:n[2],row:r}}
+function flPath(a,b,type){
+  const A=flBox(a),B=flBox(b),dc=B.col-A.col;let P;
+  if(A.row===B.row&&dc===1){P=[[A.x+A.w,A.y+A.h/2],[A.x+A.w+10,A.y+A.h/2],[B.x-10,B.y+B.h/2],[B.x,B.y+B.h/2]]}
+  else if(A.row===B.row&&dc>1){const x1=A.x+A.w*.7,x2=B.x+B.w*.3;P=[[x1,A.y],[x1,A.y-34],[x2,B.y-34],[x2,B.y]]}
+  else if(A.row===B.row&&dc<0){const x1=A.x+A.w*.3,x2=B.x+B.w*.7,y=A.y+A.h;P=[[x1,y],[x1,y+40],[x2,y+40],[x2,y]]}
+  else if(dc===0){const down=B.row>A.row;P=down?[[A.x+A.w/2,A.y+A.h],[A.x+A.w/2,A.y+A.h+20],[B.x+B.w/2,B.y-20],[B.x+B.w/2,B.y]]:[[A.x+A.w/2,A.y],[A.x+A.w/2,A.y-20],[B.x+B.w/2,B.y+B.h+20],[B.x+B.w/2,B.y+B.h]]}
+  else if(dc>0){P=[[A.x+A.w,A.y+A.h/2],[A.x+A.w+44,A.y+A.h/2],[B.x-44,B.y+B.h/2],[B.x,B.y+B.h/2]]}
+  else{const up=B.row<A.row;P=up?[[A.x+A.w/2,A.y],[A.x+A.w/2,A.y-60],[B.x+B.w/2,B.y+B.h+60],[B.x+B.w/2,B.y+B.h]]:[[A.x,A.y+A.h/2],[A.x-40,A.y+A.h/2],[B.x+B.w+40,B.y+B.h/2],[B.x+B.w,B.y+B.h/2]]}
+  if(type==="jump"){const x=A.x+A.w,y=A.y+A.h/2;return {d:`M${x},${y} L${x+30},${y}`,mx:x+34,my:y,left:true}}
+  const m=[0,1].map(k=>(P[0][k]+3*P[1][k]+3*P[2][k]+P[3][k])/8);
+  if(A.row===B.row&&dc===1)m[1]=A.y-10;
+  return {d:`M${P[0]} C${P[1]} ${P[2]} ${P[3]}`,mx:m[0],my:m[1]};
+}
+function renderFlow(){
+  const W=FG.L+FL_COLS.length*FG.CW+10,H=FG.T+FL_LANES.length*FG.RH+10;
+  let g=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Карта сервісу Двоє: як партнери, система, оплата, психолог і соло-трек переходять між кроками">
+  <defs>${[["a","var(--muted)"],["ad","var(--moss)"],["aa","var(--clay)"],["ab","var(--amber)"],["ah","var(--focus)"]].map(([id,c])=>`<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`).join("")}</defs>`;
+  FL_LANES.forEach(([k,t,sub],i)=>{const y=FG.T+i*FG.RH;g+=`<rect class="fl-lane ${i%2?"alt":""}" x="0" y="${y}" width="${W}" height="${FG.RH}"/><text class="fl-laneT" x="16" y="${y+46}">${esc(t)}</text><text class="fl-laneS" x="16" y="${y+64}">${esc(sub)}</text>`});
+  FL_COLS.forEach((c,i)=>{g+=`<text class="fl-col" x="${FG.L+i*FG.CW+13+FG.W/2}" y="24" text-anchor="middle">${esc(c.toUpperCase())}</text>`});
+  let labels="";
+  FL_EDGES.forEach(([a,b,l,t],i)=>{const {d,mx:mx0,my,left}=flPath(a,b,t),mk={data:"ad",alert:"aa",back:"ab",jump:"ab"}[t]||"a";const mx=left?mx0+(l.length*5.7+10)/2:mx0;
+    g+=`<path class="fl-e ${t||""}" data-e="${i}" data-a="${a}" data-b="${b}" d="${d}" marker-end="url(#${mk})"/>`;
+    if(l){const w=l.length*5.7+10;labels+=`<g class="fl-el" data-e="${i}"><rect x="${mx-w/2}" y="${my-8}" width="${w}" height="16" rx="4"/><text x="${mx}" y="${my+4}" text-anchor="middle">${esc(l)}</text></g>`}});
+  g+=labels;
+  FL_NODES.forEach(([id,lane,col,t,sub,card,kind])=>{const B=flBox(id),d=dataOf(card),st=d.status||"none";
+    g+=`<g class="fl-node ${kind||""}" data-node="${id}" data-card="${card}" tabindex="0" role="button" aria-label="${esc(t)}, ${esc(sub)}">
+    <rect x="${B.x}" y="${B.y}" width="${B.w}" height="${B.h}" rx="10"/>
+    <text class="fl-t" x="${B.x+11}" y="${B.y+21}">${esc(t)}</text><text class="fl-s" x="${B.x+11}" y="${B.y+38}">${esc(sub)}</text>
+    <circle class="fl-dot s-${st}" cx="${B.x+B.w-11}" cy="${B.y+11}" r="4"/>${hasQ(d)?`<text x="${B.x+B.w-11}" y="${B.y+B.h-9}" text-anchor="middle" style="font:600 11px var(--display);fill:var(--clay)">?</text>`:""}</g>`});
+  $("#flow").innerHTML=g+"</svg>";
+}
+function flHighlight(id){
+  const svg=$("#flow svg");if(!svg)return;
+  svg.querySelectorAll(".fl-e,.fl-el").forEach(e=>{const E=FL_EDGES[+e.dataset.e],on=id&&(E[0]===id||E[1]===id);e.classList.toggle("hl",!!on);e.classList.toggle("dim",!!id&&!on)});
+  svg.querySelectorAll(".fl-e").forEach(e=>{const E=FL_EDGES[+e.dataset.e];if(e.classList.contains("hl"))e.setAttribute("marker-end","url(#ah)");else e.setAttribute("marker-end","url(#"+({data:"ad",alert:"aa",back:"ab",jump:"ab"}[E[3]]||"a")+")")});
+  svg.querySelectorAll(".fl-node").forEach(n=>n.classList.toggle("hl",n.dataset.node===id));
+}
+const flName=id=>{const n=FL_NODES.find(x=>x[0]===id);return n?`${n[3]}${n[1]!=="p1"?" · "+FL_LANES[flRow(n[1])][1]:""}`:id};
+function linksHTML(card){
+  const ids=FL_NODES.filter(n=>n[5]===card).map(n=>n[0]);if(!ids.length)return "";
+  const inn=FL_EDGES.filter(e=>ids.includes(e[1])&&!ids.includes(e[0])),out=FL_EDGES.filter(e=>ids.includes(e[0])&&!ids.includes(e[1]));
+  const li=(e,k)=>`<li>${esc(flName(e[k]))}${e[2]?`<small>${esc(e[2])}</small>`:""}</li>`;
+  return `<div class="fld"><span class="lb">На карті сервісу</span><div class="links"><div><div class="note" style="margin-bottom:6px">Звідки сюди</div><ul>${inn.length?inn.map(e=>li(e,0)).join(""):`<li>Точка входу</li>`}</ul></div><div><div class="note" style="margin-bottom:6px">Куди далі</div><ul>${out.length?out.map(e=>li(e,1)).join(""):`<li>Кінець гілки</li>`}</ul></div></div></div>`;
+}
+const flowEl=()=>$("#flow");
+document.addEventListener("click",e=>{const n=e.target.closest&&e.target.closest(".fl-node");if(!n)return;flHighlight(n.dataset.node);state.open=n.dataset.card;renderSheet()});
+document.addEventListener("keydown",e=>{const n=e.target.closest&&e.target.closest(".fl-node");if(n&&(e.key==="Enter"||e.key===" ")){e.preventDefault();n.dispatchEvent(new MouseEvent("click",{bubbles:true}))}});
+document.addEventListener("mouseover",e=>{const n=e.target.closest&&e.target.closest(".fl-node");if(n)flHighlight(n.dataset.node)});
+document.addEventListener("mouseout",e=>{const n=e.target.closest&&e.target.closest(".fl-node");if(n&&!state.open)flHighlight(null)});
+
+function renderAll(){renderStats();renderCanvas();renderFilters();renderMap();renderFlow();if(state.open)syncSheetValues()}
+
+/* ── sheet ── */
+function cardMeta(id){return cardList().find(c=>c[0]===id)}
+function renderSheet(){
+  const root=$("#sheetRoot");const id=state.open;
+  if(!id){root.innerHTML="";return}
+  const m=cardMeta(id);if(!m){state.open=null;root.innerHTML="";return}
+  const [,lane,stage,title,scr,desc]=m,d=dataOf(id);
+  const ln=LANES.find(l=>l[0]===lane)[1],sl=STAGES.find(s=>s[0]===stage)[1];
+  const ro=state.canWrite===false;
+  root.innerHTML=`<div class="scrim" data-close></div>
+  <aside class="sheet" role="dialog" aria-modal="true" aria-labelledby="shT">
+    <div class="sh"><div><div class="eyebrow">${esc(ln)} · ${esc(sl)} · ${esc(scr)}</div><h2 id="shT" style="margin-top:6px">${esc(title)}</h2>${desc?`<p class="desc">${esc(desc)}</p>`:""}</div>
+    <button class="x" data-close aria-label="Закрити">×</button></div>
+    <div class="sb">
+      ${ro?`<div class="banner">У вас доступ лише для перегляду. Попросіть власника дати права учасника, щоб редагувати.</div>`:""}
+      ${!state.db?`<div class="banner">Спільні дані недоступні в цьому перегляді. Відкрийте сторінку на claude.ai, увійшовши в акаунт.</div>`:""}
+      <div class="fld"><span class="lb" id="lbS">Статус</span><div class="seg" role="group" aria-labelledby="lbS">${STATUS.map(([k,l])=>`<button data-set="status" data-v="${k}" aria-pressed="${d.status===k}" ${ro?"disabled":""}>${esc(l)}</button>`).join("")}</div></div>
+      <div class="fld"><span class="lb" id="lbP">Пріоритет</span><div class="seg" role="group" aria-labelledby="lbP">${PRIO.map(([k,l])=>`<button data-set="prio" data-v="${k}" aria-pressed="${d.prio===k}" ${ro?"disabled":""}>${esc(l)}</button>`).join("")}</div></div>
+      <div class="fld"><span class="lb">Хто веде</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${d.owner?whoHTML(d.owner):`<span class="note">Ще не призначено</span>`}
+        ${state.user&&!ro?`<button class="pill" data-pick>${d.owner?"Змінити":"Призначити"}</button>${state.me&&d.owner!==state.me?`<button class="pill" data-take>Беру я</button>`:""}${d.owner?`<button class="pill" data-set="owner" data-v="">Зняти</button>`:""}`:""}</div>
+        <div id="peopleBox"></div></div>
+      ${linksHTML(id)}
+      <div class="fld"><label for="f_goal">Навіщо це людині</label><textarea id="f_goal" data-field="goal" placeholder="Яку проблему закриває цей екран чи функція?" ${ro?"readonly":""}></textarea></div>
+      <div class="fld"><label for="f_metric">Як зрозуміємо, що працює</label><textarea id="f_metric" data-field="metric" placeholder="Метрика і цільове значення. Наприклад: 60% пар доходять до радара." ${ro?"readonly":""}></textarea></div>
+      <div class="fld"><label for="f_questions">Відкриті питання</label><textarea id="f_questions" data-field="questions" placeholder="Що ще не вирішено? Кожне питання з нового рядка." ${ro?"readonly":""}></textarea></div>
+      <div class="fld"><label for="f_notes">Рішення і нотатки</label><textarea id="f_notes" data-field="notes" placeholder="Що вже вирішили, посилання на макети, дослідження." ${ro?"readonly":""}></textarea></div>
+      <div class="saved" id="shSaved">${d.updatedBy?`Востаннє змінив(ла): ${esc((state.profiles[d.updatedBy]||{}).name||"учасник")}${d.updatedAt?", "+esc(new Date(d.updatedAt).toLocaleString("uk-UA",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"})):""}`:""}</div>
+      ${d.custom&&!ro?`<button class="danger" data-del>Видалити картку</button>`:""}
+    </div></aside>`;
+  syncSheetValues();
+  const first=root.querySelector(".x");first&&first.focus({preventScroll:true});
+}
+function syncSheetValues(){["goal","metric","questions","notes"].forEach(f=>{const t=$("#f_"+f);if(t&&document.activeElement!==t)t.value=dataOf(state.open)[f]||""})}
+
+/* ── writes ── */
+const pending={};
+async function writeCard(id,patch){
+  const cur=state.cards[id]||{};
+  state.cards[id]={...cur,...patch};renderStats();renderFilters();renderMap();
+  if(!state.db){flash("Не збережено: спільні дані недоступні");return}
+  const full={...patch,updatedBy:state.me||null,updatedAt:new Date().toISOString()};
+  const ref=state.db.doc("cards/"+id);
+  try{ if(cur&&Object.keys(cur).length) await ref.update(full); else await ref.set({...state.cards[id],...full}); flash("Збережено") }
+  catch(e){ if(e&&e.code==="invalid_argument"){try{await ref.set({...state.cards[id],...full});flash("Збережено");return}catch(e2){e=e2}}
+    flash(e&&(e.code==="permission_denied"||e.code==="not_granted")?"Немає прав на редагування":"Не вдалося зберегти, спробуйте ще раз")}
+}
+function flash(t){const s=$("#shSaved");if(s)s.textContent=t}
+function debounceWrite(key,fn){clearTimeout(pending[key]);pending[key]=setTimeout(fn,700)}
+async function writeCanvas(k,v){
+  state.canvas[k]=v;
+  if(!state.db){$("#cvSaved").textContent="Не збережено: спільні дані недоступні";return}
+  try{await state.db.doc("canvas/main").set({...state.canvas,updatedBy:state.me||null,updatedAt:new Date().toISOString()});$("#cvSaved").textContent="Збережено"}
+  catch(e){$("#cvSaved").textContent="Не вдалося зберегти"}
+}
+
+/* ── events ── */
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("button,[data-close]");if(!t)return;
+  if(t.dataset.filter){state.filter=t.dataset.filter;renderFilters();renderMap();return}
+  if(t.dataset.card){state.open=t.dataset.card;renderSheet();return}
+  if(t.hasAttribute("data-close")){const back=state.open;state.open=null;renderSheet();flHighlight(null);const c=document.querySelector(`[data-card="${back}"]`);c&&c.focus();return}
+  if(t.dataset.set){const f=t.dataset.set,v=t.dataset.v,cur=dataOf(state.open)[f];await writeCard(state.open,{[f]:cur===v&&f!=="owner"?"":v});renderSheet();return}
+  if(t.hasAttribute("data-take")){await writeCard(state.open,{owner:state.me});await resolveProfiles();renderSheet();return}
+  if(t.hasAttribute("data-pick")){pickPeople();return}
+  if(t.dataset.person){await writeCard(state.open,{owner:t.dataset.person});await resolveProfiles();renderSheet();return}
+  if(t.hasAttribute("data-del")){const id=state.open;if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Точно видалити? Натисніть ще раз";return}
+    state.open=null;renderSheet();delete state.cards[id];renderAll();try{await state.db.doc("cards/"+id).delete()}catch(e){};return}
+  if(t.dataset.add){if(!state.db){alertBox("Щоб додати картку, відкрийте сторінку на claude.ai з акаунтом.");return}
+    const [lane,stage]=t.dataset.add.split("|");const id="c"+Date.now().toString(36);
+    await writeCard(id,{custom:true,lane,stage,title:"Нова картка",desc:""});state.open=id;renderSheet();
+    const h=$("#shT");if(h){h.contentEditable="true";h.focus();document.getSelection().selectAllChildren(h)}return}
+});
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset.field){const id=state.open,f=t.dataset.field,v=t.value;state.cards[id]={...dataOf(id),[f]:v};flash("Зберігаємо…");debounceWrite(id+f,()=>writeCard(id,{[f]:v}))}
+  if(t.dataset.cv){const k=t.dataset.cv,v=t.value;$("#cvSaved").textContent="Зберігаємо…";debounceWrite("cv"+k,()=>writeCanvas(k,v))}
+  if(t.id==="shT"&&t.isContentEditable){const id=state.open,v=t.textContent.trim().slice(0,80);if(v)debounceWrite(id+"title",()=>writeCard(id,{title:v}))}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&state.open){state.open=null;renderSheet()}
+  if(e.key==="Enter"&&e.target.id==="shT"){e.preventDefault();e.target.blur()}});
+function alertBox(msg){setConn("off",msg)}
+
+async function pickPeople(){
+  const box=$("#peopleBox");if(!box||!state.user)return;
+  box.innerHTML=`<div class="note">Завантажуємо людей…</div>`;
+  try{const hits=await state.user.search("");
+    if(!hits||!hits.length){box.innerHTML=`<div class="note">Нікого не знайдено. Поділіться сторінкою з командою, і люди з’являться тут.</div>`;return}
+    hits.forEach(h=>{state.profiles[h.id]=h});
+    box.innerHTML=`<div class="people">${hits.map(h=>`<button data-person="${esc(h.id)}"><img src="${esc(h.avatarUrl||"")}" alt="">${esc(h.name||"Учасник")}${h.isMe?" (ви)":""}</button>`).join("")}</div>`;
+  }catch(e){box.innerHTML=`<div class="note">Список людей недоступний у цьому перегляді.</div>`}
+}
+
+/* ── boot ── */
+renderAll();
+(async()=>{
+  const c=window.claude;if(!c||!c.use){setConn("off","Спільні дані працюють лише на claude.ai. Зараз показано порожню карту.");return}
+  const [db,user]=await Promise.all([c.use("db"),c.use("user")]);
+  state.user=user;
+  if(user){try{state.me=await user.id()}catch(e){} try{state.canWrite=await user.can("data.write")}catch(e){} }
+  if(!db){setConn("off","Спільні дані недоступні: увійдіть у claude.ai, щоб бачити й редагувати карту.");return}
+  state.db=db;
+  if(state.canWrite===false)setConn("","Перегляд. Редагувати можуть учасники з правами на зміни.");
+  db.collection("cards").onSnapshot(snap=>{
+    const next={};snap.docs.forEach(d=>{next[d.id]=d.data()||{}});
+    state.cards=next;renderAll();resolveProfiles();if(state.canWrite!==false)setConn("live","Спільні дані · оновлюється наживо");
+  },err=>setConn("off","З’єднання з даними перервано. Оновіть сторінку."));
+  db.doc("canvas/main").onSnapshot(s=>{state.canvas=s.exists?(s.data()||{}):{};renderCanvas()},()=>{});
+})();
+</script>

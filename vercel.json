@@ -1,5 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/omnera-demo-v2.html" }
+  "redirects": [
+    { "source": "/", "destination": "/pwa/", "permanent": false }
   ]
 }
