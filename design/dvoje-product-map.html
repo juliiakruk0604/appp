@@ -112,6 +112,39 @@ header.top{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end;justif
 
 @media (max-width:1000px){.canvas{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.canvas{grid-template-columns:1fr}}
+
+/* service flow */
+.flowScroll{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--surface);-webkit-overflow-scrolling:touch}
+#flow svg{display:block;color:var(--ink)}
+.fl-lane{fill:var(--bg)} .fl-lane.alt{fill:var(--surface)}
+.fl-laneT{font:500 13px var(--display);fill:var(--ink)} .fl-laneS{font:11px var(--mono);fill:var(--muted)}
+.fl-col{font:10.5px var(--mono);fill:var(--muted);letter-spacing:.08em}
+.fl-node{cursor:pointer}
+.fl-node rect{fill:var(--raised);stroke:var(--line);stroke-width:1}
+.fl-node.sys rect{fill:var(--mossSoft);stroke:var(--moss);stroke-dasharray:4 3}
+.fl-node.alert rect{fill:var(--claySoft);stroke:var(--clay)}
+.fl-node:hover rect,.fl-node:focus rect{stroke:var(--ink);stroke-width:1.6}
+.fl-node:focus{outline:none}
+.fl-node.hl rect{stroke:var(--focus);stroke-width:2}
+.fl-t{font:500 12.5px var(--display);fill:var(--ink)} .fl-s{font:10.5px var(--mono);fill:var(--muted)}
+.fl-e{fill:none;stroke:var(--muted);stroke-width:1.4}
+.fl-e.data{stroke:var(--moss);stroke-dasharray:5 4}
+.fl-e.alert{stroke:var(--clay);stroke-dasharray:3 3}
+.fl-e.back,.fl-e.jump{stroke:var(--amber)}
+.fl-e.dim,.fl-el.dim{opacity:.15}
+.fl-e.hl{stroke:var(--focus);stroke-width:2.2;opacity:1}
+.fl-el rect{fill:var(--surface)} .fl-el text{font:10.5px var(--display);fill:var(--muted)}
+.fl-el.hl text{fill:var(--focus)}
+.fl-dot.s-proto,.fl-dot.s-design{fill:var(--amber)} .fl-dot.s-dev,.fl-dot.s-test{fill:var(--focus)} .fl-dot.s-done{fill:var(--moss)} .fl-dot.s-idea,.fl-dot.s-none{fill:var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{display:inline-block;width:26px;height:0;border-top:1.6px solid var(--muted)}
+.lg.data{border-top:1.6px dashed var(--moss)} .lg.alert{border-top:1.6px dotted var(--clay)} .lg.back{border-color:var(--amber)}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.links ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.links li{font-size:13.5px;line-height:1.35;background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.links li small{display:block;color:var(--muted);font-size:12px}
+@media (max-width:560px){.links{grid-template-columns:1fr}}
 /* phone: lanes stack, stages become labelled blocks */
 @media (max-width:760px){
   .mapScroll{overflow:visible}
@@ -148,8 +181,15 @@ header.top{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end;justif
     <div class="canvas" id="canvas"></div>
   </section>
 
+  <section style="display:flex;flex-direction:column;gap:14px" aria-labelledby="flowH">
+    <div class="sectionHead"><h2 id="flowH">Карта сервісу: що звідки куди</h2>
+      <div class="legend"><span><i class="lg solid"></i>перехід</span><span><i class="lg data"></i>дані між людьми</span><span><i class="lg alert"></i>тривога</span><span><i class="lg back"></i>повернення</span></div></div>
+    <p class="lead" style="margin:0">Рядки — хто діє: два партнери, система, оплата, психолог і соло. Стрілки показують, куди людина потрапляє далі і що передається між телефонами. Натисніть на крок, щоб побачити, звідки в нього приходять і куди він веде, і заповнити поля.</p>
+    <div class="flowScroll" id="flowScroll"><div id="flow"></div></div>
+  </section>
+
   <section style="display:flex;flex-direction:column;gap:14px" aria-labelledby="mapH">
-    <div class="sectionHead"><h2 id="mapH">Шлях людини</h2>
+    <div class="sectionHead"><h2 id="mapH">Усі картки за етапами</h2>
       <div class="filters" id="filters" role="group" aria-label="Фільтр карток"></div></div>
     <div class="mapScroll"><div class="map" id="map"></div></div>
     <p class="note">Коло в кутку картки показує, скільки полів заповнено. Екрани в дужках відповідають прототипу.</p>
@@ -277,7 +317,93 @@ async function resolveProfiles(){
   try{const ps=await state.user.profiles(ids);Object.assign(state.profiles,ps||{});renderMap();if(state.open)renderSheet()}catch(e){}
 }
 
-function renderAll(){renderStats();renderCanvas();renderFilters();renderMap();if(state.open)syncSheetValues()}
+
+/* ── service flow ── */
+const FL_LANES=[["p1","Партнер 1","почав першим"],["pay","Оплата","тариф і доступ"],["p2","Партнер 2","прийшов за запрошенням"],["sys","Система","дані, розбір, сповіщення"],["psy","Психолог","за згодою обох"],["day","Щодня","звички пари"],["solo","Соло","людина без пари"]];
+const FL_COLS=["Прихід","Вхід","Профіль","Запрошення","Карта","Радар","Доступ","Головна","Сесія","Розбір","Розмова","Домовленість","Перевірка"];
+const FL_NODES=[
+ ["land","p1",0,"Лендинг","сайт","landing"],["auth","p1",1,"Вхід і роль","A1–A2","onboard"],["prof","p1",2,"Профіль пари","A3","profile"],
+ ["inv","p1",3,"Запрошення","A4","invite"],["map1","p1",4,"Карта стосунків","B1–B3","map"],["radar","p1",5,"Радар","B4, E2–E3","radar"],
+ ["home","p1",7,"Головний екран","C1","home"],["ses1","p1",8,"Сесія питань","D1–D3","session"],["rev","p1",9,"Розкриття","D4–D5","reveal"],
+ ["talk","p1",10,"Розмова 15 хв","D6","talk"],["agree","p1",11,"Домовленість","D7","agree"],["check","p1",12,"Перевірка","D8–D9","check"],
+ ["paywall","pay",6,"Пейвол","B5 · 390 / 890 ₴","paywallPair"],["paid","pay",7,"Оплата","H5","pay"],
+ ["join","p2",3,"Приймає запрошення","A5","invite"],["map2","p2",4,"Карта стосунків","B1–B3","map"],["ses2","p2",8,"Сесія питань","D1–D3","session"],
+ ["sync","sys",3,"Код пари","SY","sync","sys"],["calc","sys",5,"Радар рахується","коли відповіли обоє","radar","sys"],
+ ["notif","sys",7,"Сповіщення","NT","notify","sys"],["ai","sys",9,"Розбір і ШІ","після обох","reveal","sys"],
+ ["stop","sys",10,"Стоп-сигнал","S2 · будь-який текст","stop","alert"],["remind","sys",11,"Нагадування","через 14 днів","check","sys"],
+ ["consent","psy",10,"Згода обох","Z1","consent"],["cab","psy",11,"Кабінет психолога","T1–T3","cabinet"],["book","psy",12,"Запис","H1","booking"],
+ ["daily","day",8,"Питання дня","DQ","daily"],["promise","day",9,"Наша обіцянка","O1","promise"],["decks","day",10,"Колоди","G1","decks"],
+ ["levels","day",11,"Рівні й бейджі","ME","levels"],["progress","day",12,"Прогрес пари","F1–F3","progress"],
+ ["k1","solo",0,"Хто ви зараз","K1","soloStart"],["k2","solo",1,"Карта пошуку","K2–K4","soloMap"],["k5","solo",2,"Пейвол соло","K5","paywallSolo"],
+ ["m","solo",3,"Моя історія","M1–M3","story"],["n","solo",4,"Переконання","N1–N4","beliefs"],["bridge","solo",5,"Міст у пару","P1–P2","bridge"],
+];
+const FL_EDGES=[
+ ["land","auth","Ми пара"],["land","k1","Я без пари"],["auth","prof","роль: пара"],["prof","inv",""],
+ ["inv","join","посилання з кодом","data"],["join","sync","пару з’єднано","data"],["inv","map1","не чекає"],["join","map2",""],
+ ["map1","calc","оцінки","data"],["map2","calc","оцінки","data"],["calc","radar","бачать обоє"],
+ ["radar","paywall","з чого почати"],["paywall","paid","тариф"],["paid","home","доступ обом"],["radar","ses1","3 пробні питання"],
+ ["home","ses1","тема"],["ses1","notif","здав → партнеру","data"],["notif","ses2",""],
+ ["ses1","ai","відповіді","data"],["ses2","ai","відповіді","data"],["ai","rev","обидва здали"],
+ ["ses1","stop","ознаки насильства","alert"],["ses2","stop","","alert"],["stop","book","допомога","alert"],
+ ["rev","talk",""],["talk","agree",""],["agree","remind","дата перевірки","data"],["remind","check","нагадує обом"],
+ ["check","home","наступна тема","back"],["check","progress","в історію"],["rev","consent","хочемо фахівця"],["consent","cab","доступ до відповідей","data"],
+ ["home","daily","щодня"],
+ ["k1","k2",""],["k2","k5","результат"],["k5","m","доступ"],["m","n",""],["n","bridge",""],["bridge","auth","зустрів людину → Вхід і роль","jump"],
+];
+const FG={L:176,CW:192,RH:104,T:40,W:138,H:52};
+const flRow=l=>FL_LANES.findIndex(x=>x[0]===l);
+function flBox(id){const n=FL_NODES.find(x=>x[0]===id),r=flRow(n[1]);return {x:FG.L+n[2]*FG.CW+13,y:FG.T+r*FG.RH+26,w:FG.W,h:FG.H,col:n[2],row:r}}
+function flPath(a,b,type){
+  const A=flBox(a),B=flBox(b),dc=B.col-A.col;let P;
+  if(A.row===B.row&&dc===1){P=[[A.x+A.w,A.y+A.h/2],[A.x+A.w+10,A.y+A.h/2],[B.x-10,B.y+B.h/2],[B.x,B.y+B.h/2]]}
+  else if(A.row===B.row&&dc>1){const x1=A.x+A.w*.7,x2=B.x+B.w*.3;P=[[x1,A.y],[x1,A.y-34],[x2,B.y-34],[x2,B.y]]}
+  else if(A.row===B.row&&dc<0){const x1=A.x+A.w*.3,x2=B.x+B.w*.7,y=A.y+A.h;P=[[x1,y],[x1,y+40],[x2,y+40],[x2,y]]}
+  else if(dc===0){const down=B.row>A.row;P=down?[[A.x+A.w/2,A.y+A.h],[A.x+A.w/2,A.y+A.h+20],[B.x+B.w/2,B.y-20],[B.x+B.w/2,B.y]]:[[A.x+A.w/2,A.y],[A.x+A.w/2,A.y-20],[B.x+B.w/2,B.y+B.h+20],[B.x+B.w/2,B.y+B.h]]}
+  else if(dc>0){P=[[A.x+A.w,A.y+A.h/2],[A.x+A.w+44,A.y+A.h/2],[B.x-44,B.y+B.h/2],[B.x,B.y+B.h/2]]}
+  else{const up=B.row<A.row;P=up?[[A.x+A.w/2,A.y],[A.x+A.w/2,A.y-60],[B.x+B.w/2,B.y+B.h+60],[B.x+B.w/2,B.y+B.h]]:[[A.x,A.y+A.h/2],[A.x-40,A.y+A.h/2],[B.x+B.w+40,B.y+B.h/2],[B.x+B.w,B.y+B.h/2]]}
+  if(type==="jump"){const x=A.x+A.w,y=A.y+A.h/2;return {d:`M${x},${y} L${x+30},${y}`,mx:x+34,my:y,left:true}}
+  const m=[0,1].map(k=>(P[0][k]+3*P[1][k]+3*P[2][k]+P[3][k])/8);
+  if(A.row===B.row&&dc===1)m[1]=A.y-10;
+  return {d:`M${P[0]} C${P[1]} ${P[2]} ${P[3]}`,mx:m[0],my:m[1]};
+}
+function renderFlow(){
+  const W=FG.L+FL_COLS.length*FG.CW+10,H=FG.T+FL_LANES.length*FG.RH+10;
+  let g=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Карта сервісу Двоє: як партнери, система, оплата, психолог і соло-трек переходять між кроками">
+  <defs>${[["a","var(--muted)"],["ad","var(--moss)"],["aa","var(--clay)"],["ab","var(--amber)"],["ah","var(--focus)"]].map(([id,c])=>`<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`).join("")}</defs>`;
+  FL_LANES.forEach(([k,t,sub],i)=>{const y=FG.T+i*FG.RH;g+=`<rect class="fl-lane ${i%2?"alt":""}" x="0" y="${y}" width="${W}" height="${FG.RH}"/><text class="fl-laneT" x="16" y="${y+46}">${esc(t)}</text><text class="fl-laneS" x="16" y="${y+64}">${esc(sub)}</text>`});
+  FL_COLS.forEach((c,i)=>{g+=`<text class="fl-col" x="${FG.L+i*FG.CW+13+FG.W/2}" y="24" text-anchor="middle">${esc(c.toUpperCase())}</text>`});
+  let labels="";
+  FL_EDGES.forEach(([a,b,l,t],i)=>{const {d,mx:mx0,my,left}=flPath(a,b,t),mk={data:"ad",alert:"aa",back:"ab",jump:"ab"}[t]||"a";const mx=left?mx0+(l.length*5.7+10)/2:mx0;
+    g+=`<path class="fl-e ${t||""}" data-e="${i}" data-a="${a}" data-b="${b}" d="${d}" marker-end="url(#${mk})"/>`;
+    if(l){const w=l.length*5.7+10;labels+=`<g class="fl-el" data-e="${i}"><rect x="${mx-w/2}" y="${my-8}" width="${w}" height="16" rx="4"/><text x="${mx}" y="${my+4}" text-anchor="middle">${esc(l)}</text></g>`}});
+  g+=labels;
+  FL_NODES.forEach(([id,lane,col,t,sub,card,kind])=>{const B=flBox(id),d=dataOf(card),st=d.status||"none";
+    g+=`<g class="fl-node ${kind||""}" data-node="${id}" data-card="${card}" tabindex="0" role="button" aria-label="${esc(t)}, ${esc(sub)}">
+    <rect x="${B.x}" y="${B.y}" width="${B.w}" height="${B.h}" rx="10"/>
+    <text class="fl-t" x="${B.x+11}" y="${B.y+21}">${esc(t)}</text><text class="fl-s" x="${B.x+11}" y="${B.y+38}">${esc(sub)}</text>
+    <circle class="fl-dot s-${st}" cx="${B.x+B.w-11}" cy="${B.y+11}" r="4"/>${hasQ(d)?`<text x="${B.x+B.w-11}" y="${B.y+B.h-9}" text-anchor="middle" style="font:600 11px var(--display);fill:var(--clay)">?</text>`:""}</g>`});
+  $("#flow").innerHTML=g+"</svg>";
+}
+function flHighlight(id){
+  const svg=$("#flow svg");if(!svg)return;
+  svg.querySelectorAll(".fl-e,.fl-el").forEach(e=>{const E=FL_EDGES[+e.dataset.e],on=id&&(E[0]===id||E[1]===id);e.classList.toggle("hl",!!on);e.classList.toggle("dim",!!id&&!on)});
+  svg.querySelectorAll(".fl-e").forEach(e=>{const E=FL_EDGES[+e.dataset.e];if(e.classList.contains("hl"))e.setAttribute("marker-end","url(#ah)");else e.setAttribute("marker-end","url(#"+({data:"ad",alert:"aa",back:"ab",jump:"ab"}[E[3]]||"a")+")")});
+  svg.querySelectorAll(".fl-node").forEach(n=>n.classList.toggle("hl",n.dataset.node===id));
+}
+const flName=id=>{const n=FL_NODES.find(x=>x[0]===id);return n?`${n[3]}${n[1]!=="p1"?" · "+FL_LANES[flRow(n[1])][1]:""}`:id};
+function linksHTML(card){
+  const ids=FL_NODES.filter(n=>n[5]===card).map(n=>n[0]);if(!ids.length)return "";
+  const inn=FL_EDGES.filter(e=>ids.includes(e[1])&&!ids.includes(e[0])),out=FL_EDGES.filter(e=>ids.includes(e[0])&&!ids.includes(e[1]));
+  const li=(e,k)=>`<li>${esc(flName(e[k]))}${e[2]?`<small>${esc(e[2])}</small>`:""}</li>`;
+  return `<div class="fld"><span class="lb">На карті сервісу</span><div class="links"><div><div class="note" style="margin-bottom:6px">Звідки сюди</div><ul>${inn.length?inn.map(e=>li(e,0)).join(""):`<li>Точка входу</li>`}</ul></div><div><div class="note" style="margin-bottom:6px">Куди далі</div><ul>${out.length?out.map(e=>li(e,1)).join(""):`<li>Кінець гілки</li>`}</ul></div></div></div>`;
+}
+const flowEl=()=>$("#flow");
+document.addEventListener("click",e=>{const n=e.target.closest&&e.target.closest(".fl-node");if(!n)return;flHighlight(n.dataset.node);state.open=n.dataset.card;renderSheet()});
+document.addEventListener("keydown",e=>{const n=e.target.closest&&e.target.closest(".fl-node");if(n&&(e.key==="Enter"||e.key===" ")){e.preventDefault();n.dispatchEvent(new MouseEvent("click",{bubbles:true}))}});
+document.addEventListener("mouseover",e=>{const n=e.target.closest&&e.target.closest(".fl-node");if(n)flHighlight(n.dataset.node)});
+document.addEventListener("mouseout",e=>{const n=e.target.closest&&e.target.closest(".fl-node");if(n&&!state.open)flHighlight(null)});
+
+function renderAll(){renderStats();renderCanvas();renderFilters();renderMap();renderFlow();if(state.open)syncSheetValues()}
 
 /* ── sheet ── */
 function cardMeta(id){return cardList().find(c=>c[0]===id)}
@@ -301,6 +427,7 @@ function renderSheet(){
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${d.owner?whoHTML(d.owner):`<span class="note">Ще не призначено</span>`}
         ${state.user&&!ro?`<button class="pill" data-pick>${d.owner?"Змінити":"Призначити"}</button>${state.me&&d.owner!==state.me?`<button class="pill" data-take>Беру я</button>`:""}${d.owner?`<button class="pill" data-set="owner" data-v="">Зняти</button>`:""}`:""}</div>
         <div id="peopleBox"></div></div>
+      ${linksHTML(id)}
       <div class="fld"><label for="f_goal">Навіщо це людині</label><textarea id="f_goal" data-field="goal" placeholder="Яку проблему закриває цей екран чи функція?" ${ro?"readonly":""}></textarea></div>
       <div class="fld"><label for="f_metric">Як зрозуміємо, що працює</label><textarea id="f_metric" data-field="metric" placeholder="Метрика і цільове значення. Наприклад: 60% пар доходять до радара." ${ro?"readonly":""}></textarea></div>
       <div class="fld"><label for="f_questions">Відкриті питання</label><textarea id="f_questions" data-field="questions" placeholder="Що ще не вирішено? Кожне питання з нового рядка." ${ro?"readonly":""}></textarea></div>
@@ -339,7 +466,7 @@ document.addEventListener("click",async e=>{
   const t=e.target.closest("button,[data-close]");if(!t)return;
   if(t.dataset.filter){state.filter=t.dataset.filter;renderFilters();renderMap();return}
   if(t.dataset.card){state.open=t.dataset.card;renderSheet();return}
-  if(t.hasAttribute("data-close")){const back=state.open;state.open=null;renderSheet();const c=document.querySelector(`[data-card="${back}"]`);c&&c.focus();return}
+  if(t.hasAttribute("data-close")){const back=state.open;state.open=null;renderSheet();flHighlight(null);const c=document.querySelector(`[data-card="${back}"]`);c&&c.focus();return}
   if(t.dataset.set){const f=t.dataset.set,v=t.dataset.v,cur=dataOf(state.open)[f];await writeCard(state.open,{[f]:cur===v&&f!=="owner"?"":v});renderSheet();return}
   if(t.hasAttribute("data-take")){await writeCard(state.open,{owner:state.me});await resolveProfiles();renderSheet();return}
   if(t.hasAttribute("data-pick")){pickPeople();return}
