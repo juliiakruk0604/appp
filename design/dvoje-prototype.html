@@ -438,7 +438,7 @@ html,body{overflow-x:clip}
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
-const APP_VERSION="6 · аудит";
+const APP_VERSION="7 · логіка";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const arrow='<svg width="18" height="18" aria-hidden="true"><use href="#arrow"/></svg>';
 const checkI='<svg width="12" height="12" aria-hidden="true"><use href="#check"/></svg>';
@@ -630,6 +630,7 @@ let S=freshState();
 /* ═════════ derived ═════════ */
 const nm=u=>S.couple.names[u]||(u==="p1"?"Партнер 1":"Партнер 2");
 const nmAcc=u=>{const n=nm(u);if(!S.couple.names[u])return n;return n.replace(/я$/,"ю").replace(/а$/,"у").replace(/[йь]$/,"я").replace(/([бвгджзклмнпрстфхцчшщ])$/i,"$1а")};
+const nmDat=u=>{const n=nm(u);if(!S.couple.names[u])return n;return n.replace(/ія$/,"ії").replace(/[ая]$/,"і").replace(/[йь]$/,"ю").replace(/([бвгджзклмнпрстфхцчшщ])$/i,"$1у")};
 const me=()=>S.user, you=()=>other(S.user);
 const paid=()=>S.couple.purchased.length>0;
 const hasMod=id=>S.couple.purchased.includes("full")||S.couple.purchased.includes(id);
@@ -647,10 +648,10 @@ const curSession=()=>S.sessions.find(x=>x.id===S.cur);
 const completedCount=()=>S.sessions.filter(x=>x.done).length;
 function activeConsent(){return S.consents.find(c=>c.p1&&c.p2&&!c.revoked&&new Date(c.until)>now())}
 function computeFindings(se){
-  const res=[];let safety=false;
+  const res=[];const safetyBy=[];
   se.qids.forEach(q=>{const Q=MQ[q],a=se.ans.p1[q],b=se.ans.p2[q];
     const txt=[a,b].filter(v=>typeof v==="string").join(" ")+" "+(se.ans.p1[q+"x"]||"")+" "+(se.ans.p2[q+"x"]||"");
-    if(RE_SAFETY.test(txt)) safety=true;
+    ["p1","p2"].forEach(w=>{const v=se.ans[w][q],t=(typeof v==="string"?v:"")+" "+(se.ans[w][q+"x"]||"");if(RE_SAFETY.test(t)&&!safetyBy.includes(w))safetyBy.push(w)});
     if(a==null||b==null||a==="skip"||b==="skip") return;
     let t=null;
     if(Q.lvl===3) t=5;
@@ -664,8 +665,10 @@ function computeFindings(se){
     else t=a===b?1:2;
     if(t) res.push({q,t});
   });
-  return {items:res,safety};
+  return {items:res,safety:safetyBy.length>0,safetyBy};
 }
+/* only the person who wrote it sees the help screen; the partner sees a neutral pause */
+function safetyGate(se){const by=computeFindings(se).safetyBy;if(!by.length)return null;return by.includes(me())?V.S2():V.PAUSE();}
 function fmtAns(Q,v,x){
   if(v==null) return '<span style="color:var(--faint)">—</span>';
   if(v==="skip") return '<i style="color:var(--faint)">Пропущено</i>';
@@ -766,7 +769,7 @@ V.A4=()=>{const c=S.couple,code="ДВ-24K7",link="dvoie.app/j/24k7";return {body
   <textarea id="inv" class="field" data-bind="couple.invite">${esc(c.invite)}</textarea>
   <div class="btnRow" style="margin-top:10px"><button class="btn ghost" data-act="copyInvite">Скопіювати</button><button class="btn ghost" data-act="sendInvite">Надіслати в месенджер</button></div>
   <button class="card mod" data-go="SY" style="margin-top:12px"><span class="ic">⇄</span><span class="tx"><b>Пройти на двох телефонах</b><span>${S.sync.code?"Пара "+esc(S.sync.code)+" створена":"Справжнє посилання для партнера"}</span></span>${arrow}</button>
-  ${c.inviteSent?`<div class="card soft" style="margin-top:12px;font-size:13px;line-height:1.5">Запрошення надіслано. Нагадаємо ${esc(nm("p2"))} на 2-й і 7-й день.<br><span style="color:var(--graphite)">Прототип: перемкніться на «${esc(nm("p2"))}» у верхній панелі.</span></div>`:""}`,
+  ${c.inviteSent?`<div class="card soft" style="margin-top:12px;font-size:13px;line-height:1.5">Запрошення надіслано. Нагадаємо ${esc(nmDat("p2"))} на 2-й і 7-й день.<br><span style="color:var(--graphite)">Прототип: перемкніться на «${esc(nm("p2"))}» у верхній панелі.</span></div>`:""}`,
   foot:`<button class="btn" data-act="inviteNext">${c.inviteSent?"Далі — карта стосунків":"Надіслати й продовжити"}${arrow}</button><button class="btn ghost" data-act="skipInvite">Поки пропустити${arrow}</button>`};};
 
 V.A5=()=>{const c=S.couple,inv=nm("p1");
@@ -869,30 +872,47 @@ V.B5=()=>{const r=recommendation(),sel=S.tariffSel||"full";
   foot:`<button class="btn" data-act="buy">Оплатити ${sel==="full"?PRICE_FULL:PRICE_MOD} ₴${arrow}</button>`};};
 
 /* C — home */
+/* one clear "do this now" for the home screen */
+function nextAction(){const u=me(),o=you();
+  const due=S.agreements.find(a=>a.status==="active"&&new Date(a.check)<=now()&&!S.checkins.some(c=>c.agreement===a.id&&c.round===a.check&&c.by===u));
+  if(due) return {k:"check",lab:"Зараз · перевірка",t:`Чи вийшло: «${due.text}»`,s:"Дві хвилини. Кожен відповідає окремо",a:`data-act="openCheck" data-v="${due.id}"`};
+  const se=S.sessions.find(x=>!x.done);
+  if(se){const m=modById(se.mod),nm2=`${m.short||m.n} · ${se.trial?"пробний":"захід "+se.n}`,paused=computeFindings(se).safetyBy.length&&se.submitted.p1&&se.submitted.p2;
+    if(!paused&&!se.submitted[u]){const k=Object.keys(se.ans[u]).filter(q=>se.qids.includes(q)).length;return {k:"session",lab:"Зараз · ваша черга",t:nm2,s:`Ви відповіли на ${k} з ${se.qids.length}`,a:`data-act="resume"`}}
+    if(!paused&&se.submitted[o]) return {k:"session",lab:se.revealed?"Зараз · продовжити розбір":"Зараз · можна відкривати",t:nm2,s:se.revealed?"Відповіді вже відкриті":"Обоє відповіли",a:`data-act="resume"`};}
+  if(!mapDone(u)) return {k:"map",lab:"Зараз · почніть тут",t:"Пройти карту стосунків",s:"20 питань · близько 8 хвилин",a:`data-act="goB1"`};
+  if(S.couple.mode==="alone"&&!mapDone(o)) return {k:"alone",lab:"Поки без партнера",t:"Ваша сторона карти",s:"Що ви самі про себе сказали",a:`data-go="E2"`};
+  if(mapDone(o)&&!S.sessions.length){const r=recommendation();return {k:"topic",lab:"Зараз · перша тема",t:`Почати «${r.mod.short||r.mod.n}»`,s:"Тут найбільша різниця «є — хочу» в обох",a:`data-act="openMod" data-v="${r.mod.id}"`}}
+  if(!S.daily[u][dayKey()]) return {k:"daily",lab:"Зараз · 2 хвилини",t:dailyQ(dayKey()),s:"Питання дня",a:`data-tab="DQ"`};
+  return {k:"deck",lab:"Зараз · на вечір",t:"Вечір розмов",s:`Колода «Про нас сьогодні» · ${DECK.length} карток`,a:`data-go="G1"`};}
+
 V.C1=()=>{const u=me(),c=S.couple,o=you();
-  const blocks=[];
+  const blocks=[],na=nextAction();
   const active=S.sessions.find(x=>!x.done);
   const due=S.agreements.find(a=>a.status==="active"&&new Date(a.check)<=now());
   const nextA=S.agreements.filter(a=>a.status==="active").sort((x,y)=>new Date(x.check)-new Date(y.check))[0];
-  if(due) blocks.push(`<button class="card warm" data-act="openCheck" data-v="${due.id}" style="width:100%;text-align:left"><div class="lab" style="color:var(--clay)">Настала перевірка</div><div class="t3" style="margin-top:6px">${esc(due.text)}</div><div class="small">Домовились ${fS(due.created)} · перевірка ${fS(due.check)}</div></button>`);
-  if(active){const mine=active.submitted[u],oth=active.submitted[o],n=active.qids.length,k=Object.keys(active.ans[u]).filter(q=>active.qids.includes(q)).length;
-    const st=active.revealed?"Відкриття готове":mine&&oth?"Обоє відповіли — можна відкривати":mine?`Чекаємо ${esc(nm(o))}`:`Ви відповіли на ${k} з ${n}`;
+  const dueMine=due&&S.checkins.some(x=>x.agreement===due.id&&x.round===due.check&&x.by===u);
+  if(due&&na.k!=="check") blocks.push(`<button class="card warm" data-act="openCheck" data-v="${due.id}" style="width:100%;text-align:left"><div class="lab" style="color:var(--clay)">${dueMine?"Перевірка · чекаємо "+esc(nmAcc(o)):"Настала перевірка"}</div><div class="t3" style="margin-top:6px">${esc(due.text)}</div><div class="small">Домовились ${fS(due.created)} · перевірка ${fS(due.check)}</div></button>`);
+  if(active&&na.k!=="session"){const mine=active.submitted[u],oth=active.submitted[o],n=active.qids.length,k=Object.keys(active.ans[u]).filter(q=>active.qids.includes(q)).length;
+    const wd=mine&&active.subAt&&active.subAt[u]?Math.floor((now()-new Date(active.subAt[u]))/DAY):0;const st=active.revealed?"Відкриття готове":mine&&oth?"Обоє відповіли — можна відкривати":mine?`Чекаємо ${esc(nmAcc(o))}${wd?" · "+wd+" дн.":""}`:`Ви відповіли на ${k} з ${n}`;
     blocks.push(`<button class="card darkCard" data-act="resume" style="width:100%;text-align:left;padding:18px"><div class="lab">Активний захід</div><div class="t3" style="margin-top:8px;color:var(--onInk)">${esc(modById(active.mod).n)} · ${active.trial?"пробний":"захід "+active.n}</div><div class="between" style="margin-top:12px"><span style="font-size:13px;opacity:.8">${st}</span>${arrow}</div></button>`);}
   const mapBlock=mapDone("p1")&&mapDone("p2")?`<button class="card" data-go="B4"><div class="lab">Карта стосунків</div><div class="row" style="margin-top:6px"><span class="t3" style="flex:1">Радар готовий</span>${arrow}</div></button>`
     :`<button class="card" data-act="${mapDone(u)?"goB3":"goB1"}"><div class="lab">Карта стосунків</div><div class="t3" style="margin-top:6px">${mapDone(u)?`Чекаємо ${esc(nm(o))}`:"Пройти карту · 8 хвилин"}</div></button>`;
-  blocks.push(mapBlock);
-  if(mapDone("p1")&&mapDone("p2")){const r=recommendation();blocks.push(`<button class="card mod" data-act="openMod" data-v="${r.mod.id}"><span class="ic">${esc((r.mod.short||r.mod.n)[0])}</span><span class="tx"><b>Рекомендована тема: ${esc(r.mod.short||r.mod.n)}</b><span>Найбільша різниця «є — хочу» в обох</span></span>${arrow}</button>`)}
+  if(na.k!=="map") blocks.push(mapBlock);
+  if(mapDone("p1")&&mapDone("p2")&&na.k!=="topic"){const r=recommendation();blocks.push(`<button class="card mod" data-act="openMod" data-v="${r.mod.id}"><span class="ic">${esc((r.mod.short||r.mod.n)[0])}</span><span class="tx"><b>Рекомендована тема: ${esc(r.mod.short||r.mod.n)}</b><span>Найбільша різниця «є — хочу» в обох</span></span>${arrow}</button>`)}
   const dq=S.daily[u][dayKey()],dqo=S.daily[o][dayKey()];
-  blocks.splice((due?1:0)+(active?1:0),0,`<button class="card" data-tab="DQ" style="width:100%;text-align:left"><div class="between"><span class="lab">Питання дня · ${streak()} дн. поспіль</span>${dq&&dqo?'<span class="tag moss">відкрито</span>':dq?'<span class="tag">чекаємо '+esc(nm(o))+'</span>':'<span class="tag clay">нове</span>'}</div><div class="t3" style="margin-top:6px">${esc(dailyQ(dayKey()))}</div></button>`);
+  if(na.k!=="daily") blocks.splice(blocks.length?Math.min(blocks.length,1):0,0,`<button class="card" data-tab="DQ" style="width:100%;text-align:left"><div class="between"><span class="lab">Питання дня · ${streak()} дн. поспіль</span>${dq&&dqo?'<span class="tag moss">відкрито</span>':dq?'<span class="tag">чекаємо '+esc(nm(o))+'</span>':'<span class="tag clay">нове</span>'}</div><div class="t3" style="margin-top:6px">${esc(dailyQ(dayKey()))}</div></button>`);
   if(!(S.promise.sig.p1&&S.promise.sig.p2)) blocks.push(`<button class="card mod" data-go="O1"><span class="ic">✍</span><span class="tx"><b>Наша обіцянка</b><span>${S.promise.sig[u]?"Чекаємо підпис "+esc(nm(o)):"Три наміри й два підписи · безкоштовно"}</span></span>${arrow}</button>`);
   blocks.push(`<button class="card mod" data-go="G1"><span class="ic">✦</span><span class="tx"><b>Вечір розмов</b><span>Колода «Про нас сьогодні» · ${DECK.length} карток</span></span>${arrow}</button>`);
   const act=S.agreements.filter(a=>a.status==="active").length;
   blocks.push(`<button class="card" data-go="F1"><div class="lab">Наші домовленості</div><div class="between" style="margin-top:6px"><span style="font-size:14px">${act?`${act} активна · перевірка ${fS(nextA.check)}`:"Поки немає"}</span>${arrow}</div></button>`);
-  blocks.push(`<div class="blk"><span class="lab">Читати</span>${POSTS.map((p,i)=>`<button class="card" data-act="openPost" data-v="${i}" style="margin-top:6px;font-size:14px">${esc(p.t)}</button>`).join("")}</div>`);
+  blocks.push(`<button class="card mod" data-go="G3"><span class="ic">¶</span><span class="tx"><b>Почитати</b><span>${POSTS.length} статті терапевта</span></span>${arrow}</button>`);
   const partnerLine=!c.joined[o]?`<div class="card" style="margin-top:12px;font-size:13px;line-height:1.45">${esc(nm(o))} поки не приєднався. Можна почекати або пройти тему самому — відповіді збережуться. <button class="link" style="width:auto;padding:0" data-go="A4">Запросити</button></div>`:"";
   return {noBack:true,homeBar:true,body:`
   <div class="between"><div><div class="eb">Наш простір</div><h2 class="t2" style="margin-top:6px">${esc(nm("p1"))} & ${esc(nm("p2"))}</h2></div>${av()}</div>
   ${partnerLine}
+  <button class="card darkCard" ${na.a} style="width:100%;text-align:left;padding:20px;margin-top:14px"><div class="lab">${esc(na.lab)}</div><div class="t2" style="margin-top:8px;color:var(--onInk)">${esc(na.t)}</div><div class="between" style="margin-top:14px"><span style="font-size:13px;opacity:.8">${esc(na.s)}</span>${arrow}</div></button>
+  <div class="lab" style="margin:22px 0 0">Ще</div>
   <div class="stack" style="margin-top:14px">${blocks.join("")}</div>
   <div class="rule"></div>
   <div class="btnRow"><button class="btn ghost" data-go="C2">Усі модулі</button><button class="btn ghost" data-go="Z1">Мої дані</button></div>`};};
@@ -932,7 +952,7 @@ V.D1=()=>{const se=curSession();if(!se) return V.Z3empty();const m=modById(se.mo
   foot:`<button class="btn" data-act="qStart">${se.idx[me()]>0?"Продовжити з питання "+(se.idx[me()]+1):"Почати"}${arrow}</button>`};};
 
 V.D2=()=>{const se=curSession();if(!se) return V.Z3empty();const u=me(),i=se.idx[u],q=se.qids[i],Q=MQ[q],v=se.ans[u][q],x=se.ans[u][q+"x"]||"";
-  if(Q.lvl===3&&!se.s1ok) {return V.S1();}
+  if(Q.lvl===3&&!s1both(se)) {return s1of(se)[u]?V.S1W():V.S1();}
   let input="";
   if(Q.f==="text") input=`<label class="lab" for="ta">Ваша відповідь</label><textarea id="ta" class="field" data-bind="ans.${q}" placeholder="Пишіть як говорите. Довжина не має значення.">${esc(typeof v==="string"&&v!=="skip"?v:"")}</textarea>`;
   else if(Q.f==="scale2") input=dialBlock({now:v&&v!=="skip"?v[0]:null,want:v&&v!=="skip"?v[1]:null,actNow:"aNow",actWant:"aWant"});
@@ -946,23 +966,37 @@ V.D2=()=>{const se=curSession();if(!se) return V.Z3empty();const u=me(),i=se.idx
   <div class="between" style="margin-top:12px"><span class="small" style="margin:0">${se.saved&&se.saved[u]===q?"Збережено":""}</span><button class="link" style="width:auto" data-act="qSkip">Пропустити це питання</button></div>`,
   foot:`<button class="btn" data-act="qNext" id="qNextBtn" ${answered||Q.f==="rank"?"":"disabled"}>${i<se.qids.length-1?"Далі":"Здати відповіді"}${arrow}</button>`};};
 
-V.S1=()=>({body:`
+const s1of=se=>se.s1||(se.s1ok?{p1:true,p2:true}:{});
+const s1both=se=>{const x=s1of(se);return !!(x.p1&&x.p2)};
+V.S1=()=>{const se=curSession(),o=you(),x=se?s1of(se):{};return {body:`
   <div class="eb clay">Рівень 3</div><h2 class="t1">Далі — складніше</h2>
-  <p class="p">Наступні питання торкаються того, про що зазвичай мовчать: сорому, страху, болю. Відповідати необов’язково. Вийти можна будь-якої миті — те, що не здали, не збережеться.</p>`,
-  foot:`<button class="btn" data-act="s1ok">Я готовий(ва)${arrow}</button><button class="btn ghost" data-act="s1no">Не зараз${arrow}</button>`});
+  <p class="p">Наступні питання торкаються того, про що зазвичай мовчать: сорому, страху, болю. Відповідати необов’язково. Вийти можна будь-якої миті — те, що не здали, не збережеться.</p>
+  ${x[o]?`<div class="card soft" style="margin-top:12px;font-size:13.5px;line-height:1.5">${esc(nm(o))}: згоду на рівень 3 вже дано.</div>`
+  :`<p class="small">Рівень 3 відкривається, лише коли готові обоє. ${esc(nm(o))} отримає таке саме питання.</p>`}`,
+  foot:`<button class="btn" data-act="s1ok">Я готовий(ва)${arrow}</button><button class="btn ghost" data-act="s1no">Не зараз${arrow}</button>`}};
+V.S1W=()=>{const o=you();return {body:`
+  <div class="eb clay">Рівень 3</div><h2 class="t1">Чекаємо згоди ${esc(nmAcc(o))}</h2>
+  <p class="p">Глибші питання відкриваються, лише коли готові обоє. ${esc(nm(o))} може відповісти «Не зараз», і це теж нормально.</p>
+  <p class="p">Поки можна пропустити питання рівня 3 і здати решту або повернутись пізніше.</p>
+  <p class="small">Прототип: перемкніться на «${esc(nm(o))}» у верхній панелі.</p>`,
+  foot:`<button class="btn" data-act="skip3">Пропустити рівень 3${arrow}</button><button class="btn ghost" data-act="toHome">На головний${arrow}</button>`}};
 
 V.D3=()=>{const se=curSession();if(!se) return V.Z3empty();const u=me(),o=you(),M=se.qids.length,K=se.submitted[o]?M:Object.keys(se.ans[o]).filter(q=>se.qids.includes(q)).length;
   if(se.submitted.p1&&se.submitted.p2) return {body:`<div class="eb">Обоє відповіли</div><h2 class="t2">Відкриття готове.</h2><p class="p">Відкривається одночасно для обох. Після відкриття відповіді не редагуються.</p>`,foot:`<button class="btn" data-act="reveal">Відкрити відповіді${arrow}</button>`};
   const can=!se.remindAt||now()-new Date(se.remindAt)>=DAY;
+  const at=se.subAt&&se.subAt[u],days=at?Math.max(0,Math.floor((now()-new Date(at))/DAY)):0;
   return {body:`
   <div class="eb">Здано</div><h2 class="t1">Готово. Чекаємо на ${esc(nmAcc(o))}</h2>
   <p class="p">Ви відповіли на ${M} з ${M}. ${esc(nm(o))} — на ${K} з ${M}. Відкриється, коли обидва закінчите.</p>
+  <div class="card" style="margin-top:12px;font-size:13.5px;line-height:1.5"><div class="lab">Що буде далі</div>Ми самі нагадаємо ${esc(nmDat(o))} на 2-й і 5-й день. ${days?`Минуло днів: ${days}.`:""}</div>
+  ${days>=7?`<div class="card warm" style="margin-top:12px"><div class="lab" style="color:var(--clay)">Уже тиждень</div><p style="font-size:13.5px;line-height:1.5;margin:6px 0 10px">Так буває: у когось немає сил або часу. Оберіть, як вам зручніше.</p>
+    <div class="chips"><button class="chip" data-act="softMsg">Надіслати тепле повідомлення</button><button class="chip" data-tab="DQ">Поки питання дня</button><button class="chip" data-act="toHome">Чекати далі</button></div></div>`:""}
   <div class="card" style="margin-top:14px;font-size:13.5px;line-height:1.5">${lockI} Свої відповіді після здачі редагувати не можна. Чужих не видно взагалі, навіть частково.</div>
   <p class="p">Можна взяти колоду «Вечір розмов» — там легкі питання, нічого серйозного.</p>
   <p class="small">Прототип: перемкніться на «${esc(nm(o))}» у верхній панелі або скористайтесь автозаповненням.</p>`,
   foot:`<button class="btn ghost" data-act="remindS" ${can?"":"disabled"}>${can?"Нагадати":"Нагадування надіслано · наступне завтра"}${arrow}</button><button class="btn ghost" data-go="G1">Вечір розмов${arrow}</button>`};};
 
-V.D4=()=>{const se=curSession();if(!se||!se.revealed) return V.Z3empty();return {body:`
+V.D4=()=>{const se=curSession();if(!se||!se.revealed) return V.Z3empty();{const sg=safetyGate(se);if(sg)return sg;}return {body:`
   <div class="eb">Відкриття · ${esc(fT(se.revealed))}</div><h2 class="t2">Ваші відповіді</h2>
   <div class="card soft" style="margin-top:10px;font-size:13px;line-height:1.5">Спершу просто прочитайте обидві колонки. Не коментуйте вголос, доки не дочитаєте до кінця.</div>
   ${se.qids.map((q,k)=>`<div class="qBlock"><div class="q"><span class="mono" style="font-size:10px;color:var(--faint);margin-right:6px">${k+1}</span>${esc(MQ[q].t)}</div>
@@ -970,7 +1004,7 @@ V.D4=()=>{const se=curSession();if(!se||!se.revealed) return V.Z3empty();return 
   foot:`<button class="btn" data-act="toFindings">Що ми побачили${arrow}</button>`};};
 
 V.D5=()=>{const se=curSession();if(!se) return V.Z3empty();const f=computeFindings(se);
-  if(f.safety) return V.S2();
+  {const sg=safetyGate(se);if(sg)return sg;}
   const byType={};f.items.forEach(it=>{(byType[it.t]=byType[it.t]||[]).push(it.q)});
   const types=Object.keys(byType).map(Number).sort();
   const onlyMatch=types.length===0||types.every(t=>t===1);
@@ -1027,11 +1061,24 @@ V.D9=()=>{const se=curSession();const m=modById(se?se.mod:"mezhi"),left=Math.max
   ${cc>=3?`<div class="card warm" style="margin-top:12px"><div class="lab">Для тих, кому мало ШІ</div><p style="font-size:13.5px;line-height:1.5;margin:6px 0 0">Психолог прочитає відповіді обох у цій темі й напише розбір. 3–5 днів.</p><button class="chip" style="margin-top:8px" data-go="H2">Письмовий розбір · 790 ₴</button></div>`:""}`,
   foot:`${se&&se.trial&&!hasMod(m.id)&&me()==="p1"?`<button class="btn" data-go="B5">Відкрити «${esc(m.short)}» повністю${arrow}</button>`:""}<button class="btn ${se&&se.trial&&!hasMod(m.id)?"ghost":""}" data-act="toHome">На головний${arrow}</button>`};};
 
-V.D8=()=>{const a=S.agreements.find(x=>x.id===S.checkId)||S.agreements[0];if(!a) return V.Z3empty();const r=S.checkRes;
-  const prevFails=S.checkins.filter(c=>c.agreement===a.id&&c.result==="Не вийшло").length;
-  return {body:`
-  <div class="eb">Перевірка · ${esc(fD(now()))}</div><h2 class="t2">Два тижні тому ви домовились</h2>
-  <div class="card" style="margin-top:12px"><p class="t3">«${esc(a.text)}»</p><div class="small">Відповідальний: ${esc(a.who)}</div></div>
+V.D8=()=>{const a=S.agreements.find(x=>x.id===S.checkId)||S.agreements[0];if(!a) return V.Z3empty();
+  const u=me(),o=you(),round=S.ckRound||a.check,C=S.checkins.filter(c=>c.agreement===a.id&&c.round===round),mine=C.find(c=>c.by===u),his=C.find(c=>c.by===o);
+  const head=`<div class="eb">Перевірка · ${esc(fD(new Date(round)))}</div><h2 class="t2">Два тижні тому ви домовились</h2>
+  <div class="card" style="margin-top:12px"><p class="t3">«${esc(a.text)}»</p><div class="small">Відповідальний: ${esc(a.who)}</div></div>`;
+  if(mine&&his){const same=mine.result===his.result,cell=c=>`<div class="lab">${esc(nm(c.by))}</div><div style="font-size:15px">${esc(c.result)}</div>${c.why?`<div class="small" style="margin-top:4px">${esc(c.why)}</div>`:""}`;
+    return {body:`${head}
+    <div class="lab" style="margin:16px 0 0">Відповіді обох</div><div class="cols"><div class="col a">${cell(C.find(c=>c.by==="p1"))}</div><div class="col b">${cell(C.find(c=>c.by==="p2"))}</div></div>
+    ${same?`<div class="card soft" style="margin-top:12px;font-size:13.5px;line-height:1.5">Ви бачите це однаково.</div>`
+    :`<div class="card warm" style="margin-top:12px;font-size:13.5px;line-height:1.5">Ви бачите це по-різному. Це нормально і якраз варте розмови: що помітив кожен і чого інший міг не бачити.</div>`}
+    <p class="small">${a.status==="closed"?"Обоє сказали «Спрацювало», тож домовленість закрита як виконана.":"Наступна перевірка "+esc(fD(a.check))+"."}</p>`,
+    foot:`<button class="btn" data-go="F1">До домовленостей${arrow}</button>${same?"":`<button class="btn ghost" data-go="G1">Поговорити з колодою${arrow}</button>`}`};}
+  if(mine) return {body:`${head}
+    <div class="card" style="margin-top:14px;font-size:13.5px;line-height:1.5">${lockI} Вашу відповідь збережено: ${esc(mine.result)}. Відповідь ${esc(nm(o))} відкриється, коли відповісте обоє.</div>
+    <p class="small">Прототип: перемкніться на «${esc(nm(o))}» у верхній панелі.</p>`,
+    foot:`<button class="btn" data-act="toHome">На головний${arrow}</button>`};
+  const r=S.checkRes,prevFails=S.checkins.filter(c=>c.agreement===a.id&&(c.by===u||!c.by)&&c.result==="Не вийшло").length;
+  return {body:`${head}
+  <p class="p">Відповідайте за себе. Відповідь ${esc(nm(o))} відкриється, коли відповісте обоє.</p>
   <div class="stack" style="margin-top:14px">${["Спрацювало","Частково","Не вийшло"].map(x=>opt(x,r===x,"ckRes",x)).join("")}</div>
   ${r==="Не вийшло"?`<p class="p">Це нормально і трапляється частіше, ніж здається. Що саме завадило?</p>`:r?`<p class="p">Що допомогло або заважало?</p>`:""}
   ${r?`<textarea class="field" id="ckw" data-bind="ckWhy" placeholder="Коротко, своїми словами">${esc(S.ckWhy||"")}</textarea>`:""}
@@ -1115,6 +1162,12 @@ V.S2=()=>({noBack:false,body:`
   <div class="card" style="margin-top:8px"><div class="between"><span style="font-size:14px">Поліція, якщо загроза зараз</span><b style="font-family:var(--display);font-weight:400;font-size:22px;user-select:all">102</b></div></div>
   <p class="small">Домовленість у цій темі не пропонується.</p>`,
   foot:`<button class="btn clay" data-go="H1">Поговорити з психологом зараз${arrow}</button><p class="small" style="text-align:center;margin:0">Перша розмова безкоштовна.</p>`});
+
+V.PAUSE=()=>({body:`
+  <div class="eb">Захід на паузі</div><h2 class="t1">Цей захід поки на паузі</h2>
+  <p class="p">Деякі теми краще проходити не лише в застосунку. Відкриття цього заходу зараз недоступне.</p>
+  <p class="p">Можна продовжити з іншої теми, відповісти на питання дня або взяти колоду для розмов.</p>`,
+  foot:`<button class="btn" data-act="toHome">На головний${arrow}</button><button class="btn ghost" data-go="G1">Вечір розмов${arrow}</button>`});
 
 V.Z1=()=>{const c=activeConsent(),p=c?PSY.find(x=>x.id===c.psy):null;return {body:`
   <div class="eb">Приватність</div><h2 class="t2">Ваші дані</h2>
@@ -1460,7 +1513,7 @@ function setRank(ord){const id=S.nav[S.user].s;if(id==="K3"){S.solo.ans[SOLO_Q[S
 function newSession(mod,kind){const n=kind==="trial"?0:kind==="z2"?2:1;
   const se={id:uid(),mod,n,trial:kind==="trial",qids:SETS[kind].slice(),created:now().toISOString(),ans:{p1:{},p2:{}},idx:{p1:0,p2:0},submitted:{p1:false,p2:false},revealed:null,done:false,talked:false,agreementId:null,s1ok:false};
   S.sessions.push(se);S.cur=se.id;return se;}
-function submitSession(se,u){se.submitted[u]=true;}
+function submitSession(se,u){se.submitted[u]=true;se.subAt=se.subAt||{};se.subAt[u]=now().toISOString();}
 function fillMap(u){const bump=S.mapHistory.length?2:0;MAP_DEMO[u].forEach((v,i)=>{const up=bump&&["svoboda","spilkuvannya","chas"].includes(MAPQ[i][0])?bump:0;S.map[u][i]={now:Math.min(10,v[0]+up),want:v[1]}});S.map.idx[u]=19;S.map.done[u]=true;S.couple.joined[u]=true;snapMap();}
 function snapMap(){if(!(S.map.done.p1&&S.map.done.p2))return;const a=sphereAvg("p1"),b=sphereAvg("p2"),last=S.mapHistory[S.mapHistory.length-1];const key=JSON.stringify([a,b]);if(last&&last.key===key)return;S.mapHistory.push({at:now().toISOString(),a,b,key});}
 function fillSession(se,u){se.qids.forEach(q=>{const v=MQ_DEMO[u][q];if(v!=null)se.ans[u][q]=Array.isArray(v)?v.slice():v;if(MQ_DEMO[u][q+"x"])se.ans[u][q+"x"]=MQ_DEMO[u][q+"x"]});se.idx[u]=se.qids.length-1;se.s1ok=true;submitSession(se,u);}
@@ -1476,7 +1529,7 @@ const A={
   goSolo(){go("K1")},
   setTogether(v){S.couple.together=v;render(false)}, setLive(v){S.couple.live=v;render(false)},
   setKids(v){S.couple.kids=v==="Немає"?0:v;render(false)}, setTherapy(v){S.couple.therapy=v;render(false)},
-  profileNext(){go("A4")},
+  profileNext(){if(S.couple.mode==="alone"){toast("Запросити партнера можна будь-коли");go("B1")}else go("A4")},
   copyInvite(){copyText(S.couple.invite+"\n\ndvoie.app/j/24k7")},
   sendInvite(){S.couple.inviteSent=true;S.couple.inviteAt=now().toISOString();toast("Відкрито вибір месенджера · прототип");render(false)},
   inviteNext(){if(!S.couple.inviteSent){S.couple.inviteSent=true;S.couple.inviteAt=now().toISOString()}go("B1")},
@@ -1487,7 +1540,7 @@ const A={
   mapStart(){go(S.map.done[me()]?"B3":"B2")},
   mapNow(v){const u=me(),i=S.map.idx[u];S.map[u][i]={...(S.map[u][i]||{}),now:+v};render(false)},
   mapWant(v){const u=me(),i=S.map.idx[u];S.map[u][i]={...(S.map[u][i]||{}),want:+v};render(false)},
-  mapNext(){const u=me();if(S.map.idx[u]<19){S.map.idx[u]++;render(true);return}S.map.done[u]=true;S.couple.joined[u]=true;snapMap();go(mapDone(other(u))?"B4":"B3")},
+  mapNext(){const u=me();if(S.map.idx[u]<19){S.map.idx[u]++;render(true);return}S.map.done[u]=true;S.couple.joined[u]=true;snapMap();go(mapDone(other(u))?"B4":S.couple.mode==="alone"?"E2":"B3")},
   remind(){S.couple.remindAt=now().toISOString();toast("Нагадали пушем і листом");render(false)},
   startTrial(v){let se=sessionsOf(v).find(s=>s.trial);if(!se)se=newSession(v,"trial");S.cur=se.id;go("D1")},
   tariff(v){S.tariffSel=v;render(false)},
@@ -1507,7 +1560,10 @@ const A={
   qSkip(){const se=curSession(),q=se.qids[se.idx[me()]];se.ans[me()][q]="skip";A.qNext()},
   qNext(){const se=curSession(),u=me(),q=se.qids[se.idx[u]];if(MQ[q].f==="rank"&&se.ans[u][q]==null)se.ans[u][q]=MQ[q].o.map((_,k)=>k);
     if(se.idx[u]<se.qids.length-1){se.idx[u]++;render(true);return}submitSession(se,u);afterSubmit(se)},
-  s1ok(){curSession().s1ok=true;render(true)}, s1no(){home()},
+  s1ok(){const se=curSession();se.s1=Object.assign({},s1of(se),{[me()]:true});render(true)}, s1no(){home()},
+  skip3(){const se=curSession(),u=me();while(se.idx[u]<se.qids.length&&MQ[se.qids[se.idx[u]]].lvl===3){se.ans[u][se.qids[se.idx[u]]]="skip";se.idx[u]++}
+    if(se.idx[u]>=se.qids.length){se.idx[u]=se.qids.length-1;submitSession(se,u);afterSubmit(se)}else render(true)},
+  softMsg(){const se=curSession();se.softAt=now().toISOString();toast("Надіслали: «Мої відповіді готові. Подивимось разом, коли тобі буде зручно?»");render(false)},
   remindS(){curSession().remindAt=now().toISOString();toast("Нагадали пушем і листом");render(false)},
   reveal(){const se=curSession();se.revealed=se.revealed||now().toISOString();go("D4")},
   toFindings(){go("D5")},
@@ -1519,11 +1575,15 @@ const A={
     const a={id:uid(),mod:se.mod,session:se.id,text,who:d.who,deadline:d.date,check:addD(now(),14).toISOString(),status:"active",created:now().toISOString(),history:[]};
     S.agreements.push(a);se.agreementId=a.id;A.finishZ()},
   finishZ(){const se=curSession();se.done=true;go("D9")},
-  openCheck(v){S.checkId=v;S.checkRes=null;S.ckWhy="";go("D8")},
+  openCheck(v){S.checkId=v;S.checkRes=null;S.ckWhy="";const a=S.agreements.find(x=>x.id===v);S.ckRound=a?a.check:null;go("D8")},
   ckRes(v){S.checkRes=v;render(false)},
-  ckSave(){const a=S.agreements.find(x=>x.id===S.checkId);S.checkins.push({agreement:a.id,result:S.checkRes,why:S.ckWhy||"",at:now().toISOString()});
-    a.history.push({at:now().toISOString(),t:"Перевірка: "+S.checkRes+(S.ckWhy?" — "+S.ckWhy:"")});a.check=addD(now(),14).toISOString();
-    if(S.checkRes==="Спрацювало"){a.status="closed"}toast("Результат лягає в історію");S.nav[S.user].st=[];go("F1",{replace:true})},
+  ckSave(){const a=S.agreements.find(x=>x.id===S.checkId),u=me(),o=you(),round=S.ckRound||a.check;
+    S.checkins.push({agreement:a.id,round,by:u,result:S.checkRes,why:S.ckWhy||"",at:now().toISOString()});
+    const his=S.checkins.find(c=>c.agreement===a.id&&c.round===round&&c.by===o);
+    if(his){a.history.push({at:now().toISOString(),t:`Перевірка: ${nm(u)} — ${S.checkRes}, ${nm(o)} — ${his.result}`});
+      if(S.checkRes==="Спрацювало"&&his.result==="Спрацювало")a.status="closed";else a.check=addD(now(),14).toISOString();toast("Обоє відповіли. Ось що вийшло")}
+    else toast("Збережено. Чекаємо відповіді партнера");
+    S.ckRound=round;S.checkRes=null;S.ckWhy="";render(true)},
   agCheckNow(v){A.openCheck(v)},
   agExtend(v){const a=S.agreements.find(x=>x.id===v);a.check=addD(new Date(a.check),14).toISOString();a.deadline=iso(addD(new Date(a.deadline),14));a.history.push({at:now().toISOString(),t:"Продовжено на 14 днів"});render(false)},
   agRewrite(v){S.rewriteId=v;S.rewriteText=null;render(false)},
@@ -1631,10 +1691,10 @@ function jump(id){
   if(id==="F2"||id==="F3"){if(!mapDone("p1"))fillMap("p1");if(!mapDone("p2"))fillMap("p2")}
   if(["B4","B5","C1","C3"].includes(id)||/^[DH]/.test(id)){if(!mapDone("p1"))fillMap("p1");if(!mapDone("p2"))fillMap("p2")}
   if((/^D[2-9]/.test(id)&&id!=="DQ")||id==="S1"||id==="H3"){
-    if(id==="S1"){let se=sessionsOf("mezhi").find(s=>s.n===2);if(!se){if(!hasMod("mezhi"))S.couple.purchased.push("mezhi");se=newSession("mezhi","z2")}S.cur=se.id;se.s1ok=false;se.idx[S.user]=0;S.nav[S.user].s="D2";render(true);return}
+    if(id==="S1"){let se=sessionsOf("mezhi").find(s=>s.n===2);if(!se){if(!hasMod("mezhi"))S.couple.purchased.push("mezhi");se=newSession("mezhi","z2")}S.cur=se.id;se.s1ok=false;se.s1={};se.idx[S.user]=0;S.nav[S.user].s="D2";render(true);return}
     let se=curSession()||S.sessions.find(x=>!x.trial);if(!se){if(!hasMod("mezhi"))S.couple.purchased.push("mezhi");se=newSession("mezhi","z1")}S.cur=se.id;
     if(/^D[4-9]/.test(id)){["p1","p2"].forEach(u=>{if(!se.submitted[u])fillSession(se,u)});se.revealed=se.revealed||now().toISOString()}
-    if(id==="D8"||id==="D9"){if(!se.agreementId){const a={id:uid(),mod:se.mod,session:se.id,text:AGREE[0],who:"Обоє",deadline:iso(addD(now(),12)),check:now().toISOString(),status:"active",created:addD(now(),-14).toISOString(),history:[]};S.agreements.push(a);se.agreementId=a.id}se.done=true;S.checkId=se.agreementId;S.checkRes=null}
+    if(id==="D8"||id==="D9"){if(!se.agreementId){const a={id:uid(),mod:se.mod,session:se.id,text:AGREE[0],who:"Обоє",deadline:iso(addD(now(),12)),check:now().toISOString(),status:"active",created:addD(now(),-14).toISOString(),history:[]};S.agreements.push(a);se.agreementId=a.id}se.done=true;S.checkId=se.agreementId;S.checkRes=null;S.ckRound=null}
   }
   if(id==="H3"&&!S.consentId){S.order={psy:"olena",kind:"session"};A.toConsent("session");return}
   if(id==="H2"||id==="H4"){S.order=S.order||{psy:"olena",kind:id==="H2"?"review":"session"}}
@@ -1682,6 +1742,9 @@ function notes(){const u=me(),o=you(),L=[];if(!S.couple.mode)return L;
   if(S.daily[o][dayKey()]) L.push({id:"dq"+dayKey()+o,t:`${nm(o)}: є відповідь на питання дня`,tab:"DQ"});
   S.agreements.filter(a=>a.status==="active"&&new Date(a.check)<=now()).forEach(a=>L.push({id:"ck"+a.id+a.check,t:`Настала перевірка: «${a.text}»`,act:"openCheck",v:a.id}));
   S.consents.filter(c=>!c.revoked&&c[o]&&!c[u]).forEach(c=>L.push({id:"cs"+c.id,t:`${nm(o)}: згоду на доступ психолога дано, чекаємо вашої`,act:"openConsent",v:c.id}));
+  S.sessions.forEach(se=>{if(!se.done&&s1of(se)[o]&&!s1of(se)[u])L.push({id:"s1"+se.id+o,t:`${nm(o)}: згоду на рівень 3 дано, чекаємо вашої`,act:"resume"})});
+  S.agreements.filter(a=>a.status==="active").forEach(a=>{const C=S.checkins.filter(c=>c.agreement===a.id&&c.round===a.check);if(C.some(c=>c.by===o)&&!C.some(c=>c.by===u))L.push({id:"ckp"+a.id+a.check,t:`${nm(o)}: відповідь на перевірку є, чекаємо вашої`,act:"openCheck",v:a.id})});
+  S.sessions.forEach(se=>{if(!se.done&&se.submitted[o]&&!se.submitted[u]){const d=se.subAt&&se.subAt[o]?Math.floor((now()-new Date(se.subAt[o]))/DAY):0;if(d>=2)L.push({id:"wait"+se.id+(d>=5?5:2),t:`Тема «${modById(se.mod).short||modById(se.mod).n}» чекає на ваші відповіді`,act:"resume"})}});
   if(S.promise.sig[o]&&!S.promise.sig[u]) L.push({id:"pr"+o,t:`${nm(o)}: обіцянку підписано`,go:"O1"});
   return L.reverse();}
 const unseen=()=>notes().filter(n=>!S.seen[n.id]).length;
@@ -1867,13 +1930,13 @@ function drawArt(){const W=1080,H=1560,cv=document.createElement("canvas");cv.wi
   return cv.toDataURL("image/png");}
 
 /* ── two phones (db) ── */
-function exportShared(){return {v:1,couple:S.couple,sessions:S.sessions.map(s=>({id:s.id,mod:s.mod,n:s.n,trial:s.trial,qids:s.qids,created:s.created,revealed:s.revealed,done:s.done,talked:s.talked,agreementId:s.agreementId})),
+function exportShared(){return {v:1,couple:S.couple,sessions:S.sessions.map(s=>({id:s.id,mod:s.mod,n:s.n,trial:s.trial,qids:s.qids,created:s.created,revealed:s.revealed,done:s.done,talked:s.talked,agreementId:s.agreementId,s1:s.s1||null})),
   agreements:S.agreements,checkins:S.checkins,consents:S.consents,log:S.log,orders:S.orders,promise:S.promise,korotko:S.korotko,mapHistory:S.mapHistory,
   ai:Object.fromEntries(Object.entries(S.ai).filter(([k,v])=>v&&v.status==="done"))}}
 function exportMine(u){return {v:1,joined:!!S.couple.joined[u],name:S.couple.names[u],map:S.map[u],idx:S.map.idx[u],done:!!S.map.done[u],daily:S.daily[u],
-  sess:Object.fromEntries(S.sessions.map(s=>[s.id,{ans:s.ans[u],idx:s.idx[u],sub:!!s.submitted[u]}]))}}
+  sess:Object.fromEntries(S.sessions.map(s=>[s.id,{ans:s.ans[u],idx:s.idx[u],sub:!!s.submitted[u],at:(s.subAt&&s.subAt[u])||null}]))}}
 function importMember(u,m){if(!m)return;S.map[u]=m.map||{};S.map.idx[u]=m.idx||0;S.map.done[u]=!!m.done;S.couple.joined[u]=!!m.joined;S.daily[u]=m.daily||{};if(m.name)S.couple.names[u]=m.name;
-  S.sessions.forEach(s=>{const x=m.sess&&m.sess[s.id];if(x){s.ans[u]=x.ans||{};s.idx[u]=x.idx||0;s.submitted[u]=!!x.sub}})}
+  S.sessions.forEach(s=>{const x=m.sess&&m.sess[s.id];if(x){s.ans[u]=x.ans||{};s.idx[u]=x.idx||0;s.submitted[u]=!!x.sub;s.subAt=s.subAt||{};s.subAt[u]=x.at||null}})}
 function importShared(d){if(!d)return;const old={};S.sessions.forEach(x=>old[x.id]=x);
   if(d.couple)S.couple=d.couple;
   S.sessions=(d.sessions||[]).map(m=>{const o=old[m.id];return Object.assign({},m,{ans:o?o.ans:{p1:{},p2:{}},idx:o?o.idx:{p1:0,p2:0},submitted:o?o.submitted:{p1:false,p2:false},s1ok:o?o.s1ok:false})});
