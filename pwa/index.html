@@ -472,6 +472,77 @@ html,body{overflow-x:clip}
 .celebrate .ring{width:9px;height:9px;margin:5px 0 0;flex:none;border-radius:50%;background:var(--clay);box-shadow:none;animation:none}
 .celebrate .cel{padding:0;text-align:left}
 .celebrate .celT{font-family:var(--display);font-size:15.5px;line-height:1.3;margin-top:4px}
+/* ── «Бордо й атлас» (референс Synais): крем, бордо, глибокий коричневий, гротеск із двома тонами ── */
+:root,:root[data-theme="dark"]{--paper:#E6E0D4;--sheet:#ECE7DD;--solid:#FAF8F4;--card:#F5F1EA;--glass:rgba(245,241,234,.92);--ink:#1C1413;--onInk:#F4EFE6;
+  --graphite:#6B605A;--faint:#6F6660;--tone2:#9A908A;--rule:rgba(28,20,19,.1);--rule2:rgba(28,20,19,.06);
+  --moss:#4F5B47;--mossSoft:rgba(79,91,71,.1);--mossLine:rgba(79,91,71,.28);
+  --clay:#7A2E30;--claySoft:rgba(122,46,48,.08);--clayLine:rgba(122,46,48,.26);--deep:#2D1412;
+  --mist:#E6E0D4;--silk1:#7A2E30;--silk2:#B8865A;--silk3:#E9D9C0;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#E6E0D4;--sheet:#ECE7DD;--solid:#FAF8F4;--card:#F5F1EA;--glass:rgba(245,241,234,.92);--ink:#1C1413;--onInk:#F4EFE6;
+  --graphite:#6B605A;--faint:#6F6660;--tone2:#9A908A;--rule:rgba(28,20,19,.1);--rule2:rgba(28,20,19,.06);
+  --moss:#4F5B47;--mossSoft:rgba(79,91,71,.1);--mossLine:rgba(79,91,71,.28);
+  --clay:#7A2E30;--claySoft:rgba(122,46,48,.08);--clayLine:rgba(122,46,48,.26);--deep:#2D1412;
+  --mist:#E6E0D4;--silk1:#7A2E30;--silk2:#B8865A;--silk3:#E9D9C0;color-scheme:light}}
+body{background:var(--paper)}
+body:before{opacity:.5}
+/* тло телефона: рівний крем, тонкі «схемні» лінії зверху, атлас лише ледь-ледь унизу */
+.silk{background:var(--sheet)}
+.silk:before{content:"";position:absolute;inset:0 0 auto;height:320px;opacity:.55;background:
+  linear-gradient(var(--rule2),var(--rule2)) 22px 0/1px 150px no-repeat,
+  linear-gradient(var(--rule2),var(--rule2)) 22px 150px/70px 1px no-repeat,
+  linear-gradient(var(--rule2),var(--rule2)) calc(100% - 26px) 40px/1px 220px no-repeat,
+  linear-gradient(var(--rule2),var(--rule2)) calc(100% - 110px) 260px/85px 1px no-repeat;
+  -webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
+.silk i{opacity:.16;filter:blur(40px)}
+.silk i:nth-child(3){opacity:.3}
+/* типографіка */
+.t1,.t2,.t3,.cScore,.stats b,.calmBox .d{font-weight:400;letter-spacing:-.045em}
+.t1{font-size:35px;line-height:1}.t2{font-size:28px;line-height:1.02}
+.t1 .tone,.t2 .tone,.t1 em,.t2 em{color:var(--tone2);font-style:normal}
+.eb{display:inline-flex;align-items:center;gap:6px;font-family:var(--body);font-weight:500;font-size:9.5px;letter-spacing:.08em;color:var(--ink);background:var(--solid);border:1px solid var(--rule);border-radius:4px;padding:4px 8px 4px 7px;line-height:1}
+.eb:before{content:"✱";font-size:10px;color:var(--clay);letter-spacing:0}
+.eb.clay{color:var(--clay)}
+.darkCard .eb,.celebrate .eb{background:transparent;border-color:rgba(244,239,230,.22);color:inherit}
+.lab,.label,.stats span,.chip,.tag,.tabbar button,.dualStat>div,.dialHint{font-family:var(--body);letter-spacing:.07em;font-weight:500}
+.lab{font-size:9.5px}
+/* кнопки: прямокутні, бордо — головна, біла — другорядна */
+.btn{border-radius:8px;background:var(--clay);color:var(--onInk);font-weight:500;min-height:50px}
+.btn.ghost{background:var(--solid);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule)}
+.btn.clay{background:var(--clay)}
+.btn[disabled]{background:rgba(28,20,19,.06);color:var(--faint);box-shadow:none}
+.btn svg{opacity:.8}
+/* поверхні: без скла, щільний крем, тонка межа */
+.card,.opt,.tariff{background:var(--card);border:1px solid var(--rule);border-radius:10px;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+.opt.sel{border-color:var(--clay);box-shadow:inset 0 0 0 .5px var(--clay)}
+.opt.sel .dot{background:var(--clay);border-color:var(--clay)}
+.card.darkCard,.darkCard{color:var(--onInk);border-color:var(--deep);background:radial-gradient(120% 110% at 105% -10%,rgba(233,217,192,.28),transparent 45%),radial-gradient(80% 90% at 110% 10%,rgba(184,134,90,.35),transparent 60%),var(--deep)}
+.darkCard .lab{color:rgba(244,239,230,.62)}
+.card.soft{background:var(--solid)}
+.field{background:var(--solid);border-radius:8px;-webkit-backdrop-filter:none;backdrop-filter:none}
+.field:focus{border-color:var(--clay)}
+.seg{background:rgba(28,20,19,.06);border-radius:8px}
+.seg button{border-radius:6px}
+.seg button.on{background:var(--solid);box-shadow:0 1px 2px rgba(28,20,19,.12)}
+.chip,button.chip,.tag{border-radius:4px}
+button.chip.on{background:var(--clay);border-color:var(--clay);color:var(--onInk)}
+.mod .ic{border-radius:8px;background:var(--solid);color:var(--clay);border:1px solid var(--rule)}
+.mod .ic.lock{color:var(--faint)}
+.chap.on .n{background:var(--clay);border-color:var(--clay)}
+.chap .n{border-radius:8px}
+.tabbar{background:var(--glass);border-top-color:var(--rule)}
+.tabbar button.on{color:var(--clay)}
+.scale button{border-radius:6px}.scale button.on{background:var(--clay);border-color:var(--clay)}
+.cPart .bar i{background:var(--clay)}
+.celebrate{border-radius:10px;background:var(--deep);color:var(--onInk);border-color:var(--deep)}
+.celebrate .small{color:rgba(244,239,230,.7)}
+.celebrate .ring{background:var(--silk2)}
+.phone{border-radius:40px}
+.filter h4{font-family:var(--body);font-weight:500;letter-spacing:.08em;font-size:9.5px}
+.filter{border-radius:10px}
+.deck{border-radius:12px;background:radial-gradient(120% 90% at 100% 0%,rgba(233,217,192,.3),transparent 45%),radial-gradient(90% 80% at 110% 15%,rgba(184,134,90,.4),transparent 60%),var(--deep)!important;color:var(--onInk)}
+.tariff.rec{border-color:var(--clay);box-shadow:inset 0 0 0 1px var(--clay)}
+.tariff.sel{background:var(--claySoft)}
+.recTag{background:var(--clay)!important;color:var(--onInk)!important;border-radius:4px!important}
 </style>
 </head>
 <body>
@@ -517,7 +588,7 @@ html,body{overflow-x:clip}
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
-const APP_VERSION="10.1 · без лендингу";
+const APP_VERSION="11 · бордо";
 /* Лендинг поки схований: прототип відкривається одразу з входу (A1). Повернути — true. */
 const SHOW_LANDING=false;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -2351,6 +2422,9 @@ function celebrateView(){const b=S.celebrate;return `<div class="celebrate" data
 A.celebrateClose=()=>{S.celebrate=null;render(false)};
 /* рівень пари живе в профілі, не на головному: головний — за порядком ТЗ */
 const _ME=V.ME;V.ME=()=>{const r=_ME();r.body+=`<div style="margin-top:14px">${levelCard()}</div>`+badgesHTML();return r};
+/* двотонний заголовок, як у референсі: друга фраза (після крапки, тире чи коми) — сірим; питання не чіпаємо */
+const _arTone=afterRender;afterRender=function(){_arTone();document.querySelectorAll("#phone h2.t1,#phone h2.t2").forEach(h=>{if(h.children.length)return;const t=h.textContent.trim();if(/\?$/.test(t))return;
+  const m=/^(.{6,}?[.!](?=\s+\S)|.{6,}?(?=\s+—\s)|.{8,}?,(?=\s))(.+)$/.exec(t);if(!m)return;h.textContent="";h.append(m[1]);const sp=document.createElement("span");sp.className="tone";sp.textContent=m[2];h.append(sp)})};
 const _afterRender=afterRender;afterRender=function(){_afterRender();if(S.view!=="app"||!S.couple.mode||S.celebrate)return;S.badgesSeen=S.badgesSeen||[];
   const nw=BADGES.filter(b=>b.ok()&&!S.badgesSeen.includes(b.id));if(!nw.length)return;nw.forEach(b=>S.badgesSeen.push(b.id));
   S.celebrate={t:nw[0].t,d:nw[0].d};setTimeout(()=>{render(false);clearTimeout(afterRender.h);afterRender.h=setTimeout(()=>{if(S.celebrate){S.celebrate=null;render(false)}},3200)},60)};
