@@ -517,7 +517,9 @@ html,body{overflow-x:clip}
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
-const APP_VERSION="10 · ui-аудит";
+const APP_VERSION="10.1 · без лендингу";
+/* Лендинг поки схований: прототип відкривається одразу з входу (A1). Повернути — true. */
+const SHOW_LANDING=false;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const arrow='<svg width="18" height="18" aria-hidden="true"><use href="#arrow"/></svg>';
 const checkI='<svg width="12" height="12" aria-hidden="true"><use href="#check"/></svg>';
@@ -690,7 +692,7 @@ const STORIES_DEMO=[
 
 /* ═════════ state ═════════ */
 function freshState(){return{
-  view:"site", user:"p1", shift:0, offline:false, payFail:false, theme:null,
+  view:SHOW_LANDING?"site":"app", user:"p1", shift:0, offline:false, payFail:false, theme:null,
   nav:{p1:{s:"A1",st:[]},p2:{s:"A5",st:[]},psy:{s:"T1",st:[]}},
   known:{}, email:"",
   couple:{names:{p1:"Юлія",p2:"Андрій"},together:"1–3 роки",live:"Так",kids:0,kidsAge:"",therapy:"Ні",mode:null,joined:{p1:false,p2:false},
@@ -764,7 +766,7 @@ function fmtAns(Q,v,x){
 
 /* ═════════ screen catalogue (for the developer map) ═════════ */
 const CATALOG=[
-  ["Лендинг",[["L1","Головна сторінка сайту"]]],
+  ...(SHOW_LANDING?[["Лендинг",[["L1","Головна сторінка сайту"]]]]:[]),
   ["Вхід",[["A1","Вхід за поштою"],["A2","Хто ви зараз"],["A3","Коротко про вас"],["A4","Запросити партнера"],["A5","Екран запрошеного партнера"]]],
   ["Карта",[["B1","Карта, інтро"],["B2","Шкали по 8 сферах"],["B3","Чекаємо партнера"],["B4","Результат карти"],["B5","Пейвол"]]],
   ["Поки сам",[["E2","Що ви самі про себе сказали"],["E3","Удвох це працює інакше"]]],
@@ -780,7 +782,7 @@ const CATALOG=[
 
 /* ═════════ navigation ═════════ */
 const N=()=>S.nav[S.view==="cab"?"psy":S.user];
-function go(id,opt={}){ if(id==="L1"){S.view="site";render(true);window.scrollTo(0,0);return}
+function go(id,opt={}){ if(id==="L1"&&SHOW_LANDING){S.view="site";render(true);window.scrollTo(0,0);return}if(id==="L1")id="A1";
   if(/^T/.test(id)){S.view="cab";S.nav.psy.s=id;render(true);return}
   S.view="app";const n=S.nav[S.user]; if(!opt.replace&&n.s!==id) n.st.push(n.s); n.s=id; render(true); }
 function home(){const n=S.nav[S.user];n.st=[];n.s=S.solo.state&&!S.couple.mode?"N1":"C1";render(true)}
@@ -1687,7 +1689,7 @@ const ICON={
 const TABS=[["C1","Головна","home"],["C2","Теми","grid"],["DQ","День","sun"],["F1","Домовл.","check"],["ME","Профіль","user"]];
 function devBar(){const u=S.user,sy=S.sync.code;return `<div class="dev">
   <span class="brand"><svg width="26" height="16"><use href="#logoL"/></svg>Двоє · прототип</span>
-  <div class="grp"><span>Вигляд</span><button class="${S.view==="site"?"on":""}" data-dev="site">Лендинг</button><button class="${S.view==="app"?"on":""}" data-dev="app">Застосунок</button><button class="${S.view==="cab"?"on":""}" data-dev="cab">Кабінет психолога</button></div>
+  <div class="grp"><span>Вигляд</span>${SHOW_LANDING?`<button class="${S.view==="site"?"on":""}" data-dev="site">Лендинг</button>`:""}<button class="${S.view==="app"?"on":""}" data-dev="app">Застосунок</button><button class="${S.view==="cab"?"on":""}" data-dev="cab">Кабінет психолога</button></div>
   ${sy?`<div class="grp"><span>Пара ${esc(sy)}</span><button class="on">Ви — ${esc(nm(u))}</button></div>`
   :`<div class="grp"><span>Хто зараз</span><button class="${u==="p1"&&S.view==="app"?"on":""}" data-dev="p1">${esc(nm("p1"))}</button><button class="${u==="p2"&&S.view==="app"?"on":""}" data-dev="p2">${esc(nm("p2"))}</button></div>`}
   <div class="grp"><span>Дії</span>${sy?"":`<button data-dev="fill">Автозаповнити за ${esc(nm(u))}</button>`}<button data-dev="time">+14 днів</button><button data-dev="reset">Скинути</button></div>
@@ -1726,7 +1728,7 @@ function phoneView(keepScroll){
 }
 function sheetView(){if(!S.sheet)return "";const u=S.user,sy=S.sync.code,cur=S.view==="app"?S.nav[u].s:"";return `<div class="sheetBg" data-act="sheetClose"></div><div class="sheet" role="dialog" aria-label="Меню демо">
   <div class="between"><div class="eb">Меню демо · версія ${APP_VERSION}</div><button class="chip" data-act="sheetClose">Закрити</button></div>
-  <div class="lab" style="margin:14px 0 8px">Вигляд</div><div>${[["site","Лендинг"],["app","Застосунок"],["cab","Кабінет психолога"]].map(([k,l])=>`<button class="sb ${S.view===k?"on":""}" data-dev="${k}">${l}</button>`).join("")}</div>
+  <div class="lab" style="margin:14px 0 8px">Вигляд</div><div>${[["site","Лендинг"],["app","Застосунок"],["cab","Кабінет психолога"]].filter(([k])=>SHOW_LANDING||k!=="site").map(([k,l])=>`<button class="sb ${S.view===k?"on":""}" data-dev="${k}">${l}</button>`).join("")}</div>
   <div class="lab" style="margin:10px 0 8px">${sy?"Пара "+esc(sy):"Хто зараз"}</div><div>${sy?`<span class="sb on">Ви — ${esc(nm(u))}</span>`:["p1","p2"].map(k=>`<button class="sb ${u===k?"on":""}" data-dev="${k}">${esc(nm(k))}</button>`).join("")}</div>
   <div class="lab" style="margin:10px 0 8px">Дії</div><div>${sy?"":`<button class="sb" data-dev="fill">Автозаповнити за ${esc(nm(u))}</button>`}<button class="sb" data-dev="time">+14 днів</button><button class="sb" data-jump="SY">Два телефони</button><button class="sb" data-dev="reset">Скинути</button></div>
   <div class="map" style="margin-top:12px">${mapIds(cur)}</div></div>`}
@@ -1941,7 +1943,7 @@ function drawFilter(){const f=filterData(),cv=document.createElement("canvas"),W
 
 /* dev actions */
 function devAction(k){
-  if(k==="site"){S.view="site";render(true);return}
+  if(k==="site"){if(SHOW_LANDING)S.view="site";render(true);return}
   if(k==="app"){S.view="app";render(true);return}
   if(k==="cab"){S.view="cab";render(true);return}
   if((k==="p1"||k==="p2")&&S.sync.code){toast("У режимі двох телефонів ви — "+nm(S.sync.role));return}
@@ -1964,7 +1966,7 @@ function devAction(k){
 
 /* jump from the screen map */
 function jump(id){
-  if(id==="L1"){S.view="site";render(true);window.scrollTo(0,0);return}
+  if(id==="L1"&&SHOW_LANDING){S.view="site";render(true);window.scrollTo(0,0);return}if(id==="L1")id="A1";
   if(/^T/.test(id)){S.view="cab";S.nav.psy.s=id==="T1"||!S.psyLogged?"T1":id;render(true);return}
   S.view="app";
   const need=()=>{if(!S.couple.mode)S.couple.mode="pair";S.couple.joined.p1=true;S.couple.joined.p2=true};
@@ -2355,6 +2357,7 @@ const _afterRender=afterRender;afterRender=function(){_afterRender();if(S.view!=
 
 /* ── boot ── */
 loadLocal();
+if(!SHOW_LANDING&&S.view==="site")S.view="app";
 (function(){const m=/^#join([A-Za-z0-9]{6})$/.exec(location.hash||"");if(m){const code=m[1].toUpperCase();if(S.sync.code!==code){S.pendingJoin=code;S.view="app";S.user="p2";S.couple.joined.p2=false;S.couple.warmStep=0;S.nav.p2={s:"A5",st:[]}}}})();
 if(S.sync.code)S.user=S.sync.role;
 if(S.view==="site"&&(window.__startInApp||(window.matchMedia("(max-width:700px)").matches&&S.couple.mode))){S.view="app";if(S.nav.p1.s==="A1"&&!S.couple.mode)S.nav.p1={s:"A1",st:[]}}
