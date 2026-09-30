@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Двоє — Прототип</title>
+<style>
+@font-face{font-family:"Lora";src:url("fonts/Lora-Regular.ttf");font-weight:400}
+@font-face{font-family:"Lora";src:url("fonts/Lora-Italic.ttf");font-style:italic;font-weight:400}
+@font-face{font-family:"Lora";src:url("fonts/Lora-Bold.ttf");font-weight:700}
+@font-face{font-family:"Plex";src:url("fonts/IBMPlexSerif-Regular.ttf");font-weight:400}
+@font-face{font-family:"Plex";src:url("fonts/IBMPlexSerif-Italic.ttf");font-style:italic}
+@font-face{font-family:"Plex";src:url("fonts/IBMPlexSerif-Bold.ttf");font-weight:700}
+@font-face{font-family:"Geist";src:url("fonts/GeistMono-Regular.ttf")}
+
+:root{
+  --paper:#F2EEE6; --sheet:#FBF9F4; --ink:#1F1E1B; --graphite:#6F695F; --faint:#A39B8E;
+  --rule:#DDD6C9; --rule2:#E9E3D8;
+  --moss:#3F5446; --mossSoft:#E3E8E0; --clay:#B06F57; --claySoft:#F3E4DB;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:1800px 1080px;margin:0}
+html,body{background:var(--paper)}
+body{font-family:"Plex",serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.page{width:1800px;height:1080px;position:relative;overflow:hidden;page-break-after:always;background:var(--paper)}
+.page:last-child{page-break-after:auto}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(rgba(60,50,35,.05) .6px,transparent .7px);background-size:5px 5px}
+
+/* frame */
+.head,.foot{position:absolute;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;
+  font-family:"Geist";font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--graphite)}
+.head{top:44px}
+.foot{bottom:40px;border-top:1px solid var(--rule);padding-top:16px}
+.head .mark{display:flex;align-items:center;gap:12px;color:var(--ink)}
+
+/* rail */
+.rail{position:absolute;left:72px;top:150px;width:380px;bottom:110px;display:flex;flex-direction:column}
+.plateNo{font-family:"Lora";font-size:112px;line-height:.9;color:var(--ink);letter-spacing:-.02em}
+.plateNo i{font-style:italic;color:var(--clay)}
+.plateTitle{font-family:"Lora";font-size:34px;line-height:1.1;margin-top:28px;letter-spacing:-.01em}
+.plateLead{font-size:15px;line-height:1.6;color:var(--graphite);margin-top:18px;max-width:340px}
+.notes{margin-top:auto;border-top:1px solid var(--rule)}
+.note{display:grid;grid-template-columns:44px 1fr;padding:15px 0;border-bottom:1px solid var(--rule2)}
+.note span{font-family:"Geist";font-size:10.5px;letter-spacing:.14em;color:var(--clay);padding-top:3px}
+.note p{font-size:13.5px;line-height:1.5;color:var(--ink)}
+.note p em{color:var(--graphite);font-style:italic}
+
+/* phones */
+.row{position:absolute;left:552px;top:150px;display:flex;gap:58px}
+.slot{width:340px}
+.tag{display:flex;justify-content:space-between;font-family:"Geist";font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--graphite);margin-bottom:14px;padding:0 6px}
+.tag b{font-weight:400;color:var(--clay)}
+.phone{width:340px;height:736px;border-radius:44px;background:var(--sheet);position:relative;overflow:hidden;
+  box-shadow:0 0 0 1px #D6CEC0,0 0 0 7px #FBF9F4,0 0 0 8px #D6CEC0,0 40px 70px -40px rgba(50,38,22,.35)}
+.status{height:40px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 28px 4px;
+  font-family:"Geist";font-size:11px;color:var(--ink)}
+.status i{display:inline-block;width:22px;height:9px;border:1px solid var(--ink);border-radius:3px;position:relative}
+.status i:after{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:13px;background:var(--ink);border-radius:1px}
+.bar{height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.logo{display:flex;align-items:center;gap:8px;font-family:"Lora";font-size:17px}
+.ic{width:30px;height:30px;display:grid;place-items:center;color:var(--ink)}
+.ic.ghost{opacity:0}
+.quick{font-family:"Geist";font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--clay);
+  color:var(--clay);border-radius:99px;padding:6px 10px}
+.steps{display:flex;gap:5px;padding:4px 26px 0}
+.steps i{flex:1;height:2px;background:var(--rule)}
+.steps i.on{background:var(--ink)}
+.body{position:absolute;top:96px;left:0;right:0;bottom:0;padding:22px 26px 28px;display:flex;flex-direction:column}
+.eb{font-family:"Geist";font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--graphite)}
+.eb.clay{color:var(--clay)}
+.t1{font-family:"Lora";font-size:31px;line-height:1.08;letter-spacing:-.015em;margin-top:14px}
+.t2{font-family:"Lora";font-size:25px;line-height:1.14;letter-spacing:-.01em;margin-top:12px}
+.t1 em,.t2 em{font-style:italic;color:var(--moss)}
+.p{font-size:13.5px;line-height:1.55;color:var(--graphite);margin-top:12px}
+.grow{flex:1}
+.btn{height:50px;border-radius:99px;background:var(--ink);color:var(--sheet);display:flex;align-items:center;
+  justify-content:space-between;padding:0 22px;font-size:14.5px}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.clay{background:var(--clay)}
+.btn + .btn{margin-top:10px}
+.link{text-align:center;font-size:12.5px;color:var(--graphite);margin-top:14px;font-style:italic}
+.fine{font-family:"Geist";font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:center;margin-top:14px}
+
+.card{border:1px solid var(--rule);border-radius:18px;padding:15px 16px;background:#FFFDF9}
+.lab{font-family:"Geist";font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--graphite)}
+.opt{display:flex;align-items:center;gap:12px;border:1px solid var(--rule);border-radius:16px;padding:13px 14px;
+  font-size:14px;line-height:1.3;background:#FFFDF9}
+.opt + .opt{margin-top:8px}
+.opt .dot{width:18px;height:18px;border-radius:50%;border:1px solid var(--faint);flex:none;display:grid;place-items:center}
+.opt.sel{border-color:var(--ink);box-shadow:inset 0 0 0 .5px var(--ink)}
+.opt.sel .dot{background:var(--ink);border-color:var(--ink)}
+.opt small{display:block;font-size:11.5px;color:var(--graphite);margin-top:2px}
+.seg{display:flex;border:1px solid var(--rule);border-radius:99px;padding:3px;margin-top:10px;background:#FFFDF9}
+.seg span{flex:1;text-align:center;font-size:12.5px;padding:8px 0;border-radius:99px;color:var(--graphite)}
+.seg span.on{background:var(--ink);color:var(--sheet)}
+
+.hl-f{background:linear-gradient(transparent 62%,var(--mossSoft) 62%);border-bottom:1.5px solid var(--moss)}
+.hl-r{background:linear-gradient(transparent 62%,var(--claySoft) 62%);border-bottom:1.5px solid var(--clay)}
+.hl-e{border-bottom:1.5px dotted var(--ink)}
+.legend{display:flex;gap:14px;margin-top:12px;font-family:"Geist";font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite)}
+.legend i{display:inline-block;width:14px;height:0;vertical-align:middle;margin-right:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:"Geist";font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--rule);border-radius:99px;padding:6px 10px;color:var(--graphite);background:#FFFDF9}
+.chip.ok{color:var(--moss);border-color:#BCC8BC}
+.rule{height:1px;background:var(--rule);margin:16px 0}
+.kv{display:grid;grid-template-columns:1fr;gap:4px}
+.kv + .kv{margin-top:14px}
+.kv p{font-size:13.5px;line-height:1.5}
+.quote{font-family:"Lora";font-size:19px;line-height:1.38;letter-spacing:-.005em}
+.quote .s{display:block;font-family:"Geist";font-size:8.5px;letter-spacing:.18em;color:var(--faint);margin:10px 0 3px}
+.quote .s:first-child{margin-top:0}
+.hot{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--rule2)}
+.hot b{font-family:"Lora";font-weight:400;font-size:26px;letter-spacing:.01em}
+.hot span{font-size:12.5px;color:var(--graphite);text-align:right;max-width:176px;line-height:1.35}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:18px}
+.stats div{padding:12px 0 10px}
+.stats div + div{border-left:1px solid var(--rule);padding-left:12px}
+.stats b{font-family:"Lora";font-weight:400;font-size:28px;display:block;line-height:1}
+.stats span{font-family:"Geist";font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--graphite)}
+.tl{position:relative;margin-top:16px;padding-left:18px}
+.tl:before{content:"";position:absolute;left:4px;top:6px;bottom:6px;width:1px;background:var(--rule)}
+.tli{position:relative;padding-bottom:13px}
+.tli:before{content:"";position:absolute;left:-18px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--sheet);border:1px solid var(--graphite)}
+.tli.open:before{border-color:var(--clay);background:var(--clay)}
+.tli .d{font-family:"Geist";font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.tli .h{font-size:13.5px;margin-top:3px;line-height:1.35}
+.tli .r{font-size:12px;color:var(--graphite);margin-top:3px;display:flex;gap:6px;align-items:center}
+.tli .r i{font-style:normal;color:var(--moss)}
+.slider{margin-top:16px}
+.slider .top{display:flex;justify-content:space-between;align-items:baseline}
+.slider .top span{font-size:13px;color:var(--graphite)}
+.slider .top b{font-family:"Lora";font-weight:400;font-size:26px}
+.track{position:relative;height:2px;background:var(--rule);margin-top:12px}
+.track i{position:absolute;left:0;top:0;bottom:0}
+.track em{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;transform:translate(-50%,-50%);background:var(--sheet)}
+.ticks{display:flex;justify-content:space-between;margin-top:14px;font-family:"Geist";font-size:9px;color:var(--faint)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.side{border-radius:18px;padding:16px 14px;min-height:118px}
+.side .lab{margin-bottom:10px}
+.side p{font-family:"Lora";font-size:18px;line-height:1.25}
+.side.a{background:var(--mossSoft)} .side.a .lab{color:var(--moss)}
+.side.b{background:var(--claySoft)} .side.b .lab{color:var(--clay)}
+.av{display:flex}
+.av i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:"Lora";font-style:normal;font-size:13px;border:2px solid var(--sheet)}
+.av i + i{margin-left:-8px}
+.av .m{background:var(--moss);color:var(--sheet)} .av .c{background:var(--clay);color:var(--sheet)}
+.code{font-family:"Lora";font-size:34px;letter-spacing:.14em;margin-top:6px}
+.toggle{width:36px;height:21px;border-radius:99px;background:var(--moss);position:relative;flex:none}
+.toggle:after{content:"";position:absolute;right:3px;top:3px;width:15px;height:15px;border-radius:50%;background:var(--sheet)}
+.caret{display:inline-block;width:1.5px;height:17px;background:var(--clay);vertical-align:-3px;margin-left:1px}
+.notif{border-radius:18px;background:rgba(31,30,27,.05);padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.notif .lg{width:30px;height:30px;border-radius:9px;background:var(--ink);display:grid;place-items:center;flex:none}
+.notif b{font-size:12.5px;display:block}
+.notif p{font-size:12px;color:var(--graphite);line-height:1.4;margin-top:2px}
+
+/* cover */
+.cover .title{position:absolute;left:72px;top:330px;font-family:"Lora";font-size:210px;line-height:.9;letter-spacing:-.035em}
+.cover .sub{position:absolute;left:80px;top:560px;font-family:"Lora";font-style:italic;font-size:30px;color:var(--graphite);max-width:560px;line-height:1.3}
+.cover .idx{position:absolute;left:72px;right:72px;bottom:110px;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--ink)}
+.cover .idx div{padding:16px 20px 0 0}
+.cover .idx span{font-family:"Geist";font-size:10.5px;letter-spacing:.2em;color:var(--clay)}
+.cover .idx b{display:block;font-family:"Lora";font-weight:400;font-size:24px;margin-top:8px}
+.cover .idx p{font-size:13px;color:var(--graphite);margin-top:6px;line-height:1.45;max-width:230px}
+.cover svg.rings{position:absolute;right:40px;top:60px}
+</style>
+</head>
+<body>
+
+<!-- reusable bits -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="logo" viewBox="0 0 30 18"><circle cx="10" cy="9" r="7.3" fill="none" stroke="#3F5446" stroke-width="1.4"/><circle cx="20" cy="9" r="7.3" fill="none" stroke="#B06F57" stroke-width="1.4"/></symbol>
+    <symbol id="back" viewBox="0 0 20 20"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="#1F1E1B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="menu" viewBox="0 0 20 20"><path d="M4 7.5h12M4 12.5h8" stroke="#1F1E1B" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="arrow" viewBox="0 0 20 20"><path d="M4 10h11.5M11 5.5 15.5 10 11 14.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="check" viewBox="0 0 20 20"><path d="m5 10.5 3.2 3L15 6.5" fill="none" stroke="#FBF9F4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="lock" viewBox="0 0 20 20"><rect x="4.5" y="9" width="11" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 9V6.8a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
+    <symbol id="phoneI" viewBox="0 0 20 20"><path d="M6.2 3.5h2l1.2 3.2-1.6 1.1a8.5 8.5 0 0 0 4.4 4.4l1.1-1.6 3.2 1.2v2a1.8 1.8 0 0 1-1.9 1.8C8.9 15.3 4.7 11.1 4.4 5.4a1.8 1.8 0 0 1 1.8-1.9z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- ═════════════ COVER ═════════════ -->
+<section class="page cover">
+  <div class="grain"></div>
+  <div class="head"><span class="mark"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span>Прототип продукту · версія 1.0 · вересень 2026</span></div>
+
+  <svg class="rings" width="980" height="820" viewBox="0 0 980 820">
+    <defs>
+      <clipPath id="lensClip"><circle cx="400" cy="410" r="300"/></clipPath>
+    </defs>
+    <g fill="none" stroke-width=".8">
+      <g stroke="#3F5446" opacity=".9">
+        <circle cx="400" cy="410" r="300"/><circle cx="400" cy="410" r="276" opacity=".75"/><circle cx="400" cy="410" r="252" opacity=".6"/>
+        <circle cx="400" cy="410" r="228" opacity=".48"/><circle cx="400" cy="410" r="204" opacity=".38"/><circle cx="400" cy="410" r="180" opacity=".3"/>
+        <circle cx="400" cy="410" r="156" opacity=".23"/><circle cx="400" cy="410" r="132" opacity=".17"/><circle cx="400" cy="410" r="108" opacity=".12"/>
+      </g>
+      <g stroke="#B06F57" opacity=".9">
+        <circle cx="620" cy="410" r="300"/><circle cx="620" cy="410" r="276" opacity=".75"/><circle cx="620" cy="410" r="252" opacity=".6"/>
+        <circle cx="620" cy="410" r="228" opacity=".48"/><circle cx="620" cy="410" r="204" opacity=".38"/><circle cx="620" cy="410" r="180" opacity=".3"/>
+        <circle cx="620" cy="410" r="156" opacity=".23"/><circle cx="620" cy="410" r="132" opacity=".17"/><circle cx="620" cy="410" r="108" opacity=".12"/>
+      </g>
+    </g>
+    <circle cx="620" cy="410" r="300" fill="#1F1E1B" opacity=".045" clip-path="url(#lensClip)"/>
+    <line x1="510" y1="120" x2="510" y2="700" stroke="#1F1E1B" stroke-width=".6" stroke-dasharray="2 5"/>
+    <g font-family="Geist" font-size="10" letter-spacing="2" fill="#6F695F">
+      <text x="400" y="738" text-anchor="middle">ТИ</text>
+      <text x="620" y="738" text-anchor="middle">ПАРТНЕР</text>
+      <text x="510" y="100" text-anchor="middle" fill="#1F1E1B">МІЖ ВАМИ</text>
+    </g>
+    <circle cx="400" cy="410" r="2.5" fill="#3F5446"/><circle cx="620" cy="410" r="2.5" fill="#B06F57"/>
+  </svg>
+
+  <div class="title">Двоє</div>
+  <div class="sub">Одна ситуація — два погляди.<br>Спокійний спосіб побачити, що між вами губиться.</div>
+
+  <div class="idx">
+    <div><span>I</span><b>Вхід</b><p>Починаємо з того, що сталося, а не з анкети.</p></div>
+    <div><span>II</span><b>Розбір</b><p>Факт, реакція й почуття — з тексту самої людини.</p></div>
+    <div><span>III</span><b>Крок</b><p>Одна дія в житті. Безпека завжди має пріоритет.</p></div>
+    <div><span>IV</span><b>Пам’ять</b><p>Ситуація → дія → що сталося потім.</p></div>
+    <div><span>V</span><b>Разом</b><p>Два окремі погляди, відкриті одночасно.</p></div>
+  </div>
+  <div class="foot"><span>Психологія стосунків · Solo і пара</span><span>Таблиця 0 / V</span></div>
+</section>
+
+<!-- ═════════════ I · ВХІД ═════════════ -->
+<section class="page">
+  <div class="grain"></div>
+  <div class="head"><span class="mark"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span>I — Вхід</span></div>
+  <div class="rail">
+    <div class="plateNo">I<i>.</i></div>
+    <div class="plateTitle">Спершу — те,<br>що сталося.</div>
+    <p class="plateLead">Людина приходить із конкретним вечором, а не з бажанням заповнити тест. Перший екран дає одну дію; стан перевіряється до будь-яких порад.</p>
+    <div class="notes">
+      <div class="note"><span>01</span><p>Одна головна дія на старті. Пара — другорядний шлях, не бар’єр.</p></div>
+      <div class="note"><span>02</span><p>Вільний текст іде першим. Категорію визначає Двоє, а не користувач.</p></div>
+      <div class="note"><span>03</span><p>Стан перевіряється до маршруту. Допомога доступна з кожного екрана.</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- 01 landing -->
+    <div class="slot"><div class="tag"><span>01 · Головна</span><b>Solo</b></div>
+      <div class="phone">
+        <div class="status"><span>9:41</span><i></i></div>
+        <div class="bar"><span class="ic ghost"></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="ic"><svg width="20" height="20"><use href="#menu"/></svg></span></div>
+        <div class="body">
+          <div class="eb">Психологія стосунків</div>
+          <div class="t1">Що сталося між вами — розберемо <em>спокійно</em>.</div>
+          <p class="p">Почни з однієї ситуації. Без тестів і ярликів — лише наступний ясний крок.</p>
+          <svg viewBox="0 0 288 150" width="288" height="150" style="margin-top:22px">
+            <g fill="none" stroke-width=".8">
+              <circle cx="116" cy="75" r="62" stroke="#3F5446"/><circle cx="116" cy="75" r="48" stroke="#3F5446" opacity=".45"/><circle cx="116" cy="75" r="34" stroke="#3F5446" opacity=".22"/>
+              <circle cx="172" cy="75" r="62" stroke="#B06F57"/><circle cx="172" cy="75" r="48" stroke="#B06F57" opacity=".45"/><circle cx="172" cy="75" r="34" stroke="#B06F57" opacity=".22"/>
+            </g>
+            <line x1="144" y1="8" x2="144" y2="142" stroke="#1F1E1B" stroke-width=".6" stroke-dasharray="2 4"/>
+          </svg>
+          <div class="grow"></div>
+          <div class="btn">Розібрати ситуацію<svg width="18" height="18"><use href="#arrow"/></svg></div>
+          <div class="btn ghost">Пройти разом із партнером<svg width="18" height="18"><use href="#arrow"/></svg></div>
+          <div class="fine">Приватно · 3 хвилини · без реєстрації</div>
+        </div>
+      </div>
+    </div>
+    <!-- 02 free text -->
+    <div class="slot"><div class="tag"><span>02 · Ситуація</span><b>Крок 1 / 4</b></div>
+      <div class="phone">
+        <div class="status"><span>9:42</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="quick">Допомога</span></div>
+        <div class="steps"><i class="on"></i><i></i><i></i><i></i></div>
+        <div class="body" style="top:102px">
+          <div class="eb">Своїми словами</div>
+          <div class="t2">Розкажи, що сталося.</div>
+          <p class="p">Не треба писати гарно. Двох-трьох речень достатньо.</p>
+          <div class="card" style="margin-top:18px;min-height:176px">
+            <p style="font-family:Lora;font-size:17px;line-height:1.5">Учора він утретє за місяць скасував наші плани в останній момент. Я сказала, що все нормально, але весь вечір було гірко.<span class="caret"></span></p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:14px">
+            <span class="chip ok">✓ Подія</span><span class="chip ok">✓ Твоя реакція</span><span class="chip ok">✓ Почуття</span><span class="chip">○ Чого хочеш</span>
+          </div>
+          <div class="grow"></div>
+          <div class="btn">Далі<svg width="18" height="18"><use href="#arrow"/></svg></div>
+          <div class="fine"><svg width="11" height="11" style="vertical-align:-1px;color:#A39B8E"><use href="#lock"/></svg> Бачиш лише ти</div>
+        </div>
+      </div>
+    </div>
+    <!-- 03 state -->
+    <div class="slot"><div class="tag"><span>03 · Стан</span><b>Крок 2 / 4</b></div>
+      <div class="phone">
+        <div class="status"><span>9:43</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="quick">Допомога</span></div>
+        <div class="steps"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+        <div class="body" style="top:102px">
+          <div class="eb">Перш ніж радити</div>
+          <div class="t2">Як ти зараз?</div>
+          <p class="p">Від цього залежить, чи варто щось робити сьогодні.</p>
+          <div style="margin-top:20px">
+            <div class="opt"><span class="dot"></span><div>Можу спокійно думати<small>Готова / готовий до наступного кроку</small></div></div>
+            <div class="opt sel"><span class="dot"><svg width="12" height="12"><use href="#check"/></svg></span><div>Сильно зачіпає<small>Думати можу, але емоції високо</small></div></div>
+            <div class="opt"><span class="dot"></span><div>Мене накриває<small>Хочеться діяти негайно</small></div></div>
+          </div>
+          <div class="grow"></div>
+          <div class="card" style="background:var(--claySoft);border-color:#E8CFC2;display:flex;gap:10px;align-items:center;margin-bottom:14px">
+            <svg width="18" height="18" style="color:#B06F57;flex:none"><use href="#phoneI"/></svg>
+            <p style="font-size:12.5px;line-height:1.4">Якщо тобі зараз небезпечно — <u>отримати допомогу</u></p>
+          </div>
+          <div class="btn">Далі<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Двоє · Прототип 1.0</span><span>Таблиця I / V</span></div>
+</section>
+
+<!-- ═════════════ II · РОЗБІР ═════════════ -->
+<section class="page">
+  <div class="grain"></div>
+  <div class="head"><span class="mark"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span>II — Розбір</span></div>
+  <div class="rail">
+    <div class="plateNo">II<i>.</i></div>
+    <div class="plateTitle">Прочитати —<br>не домислити.</div>
+    <p class="plateLead">Двоє розкладає саме той текст, який написала людина: що сталося, як вона відреагувала, що відчула. Про мотиви партнера — жодних припущень.</p>
+    <div class="notes">
+      <div class="note"><span>04</span><p>Розбір підсвічує слова з тексту користувача, а не показує шаблонні варіанти.</p></div>
+      <div class="note"><span>05</span><p>Уточнення з’являються лише тоді, коли від них справді залежить маршрут.</p></div>
+      <div class="note"><span>06</span><p>Маршрут пояснює, <em>чому</em> саме цей крок, і чесно каже, чого ми не знаємо.</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- 04 parse -->
+    <div class="slot"><div class="tag"><span>04 · Прочитання</span><b>Крок 3 / 4</b></div>
+      <div class="phone">
+        <div class="status"><span>9:43</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="quick">Допомога</span></div>
+        <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="body" style="top:102px">
+          <div class="eb">Перевір, чи так</div>
+          <div class="t2">Ось що Двоє почуло в історії.</div>
+          <div class="card" style="margin-top:18px">
+            <p style="font-family:Lora;font-size:16.5px;line-height:1.72">Учора він <span class="hl-f">утретє за місяць скасував наші плани</span> в останній момент. Я <span class="hl-r">сказала, що все нормально</span>, але весь вечір <span class="hl-e">було гірко</span>.</p>
+          </div>
+          <div class="legend"><span><i style="border-top:1.5px solid #3F5446"></i>Факт</span><span><i style="border-top:1.5px solid #B06F57"></i>Реакція</span><span><i style="border-top:1.5px dotted #1F1E1B"></i>Почуття</span></div>
+          <div class="rule"></div>
+          <div class="lab">Схоже, в центрі</div>
+          <p style="font-family:Lora;font-size:19px;line-height:1.3;margin-top:8px">Несказане «мені <em style="color:var(--clay)">не</em> нормально».</p>
+          <div class="grow"></div>
+          <div class="btn">Так, це воно<svg width="18" height="18"><use href="#arrow"/></svg></div>
+          <div class="link">Ні, центр в іншому</div>
+        </div>
+      </div>
+    </div>
+    <!-- 05 clarify -->
+    <div class="slot"><div class="tag"><span>05 · Уточнення</span><b>Крок 4 / 4</b></div>
+      <div class="phone">
+        <div class="status"><span>9:44</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="quick">Допомога</span></div>
+        <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <div class="body" style="top:102px">
+          <div class="eb">Два короткі питання</div>
+          <div class="t2">Від цього залежить, що допоможе.</div>
+          <div style="margin-top:24px">
+            <div class="lab">Такі скасування вже були?</div>
+            <div class="seg"><span>Вперше</span><span class="on">2–3 рази</span><span>Часто</span></div>
+          </div>
+          <div style="margin-top:22px">
+            <div class="lab">Ви вже говорили саме про це?</div>
+            <div class="seg"><span class="on">Ще ні</span><span>Раз</span><span>Кілька</span></div>
+          </div>
+          <div class="grow"></div>
+          <div class="card" style="background:var(--mossSoft);border-color:#CAD3C7;margin-bottom:14px">
+            <p style="font-size:12.5px;line-height:1.5;color:var(--moss)">Якщо про це ще не говорили — потрібні слова. Якщо говорили багато разів — вже не слова, а зміни.</p>
+          </div>
+          <div class="btn">Показати крок<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <!-- 06 route -->
+    <div class="slot"><div class="tag"><span>06 · Маршрут</span><b>Сказати</b></div>
+      <div class="phone">
+        <div class="status"><span>9:44</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="quick">Допомога</span></div>
+        <div class="body">
+          <div class="eb">Що зараз допоможе</div>
+          <div class="t1">Сказати одну <em>ясну</em> річ.</div>
+          <div class="kv" style="margin-top:22px"><div class="lab">Чому</div><p>Ти знаєш, що тебе зачепило, і про це ще не говорили. Бар’єр не в розумінні — а в тому, щоб сказати вголос.</p></div>
+          <div class="kv"><div class="lab">Чого ми не знаємо</div><p style="color:var(--graphite)">Чому він скасовує плани. Одна історія — не висновок про нього чи про вас.</p></div>
+          <div class="grow"></div>
+          <div class="btn">Скласти фразу<svg width="18" height="18"><use href="#arrow"/></svg></div>
+          <div class="link">Не схоже на мою ситуацію</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Двоє · Прототип 1.0</span><span>Таблиця II / V</span></div>
+</section>
+
+<!-- ═════════════ III · КРОК ═════════════ -->
+<section class="page">
+  <div class="grain"></div>
+  <div class="head"><span class="mark"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span>III — Крок</span></div>
+  <div class="rail">
+    <div class="plateNo">III<i>.</i></div>
+    <div class="plateTitle">Одна дія —<br>у справжньому житті.</div>
+    <p class="plateLead">Результат — не текст на екрані, а крок, який людина робить поза застосунком. Якщо в історії є ознаки небезпеки, звичайний маршрут зупиняється.</p>
+    <div class="notes">
+      <div class="note"><span>07</span><p>Фраза складається з трьох частин: факт, почуття, прохання. Кожну можна змінити.</p></div>
+      <div class="note"><span>08</span><p>Безпека: реальні номери, швидкий вихід, жодних порад «просто поговоріть».</p></div>
+      <div class="note"><span>09</span><p>Повернення — наступного дня, через нагадування, а не одразу після збереження.</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- 07 phrase -->
+    <div class="slot"><div class="tag"><span>07 · Фраза</span><b>Сказати</b></div>
+      <div class="phone">
+        <div class="status"><span>9:45</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="quick">Допомога</span></div>
+        <div class="body">
+          <div class="eb">Чернетка</div>
+          <div class="t2">Одна фраза замість великої розмови.</div>
+          <div class="card" style="margin-top:20px;padding:18px 18px">
+            <p class="quote"><span class="s">ФАКТ</span>«Коли плани скасовуються в останній момент,<span class="s">ПОЧУТТЯ</span>мені стає гірко.<span class="s">ПРОХАННЯ</span>Можеш попереджати хоча б за день?»</p>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <span class="chip">Скопіювати</span><span class="chip">М’якше</span><span class="chip">Прямо</span>
+          </div>
+          <div class="grow"></div>
+          <div class="btn">Нагадати завтра ввечері<svg width="18" height="18"><use href="#arrow"/></svg></div>
+          <div class="fine">Повернемося, щоб дізнатися, що сталося</div>
+        </div>
+      </div>
+    </div>
+    <!-- 08 safety -->
+    <div class="slot"><div class="tag"><span>08 · Безпека</span><b>Пріоритет</b></div>
+      <div class="phone" style="background:#FBF6F2">
+        <div class="status"><span>21:12</span><i></i></div>
+        <div class="bar"><span class="ic ghost"></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="quick" style="background:var(--clay);color:#FBF9F4">Швидкий вихід</span></div>
+        <div class="body">
+          <div class="eb clay">Спершу — безпека</div>
+          <div class="t2">Твоя безпека важливіша за будь-яку розмову.</div>
+          <p class="p">У твоїй історії є слова, що можуть означати небезпеку. Тут ми не пропонуватимемо з’ясовувати стосунки.</p>
+          <div style="margin-top:14px">
+            <div class="hot"><b>102</b><span>Поліція — якщо загроза просто зараз</span></div>
+            <div class="hot"><b>116 123</b><span>Лінія протидії домашньому насильству · безкоштовно</span></div>
+          </div>
+          <div class="grow"></div>
+          <div class="btn clay"><span style="display:flex;gap:10px;align-items:center"><svg width="17" height="17"><use href="#phoneI"/></svg>Подзвонити 116 123</span><svg width="18" height="18"><use href="#arrow"/></svg></div>
+          <div class="link">Не зберігати цю ситуацію</div>
+        </div>
+      </div>
+    </div>
+    <!-- 09 follow-up -->
+    <div class="slot"><div class="tag"><span>09 · Наступного дня</span><b>Результат</b></div>
+      <div class="phone">
+        <div class="status"><span>19:00</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="ic"><svg width="20" height="20"><use href="#menu"/></svg></span></div>
+        <div class="body">
+          <div class="notif"><span class="lg"><svg width="20" height="12" viewBox="0 0 30 18"><circle cx="10" cy="9" r="7" fill="none" stroke="#FBF9F4" stroke-width="1.6"/><circle cx="20" cy="9" r="7" fill="none" stroke="#FBF9F4" stroke-width="1.6" opacity=".6"/></svg></span><div><b>Двоє · вчора</b><p>Ти хотіла сказати про скасовані плани.</p></div></div>
+          <div class="t2" style="margin-top:18px">Вдалося сказати?</div>
+          <div style="margin-top:16px">
+            <div class="opt sel"><span class="dot"><svg width="12" height="12"><use href="#check"/></svg></span><div>Так, і розмова пішла добре</div></div>
+            <div class="opt"><span class="dot"></span><div>Так, але почалася суперечка</div></div>
+            <div class="opt"><span class="dot"></span><div>Ще ні</div></div>
+            <div class="opt"><span class="dot"></span><div>Вже не актуально</div></div>
+          </div>
+          <div class="grow"></div>
+          <div class="btn">Зберегти<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Двоє · Прототип 1.0</span><span>Таблиця III / V</span></div>
+</section>
+
+<!-- ═════════════ IV · ПАМ'ЯТЬ ═════════════ -->
+<section class="page">
+  <div class="grain"></div>
+  <div class="head"><span class="mark"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span>IV — Пам’ять</span></div>
+  <div class="rail">
+    <div class="plateNo">IV<i>.</i></div>
+    <div class="plateTitle">Не чат, а історія<br>того, що було.</div>
+    <p class="plateLead">Кожна ситуація зберігається як ланцюжок: що сталося → що я зробила → що було потім. Висновки з’являються лише тоді, коли для них є підстави.</p>
+    <div class="notes">
+      <div class="note"><span>10</span><p>Головна показує історію дій, а не список модулів.</p></div>
+      <div class="note"><span>11</span><p>Жодних «патернів» з однієї історії. Лічильник чесно показує, скільки ще потрібно.</p></div>
+      <div class="note"><span>12</span><p>Партнер запрошується тоді, коли людина готова. Її ситуації лишаються приватними.</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- 10 home -->
+    <div class="slot"><div class="tag"><span>10 · Головна</span><b>Мій бік</b></div>
+      <div class="phone">
+        <div class="status"><span>19:02</span><i></i></div>
+        <div class="bar"><span class="ic ghost"></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="ic"><svg width="20" height="20"><use href="#menu"/></svg></span></div>
+        <div class="body">
+          <div class="eb">Мої ситуації</div>
+          <div class="t2">Що відбувається — і що з цим роблю я.</div>
+          <div class="stats"><div><b>3</b><span>Ситуації</span></div><div><b>2</b><span>Кроки</span></div><div><b>0</b><span>Висновків</span></div></div>
+          <div class="tl">
+            <div class="tli"><div class="d">30 вер · сказати</div><div class="h">Скасовані плани</div><div class="r"><i>●</i>Сказала — розмова пішла добре</div></div>
+            <div class="tli"><div class="d">14 вер · зрозуміти</div><div class="h">Коротка відповідь у месенджері</div><div class="r"><i>●</i>Стало ясніше, що зачепило</div></div>
+            <div class="tli open"><div class="d" style="color:var(--clay)">Сьогодні · відкрито</div><div class="h">Хто готує вечерю в будні</div><div class="r" style="color:var(--clay)">Чекає на крок</div></div>
+          </div>
+          <div class="grow"></div>
+          <div class="btn">Нова ситуація<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <!-- 11 honest insight -->
+    <div class="slot"><div class="tag"><span>11 · Спостереження</span><b>Без ярликів</b></div>
+      <div class="phone">
+        <div class="status"><span>19:03</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="ic"><svg width="20" height="20"><use href="#menu"/></svg></span></div>
+        <div class="body">
+          <div class="eb">Що вже можна сказати</div>
+          <div class="t2">Поки що — <em>нічого сталого</em>. І це чесно.</div>
+          <p class="p">Щоб відрізнити випадковість від того, що повторюється, потрібно хоча б три схожі ситуації з результатом.</p>
+          <div style="display:flex;gap:8px;margin-top:22px;align-items:center">
+            <svg width="120" height="36" viewBox="0 0 120 36"><circle cx="18" cy="18" r="14" fill="#3F5446"/><circle cx="60" cy="18" r="14" fill="#3F5446"/><circle cx="102" cy="18" r="13.5" fill="none" stroke="#A39B8E" stroke-dasharray="2 3"/></svg>
+            <span style="font-family:Geist;font-size:10px;letter-spacing:.14em;color:var(--graphite)">2 / 3</span>
+          </div>
+          <div class="rule" style="margin:22px 0 16px"></div>
+          <div class="lab">Можна помітити</div>
+          <p style="font-size:13.5px;line-height:1.5;margin-top:8px">В обох випадках тобі легше стало після того, як ти <u style="text-decoration-color:var(--moss)">назвала почуття прямо</u>. Це спостереження, не правило.</p>
+          <div class="grow"></div>
+          <div class="btn ghost">Як це рахується<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <!-- 12 invite -->
+    <div class="slot"><div class="tag"><span>12 · Запрошення</span><b>Пара</b></div>
+      <div class="phone">
+        <div class="status"><span>19:05</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="ic"><svg width="20" height="20"><use href="#menu"/></svg></span></div>
+        <div class="body">
+          <div class="eb">Другий погляд</div>
+          <div class="t2">Запроси партнера — коли будеш готова.</div>
+          <p class="p">Ви відповідаєте окремо. Ніхто не бачить відповідей іншого, доки обоє не завершать.</p>
+          <div class="card" style="margin-top:18px;text-align:center;padding:18px">
+            <div class="lab">Код пари</div>
+            <div class="code">ДВ·24K7</div>
+          </div>
+          <div class="card" style="margin-top:10px;display:flex;align-items:center;gap:12px">
+            <p style="font-size:12.5px;line-height:1.45;flex:1">Мої ситуації та записи лишаються приватними</p><span class="toggle"></span>
+          </div>
+          <div class="grow"></div>
+          <div class="btn">Надіслати запрошення<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Двоє · Прототип 1.0</span><span>Таблиця IV / V</span></div>
+</section>
+
+<!-- ═════════════ V · РАЗОМ ═════════════ -->
+<section class="page">
+  <div class="grain"></div>
+  <div class="head"><span class="mark"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span>V — Разом</span></div>
+  <div class="rail">
+    <div class="plateNo">V<i>.</i></div>
+    <div class="plateTitle">Два погляди,<br>відкриті одночасно.</div>
+    <p class="plateLead">Кожен відповідає про свій досвід. Різниця показується лише тоді, коли обидві сторони завершили, і перетворюється на одну домовленість з датою перевірки.</p>
+    <div class="notes">
+      <div class="note"><span>13</span><p>Два повзунки: «як є» і «як хочу». Результат рахується з реальних відповідей.</p></div>
+      <div class="note"><span>14</span><p>Відкриття показує саме те, що обрав кожен, і пропонує питання для розмови, а не діагноз.</p></div>
+      <div class="note"><span>15</span><p>Домовленість, яку обрала пара, з’являється на головній разом із датою перевірки.</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- 13 map -->
+    <div class="slot"><div class="tag"><span>13 · Карта</span><b>3 / 8</b></div>
+      <div class="phone">
+        <div class="status"><span>20:10</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="ic"><svg width="20" height="20"><use href="#menu"/></svg></span></div>
+        <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="body" style="top:102px">
+          <div class="eb">Сфера · Складні розмови</div>
+          <div class="t2">Наскільки легко вам говорити про складне?</div>
+          <div class="slider" style="margin-top:30px">
+            <div class="top"><span>Як є зараз</span><b>4</b></div>
+            <div class="track"><i style="width:40%;background:var(--ink)"></i><em style="left:40%;box-shadow:0 0 0 1.5px var(--ink)"></em></div>
+          </div>
+          <div class="slider" style="margin-top:30px">
+            <div class="top"><span>Як я хочу</span><b style="color:var(--moss)">8</b></div>
+            <div class="track"><i style="width:80%;background:var(--moss)"></i><em style="left:80%;box-shadow:0 0 0 1.5px var(--moss)"></em></div>
+          </div>
+          <div class="ticks"><span>0</span><span>5</span><span>10</span></div>
+          <div class="grow"></div>
+          <div class="card" style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
+            <svg width="16" height="16" style="color:#6F695F;flex:none"><use href="#lock"/></svg>
+            <p style="font-size:12.5px;line-height:1.4;color:var(--graphite)">Андрій не побачить відповідь, доки не завершить свою частину.</p>
+          </div>
+          <div class="btn">Далі<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <!-- 14 reveal -->
+    <div class="slot"><div class="tag"><span>14 · Відкриття</span><b>Обоє завершили</b></div>
+      <div class="phone">
+        <div class="status"><span>21:30</span><i></i></div>
+        <div class="bar"><span class="ic"><svg width="20" height="20"><use href="#back"/></svg></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="av"><i class="m">Ю</i><i class="c">А</i></span></div>
+        <div class="body">
+          <div class="eb">Відкриття · 1 / 3</div>
+          <div class="t2">Коли між нами напруга, мені важливо…</div>
+          <div class="pair">
+            <div class="side a"><div class="lab">Юлія</div><p>поговорити одразу</p></div>
+            <div class="side b"><div class="lab">Андрій</div><p>спершу взяти паузу</p></div>
+          </div>
+          <div class="rule"></div>
+          <div class="lab" style="color:var(--clay)">Різниця</div>
+          <p style="font-family:Lora;font-size:17px;line-height:1.35;margin-top:8px">Ви обоє бережете контакт — просто по-різному.</p>
+          <p class="p" style="margin-top:8px">Питання для розмови: <i>«Що для тебе означає пауза — і скільки вона триває?»</i></p>
+          <div class="grow"></div>
+          <div class="btn">Наступна відповідь<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <!-- 15 agreement -->
+    <div class="slot"><div class="tag"><span>15 · Домовленість</span><b>12 днів</b></div>
+      <div class="phone">
+        <div class="status"><span>22:05</span><i></i></div>
+        <div class="bar"><span class="ic ghost"></span><span class="logo"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</span><span class="av"><i class="m">Ю</i><i class="c">А</i></span></div>
+        <div class="body">
+          <div class="eb">Наш простір</div>
+          <div class="t2">Юлія &amp; Андрій</div>
+          <div class="card" style="margin-top:18px;background:var(--ink);border-color:var(--ink);color:var(--sheet);padding:18px">
+            <div class="lab" style="color:#BDB6A9">Активна домовленість</div>
+            <p style="font-family:Lora;font-size:20px;line-height:1.3;margin-top:10px">Пауза до 40 хвилин — потім повертаємося до теми.</p>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px">
+              <div><div style="font-family:Lora;font-size:30px;line-height:1">12</div><div class="lab" style="color:#BDB6A9;margin-top:4px">днів до перевірки</div></div>
+              <div style="font-family:Geist;font-size:9.5px;letter-spacing:.14em;color:#BDB6A9">12 ЖОВТ.</div>
+            </div>
+          </div>
+          <div class="lab" style="margin-top:22px">Карта нас · 3 точки</div>
+          <div class="tl" style="margin-top:12px">
+            <div class="tli open"><div class="h">Темп розмови</div><div class="r">Одразу / після паузи</div></div>
+            <div class="tli"><div class="h">Близькість</div><div class="r">Відчуваєте дистанцію по-різному</div></div>
+            <div class="tli" style="padding-bottom:0"><div class="h">Підтримка</div><div class="r">Різні сигнали турботи</div></div>
+          </div>
+          <div class="grow"></div>
+          <div class="btn ghost">Відкрити карту<svg width="18" height="18"><use href="#arrow"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Двоє · Прототип 1.0</span><span>Таблиця V / V</span></div>
+</section>
+
+</body>
+</html>
