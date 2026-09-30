@@ -307,7 +307,7 @@ button.logo{background:none;border:0;color:inherit;font:inherit;font-family:var(
   .stage{padding:0;display:block;max-width:none}
   .side{display:none}
   .device{position:static}
-  .phone{max-width:none;height:100vh;height:100dvh;min-height:0;border-radius:0;box-shadow:none}
+  .phone{max-width:none;max-height:none;height:100vh;height:100dvh;min-height:0;border-radius:0;box-shadow:none}
   .status{display:none}
   .toast{bottom:120px}
   .fab{display:block;position:fixed;left:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:30;border-radius:99px;background:var(--ink);color:var(--onInk);font-family:var(--mono);font-size:11px;padding:10px 14px;box-shadow:0 8px 20px -8px var(--shadow)}
@@ -386,6 +386,47 @@ body{background:var(--paper)}
 .screen .qBlock .col.b{animation-delay:.12s}
 @keyframes flip{from{transform:perspective(600px) rotateY(80deg);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.silk i,.celebrate .burst,.celebrate .ring,.screen .qBlock .col{animation:none}}
+
+/* ── always light, like the reference: misty ground, grain, grotesque type ── */
+:root,:root[data-theme="dark"]{--paper:#E7E9E4;--sheet:#ECEEE9;--solid:#FBFBF8;--card:rgba(255,255,255,.55);--glass:rgba(244,245,241,.66);--ink:#141413;--onInk:#FBFBF8;
+  --graphite:#5F5F5A;--faint:#A2A29C;--rule:rgba(20,20,19,.1);--rule2:rgba(20,20,19,.06);--moss:#3F5446;--mossSoft:rgba(63,84,70,.1);--mossLine:rgba(63,84,70,.25);
+  --clay:#B85A36;--claySoft:rgba(184,90,54,.1);--clayLine:rgba(184,90,54,.28);--warn:#8A5E10;--warnSoft:rgba(222,190,120,.28);--shadow:rgba(40,30,20,.25);
+  --mist:#DDE1DB;--silk1:#CC5F37;--silk2:#E69C78;--silk3:#F1CDB9;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#E7E9E4;--sheet:#ECEEE9;--solid:#FBFBF8;--card:rgba(255,255,255,.55);--glass:rgba(244,245,241,.66);--ink:#141413;--onInk:#FBFBF8;
+  --graphite:#5F5F5A;--faint:#A2A29C;--rule:rgba(20,20,19,.1);--rule2:rgba(20,20,19,.06);--moss:#3F5446;--mossSoft:rgba(63,84,70,.1);--mossLine:rgba(63,84,70,.25);
+  --clay:#B85A36;--claySoft:rgba(184,90,54,.1);--clayLine:rgba(184,90,54,.28);--warn:#8A5E10;--warnSoft:rgba(222,190,120,.28);--shadow:rgba(40,30,20,.25);
+  --mist:#DDE1DB;--silk1:#CC5F37;--silk2:#E69C78;--silk3:#F1CDB9;color-scheme:light}}
+html{background:var(--paper)}
+body{background:linear-gradient(180deg,var(--mist),var(--paper) 40%) fixed;color:var(--ink)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.14;mix-blend-mode:multiply}
+#root{position:relative;z-index:1}
+.dev{background:rgba(20,20,19,.92)}
+.card,.opt,.tariff{border-color:rgba(255,255,255,.7)}
+.side h1,.site h2.h,.site h3.h,.t1,.t2{color:var(--ink)}
+.side h1 em{color:var(--faint)}
+.site section{border-bottom-color:var(--rule)}
+.site .navS{border-bottom:0}
+.heroS{position:relative;text-align:center;padding-block:40px 64px!important;border-bottom:1px solid var(--rule)}
+html,body{overflow-x:clip}
+.heroSilk{display:none}
+.heroArt:before{content:"";position:absolute;left:-45%;right:-45%;top:48%;bottom:-55%;background:radial-gradient(42% 48% at 32% 58%,var(--silk1),transparent 70%),radial-gradient(40% 45% at 70% 48%,var(--silk2),transparent 72%),radial-gradient(30% 32% at 52% 72%,var(--silk3),transparent 75%);filter:blur(26px);opacity:.78;animation:drift1 16s ease-in-out infinite alternate;pointer-events:none}
+.heroArt>*{position:relative}
+.heroSeg{max-width:340px;margin:0 auto 64px}
+.heroSeg button{padding:11px 6px;font-size:14px}
+.heroH{max-width:15ch;margin:0 auto!important;font-size:clamp(38px,6.4vw,76px)!important;line-height:.98!important}
+.heroH span{color:var(--faint)}
+.heroSub{margin:26px auto 0!important;font-size:18px!important;color:var(--graphite)!important;max-width:30em}
+.heroArt{position:relative;max-width:620px;margin:56px auto 0;padding-bottom:28px}
+.heroSilk{position:absolute;inset:30% -40% -70%;background:none;-webkit-mask-image:radial-gradient(closest-side,#000 55%,transparent);mask-image:radial-gradient(closest-side,#000 55%,transparent)}
+.heroSilk:after{display:none}
+.heroSilk i{opacity:.55}
+.heroDial{position:relative;display:block;width:100%;height:auto}
+.heroStat{position:relative;max-width:360px;margin:26px auto 0}
+.heroStat>div{color:var(--ink);opacity:.8}
+.heroCta{position:relative;margin-top:36px}
+.heroCta .cta{margin:0 auto}
+.site .under{text-align:center}
+@media (max-width:700px){.heroSeg{margin-bottom:40px}.heroH{font-size:40px!important}.heroSub{font-size:16px!important;padding-inline:4px}}
 </style>
 </head>
 <body>
@@ -1288,16 +1329,15 @@ function cabView(){const s=S.nav.psy.s;
 /* ═════════ landing (L1) ═════════ */
 function siteView(){return `<div class="site">
   <div class="navS"><div class="logo"><svg width="32" height="19"><use href="#logo"/></svg>Двоє</div><nav><a href="#how">Як це працює</a><a href="#prices">Ціни</a><a href="#privacy">Приватність</a><a href="#faq">Питання</a><button data-act="siteLogin" style="text-decoration:underline">Увійти</button></nav></div>
-  <section class="hero" style="border-bottom:1px solid var(--rule)">
-    <div><div class="label">Застосунок для пар</div>
-      <h2 class="h" style="margin-top:22px">Ви разом. Тепер давайте поговоримо про те, що зазвичай не проговорюють</h2>
-      <p class="sub">Застосунок, у якому пара відповідає на складні питання окремо — а потім бачить, де саме вони розходяться</p>
-      <button class="cta" data-act="siteStart">Пройти карту стосунків безкоштовно${arrow}</button><a class="cta2" href="#how">Що це таке</a>
-      <div class="under">8 хвилин. Без оплати. Відповіді партнера закриті, доки не відповісте обидва</div></div>
-    <svg viewBox="0 0 360 300" width="100%" style="max-width:420px" aria-hidden="true"><g fill="none" stroke-width=".8">
-      ${[120,100,80,60,40].map((r,i)=>`<circle cx="140" cy="150" r="${r}" stroke="var(--moss)" opacity="${1-i*.18}"/><circle cx="220" cy="150" r="${r}" stroke="var(--clay)" opacity="${1-i*.18}"/>`).join("")}</g>
-      <line x1="180" y1="16" x2="180" y2="284" stroke="var(--ink)" stroke-width=".6" stroke-dasharray="2 5"/>
-      <text x="140" y="296" text-anchor="middle" font-size="9" fill="var(--graphite)" letter-spacing="2">ТИ</text><text x="220" y="296" text-anchor="middle" font-size="9" fill="var(--graphite)" letter-spacing="2">ПАРТНЕР</text></svg>
+  <section class="heroS">
+    <div class="seg heroSeg"><button class="on" data-act="siteStart">Ми пара</button><button data-act="siteSolo">Поки сам</button></div>
+    <h2 class="h heroH">Ви разом. <span>Тепер давайте поговоримо про те, що зазвичай не проговорюють</span></h2>
+    <p class="sub heroSub">Застосунок, у якому пара відповідає на складні питання окремо — а потім бачить, де саме вони розходяться</p>
+    <div class="heroArt" aria-hidden="true"><div class="silk heroSilk"><i></i><i></i><i></i></div>
+      <svg class="heroDial" viewBox="0 18 320 96">${dialInner(4,8)}</svg>
+      <div class="dualStat heroStat"><div>Ти · як є<b>4</b></div><i></i><div>Партнер · як є<b>8</b></div></div></div>
+    <div class="heroCta"><button class="cta" data-act="siteStart">Пройти карту стосунків безкоштовно${arrow}</button>
+    <div class="under">8 хвилин. Без оплати. Відповіді партнера закриті, доки не відповісте обидва</div></div>
   </section>
   <section><h3 class="h">Більшість пар не сваряться через великі речі. Вони роками не промовляють дрібні — і ті стають великими</h3>
     <div class="grid3">
@@ -1392,7 +1432,7 @@ function render(fresh){
   if(S.view==="site") html+=siteView();
   else if(S.view==="cab") html+=`<div class="stage" style="grid-template-columns:1fr">${cabView()}</div>`;
   else html+=`<div class="stage">${sideView()}<div class="device">${phoneView(!fresh)}</div></div>`;
-  if(S.view!=="app") html+=`<button class="fab" data-act="sheet">Демо</button>`;
+  if(S.view==="cab") html+=`<button class="fab" data-act="sheet">Демо</button>`;
   html+=sheetView();
   root.innerHTML=html;
   const s2=document.querySelector(".scroll");if(s2) s2.scrollTop=keep;
@@ -1548,6 +1588,7 @@ const A={
   /* site */
   siteStart(){S.view="app";S.user="p1";S.nav.p1={s:"A1",st:[]};render(true);window.scrollTo(0,0)},
   siteLogin(){A.siteStart()},
+  siteSolo(){S.view="app";S.user="p1";S.nav.p1={s:"K1",st:[]};render(true);window.scrollTo(0,0)},
   /* cabinet */
   psyLogin(){S.psyLogged=true;S.nav.psy.s="T2";render(true)},
   psyLogout(){S.psyLogged=false;S.nav.psy.s="T1";render(true)},
