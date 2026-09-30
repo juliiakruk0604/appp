@@ -1,0 +1,218 @@
+<title>Как работает Двоє</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a picture-book strip, one step per row: big number, simple drawing, one sentence. Юля is always orange, Андрей always green. */
+:root{
+  --bg:#ECEEE9; --paper:#FAFAF7; --ink:#161615; --muted:#5C5C56; --line:rgba(22,22,21,.12);
+  --yulia:#C0643C; --yuliaSoft:#F3DDD1; --andrii:#3F6B52; --andriiSoft:#D6E5DA; --app:#161615; --psy:#9A6B12; --psySoft:#F1E4C4;
+  --display:"Inter Tight",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151514; --paper:#1F1F1D; --ink:#EEEEE9; --muted:#A5A59D; --line:rgba(238,238,233,.14);
+  --yulia:#E88A62; --yuliaSoft:#3A2A22; --andrii:#86B898; --andriiSoft:#22322A; --app:#EEEEE9; --psy:#E2B45C; --psySoft:#342B1A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151514; --paper:#1F1F1D; --ink:#EEEEE9; --muted:#A5A59D; --line:rgba(238,238,233,.14);
+  --yulia:#E88A62; --yuliaSoft:#3A2A22; --andrii:#86B898; --andriiSoft:#22322A; --app:#EEEEE9; --psy:#E2B45C; --psySoft:#342B1A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--display);font-size:18px;line-height:1.5;padding-inline:clamp(16px,4vw,48px);padding-block:40px 80px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:72px}
+.eb{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(40px,7vw,76px);line-height:1;letter-spacing:-.035em;font-weight:500;margin:10px 0 0;text-wrap:balance}
+h2{font-size:clamp(28px,4vw,40px);line-height:1.08;letter-spacing:-.025em;font-weight:500;margin:0;text-wrap:balance}
+p{margin:0}
+.big{font-size:clamp(20px,2.6vw,26px);line-height:1.4;max-width:34ch;margin-top:18px}
+.muted{color:var(--muted)}
+.y{color:var(--yulia);font-weight:600} .a{color:var(--andrii);font-weight:600}
+section{display:flex;flex-direction:column;gap:22px}
+
+/* cast */
+.cast{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.who{background:var(--paper);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.who b{font-weight:600;font-size:19px}
+.who span{font-size:15px;color:var(--muted);line-height:1.4}
+.face{width:56px;height:56px}
+
+/* loop */
+.loopBox{background:var(--paper);border-radius:28px;padding:clamp(18px,3vw,32px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;align-items:center}
+.loopBox svg{width:100%;height:auto;max-width:460px;justify-self:center}
+
+/* steps */
+.steps{display:flex;flex-direction:column;gap:14px;list-style:none;margin:0;padding:0}
+.step{background:var(--paper);border-radius:24px;padding:clamp(16px,2.6vw,26px);display:grid;grid-template-columns:64px minmax(0,260px) minmax(0,1fr);gap:clamp(14px,2.6vw,28px);align-items:center}
+.num{font-size:52px;line-height:1;font-weight:500;letter-spacing:-.04em;color:var(--muted);font-variant-numeric:tabular-nums}
+.pic svg{width:100%;height:auto;display:block}
+.txt{display:flex;flex-direction:column;gap:8px;min-width:0}
+.txt h3{font-size:24px;line-height:1.2;letter-spacing:-.015em;font-weight:500;margin:0;text-wrap:balance}
+.txt p{color:var(--muted);font-size:17px}
+.tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--muted)}
+
+/* special cases */
+.cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.case{border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:8px}
+.case h3{margin:0;font-size:21px;font-weight:600;letter-spacing:-.01em}
+.case p{font-size:16px}
+.case.stop{background:var(--yuliaSoft)} .case.psy{background:var(--psySoft)} .case.solo{background:var(--andriiSoft)}
+
+/* team */
+.todo{display:flex;flex-direction:column;gap:12px;list-style:none;margin:0;padding:0;counter-reset:t}
+.todo li{background:var(--paper);border-radius:20px;padding:18px 20px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start}
+.todo li::before{counter-increment:t;content:counter(t);width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:600;font-size:18px}
+.todo b{display:block;font-size:19px;font-weight:600;margin-bottom:4px}
+.todo span{color:var(--muted);font-size:16px}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rule{border:1.5px solid var(--line);border-radius:18px;padding:16px 18px;font-size:16px}
+.rule b{display:block;font-size:17px;margin-bottom:2px}
+a.btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);text-decoration:none;border-radius:99px;padding:14px 22px;font-weight:500;font-size:17px;min-height:48px}
+a.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+a:focus-visible{outline:3px solid var(--andrii);outline-offset:3px}
+
+/* words */
+dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px;margin:0}
+dl div{border-top:1.5px solid var(--line);padding-top:12px}
+dt{font-weight:600;font-size:18px}
+dd{margin:4px 0 0;color:var(--muted);font-size:16px}
+
+@media (max-width:760px){
+  .cast{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .loopBox{grid-template-columns:1fr}
+  .step{grid-template-columns:44px minmax(0,1fr)}
+  .step .pic{grid-column:1 / -1;order:-1;max-width:320px}
+  .num{font-size:40px}
+  .cases,.rules,dl{grid-template-columns:1fr}
+}
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eb">Двоє · объяснение за 3 минуты</div>
+    <h1>Как работает Двоє</h1>
+    <p class="big">Двое отвечают на вопросы <b>по отдельности</b>. Потом <b>вместе</b> смотрят, где думают по-разному. И договариваются об <b>одной маленькой вещи</b>.</p>
+  </header>
+
+  <section aria-labelledby="h-cast">
+    <h2 id="h-cast">Кто тут есть</h2>
+    <div class="cast">
+      <div class="who"><svg class="face" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="26" fill="var(--yulia)"/><text x="28" y="35" text-anchor="middle" font-size="20" font-weight="600" fill="var(--paper)" font-family="var(--display)">Ю</text></svg><b class="y">Юля</b><span>Нашла приложение и начала первой.</span></div>
+      <div class="who"><svg class="face" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="26" fill="var(--andrii)"/><text x="28" y="35" text-anchor="middle" font-size="20" font-weight="600" fill="var(--paper)" font-family="var(--display)">А</text></svg><b class="a">Андрей</b><span>Её партнёр. Пришёл по ссылке от Юли.</span></div>
+      <div class="who"><svg class="face" viewBox="0 0 56 56" aria-hidden="true"><rect x="6" y="6" width="44" height="44" rx="12" fill="var(--app)"/><circle cx="23" cy="28" r="8" fill="none" stroke="var(--yulia)" stroke-width="3"/><circle cx="33" cy="28" r="8" fill="none" stroke="var(--andrii)" stroke-width="3"/></svg><b>Приложение</b><span>Хранит ответы, считает, напоминает.</span></div>
+      <div class="who"><svg class="face" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="26" fill="var(--psy)"/><text x="28" y="35" text-anchor="middle" font-size="20" font-weight="600" fill="var(--paper)" font-family="var(--display)">П</text></svg><b>Психолог</b><span>Появляется, только если оба согласны.</span></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-loop">
+    <h2 id="h-loop">Главное — это круг из четырёх шагов</h2>
+    <div class="loopBox">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <p class="big" style="margin:0">Пара проходит этот круг снова и снова, одна тема за раз.</p>
+        <p class="muted">Всё остальное в приложении (вход, оплата, напоминания) нужно только для того, чтобы этот круг крутился.</p>
+      </div>
+      <svg viewBox="-20 0 460 380" role="img" aria-label="Круг: отвечаем отдельно, смотрим вместе, договариваемся, через 2 недели проверяем, и снова отвечаем отдельно">
+        <defs><marker id="lp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+        <circle cx="210" cy="190" r="128" fill="none" stroke="var(--line)" stroke-width="14"/>
+        <path d="M268,78 A128,128 0 0 1 322,140" fill="none" stroke="var(--muted)" stroke-width="2.5" marker-end="url(#lp)"/>
+        <path d="M322,240 A128,128 0 0 1 268,302" fill="none" stroke="var(--muted)" stroke-width="2.5" marker-end="url(#lp)"/>
+        <path d="M152,302 A128,128 0 0 1 98,240" fill="none" stroke="var(--muted)" stroke-width="2.5" marker-end="url(#lp)"/>
+        <path d="M98,140 A128,128 0 0 1 152,78" fill="none" stroke="var(--muted)" stroke-width="2.5" marker-end="url(#lp)"/>
+        <g font-family="var(--display)" text-anchor="middle">
+          <rect x="105" y="36" width="210" height="48" rx="24" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="210" y="66" font-size="16" font-weight="600" fill="var(--ink)">1 · Отвечаем отдельно</text>
+          <rect x="296" y="166" width="140" height="48" rx="24" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="366" y="196" font-size="16" font-weight="600" fill="var(--ink)">2 · Смотрим</text>
+          <rect x="105" y="296" width="210" height="48" rx="24" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="210" y="326" font-size="16" font-weight="600" fill="var(--ink)">3 · Договариваемся</text>
+          <rect x="-16" y="166" width="140" height="48" rx="24" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="54" y="196" font-size="16" font-weight="600" fill="var(--ink)">4 · Проверяем</text>
+          <circle cx="192" cy="190" r="22" fill="none" stroke="var(--yulia)" stroke-width="5"/>
+          <circle cx="228" cy="190" r="22" fill="none" stroke="var(--andrii)" stroke-width="5"/>
+          <text x="210" y="238" font-size="13" fill="var(--muted)">одна тема за раз</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-steps">
+    <h2 id="h-steps">Весь путь по шагам</h2>
+    <ol class="steps" id="steps"></ol>
+  </section>
+
+  <section aria-labelledby="h-cases">
+    <h2 id="h-cases">Три особых случая</h2>
+    <div class="cases">
+      <div class="case stop"><h3>Если кому-то опасно</h3><p>Если в ответе есть слова про удары, угрозы или страх, приложение сразу останавливается и показывает, куда звонить: горячая линия 116 123, полиция 102.</p><span class="tag">экран S2</span></div>
+      <div class="case psy"><h3>Если нужен психолог</h3><p>Психолог видит ответы пары, только если согласились <b>оба</b>. Пара видит, когда и что он открывал.</p><span class="tag">экраны Z1, T1–T3</span></div>
+      <div class="case solo"><h3>Если пары нет</h3><p>Человек без партнёра идёт по своей дорожке «Соло»: разбирает прошлые отношения и свои убеждения. Когда встретит кого-то, переходит в режим пары.</p><span class="tag">экраны K, M, N, P</span></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-team">
+    <h2 id="h-team">Как работать команде</h2>
+    <p class="muted" style="max-width:60ch">У нас две рабочие ссылки. В прототипе можно потыкать продукт. В карте продукта мы договариваемся, кто что делает.</p>
+    <div class="links">
+      <a class="btn" href="https://claude.ai/artifact/V9ZJXe2zySkEwGuhD5tFss" target="_blank" rel="noopener">Открыть карту продукта →</a>
+      <a class="btn ghost" href="https://claude.ai/artifact/NNPhgmCE4gQvSzYsRFjhze" target="_blank" rel="noopener">Открыть прототип →</a>
+    </div>
+    <ol class="todo">
+      <li><div><b>Открой карту продукта</b><span>Там каждый экран приложения нарисован карточкой.</span></div></li>
+      <li><div><b>Найди свою карточку и нажми на неё</b><span>Справа откроется панель с полями.</span></div></li>
+      <li><div><b>Нажми «Беру я»</b><span>Теперь все видят, что этим занимаешься ты.</span></div></li>
+      <li><div><b>Поставь статус</b><span>Идея → Дизайн → Прототип → Разработка → Тест → Готово. Меняй сразу, как только сдвинулось.</span></div></li>
+      <li><div><b>Если что-то непонятно, запиши в поле «Відкриті питання»</b><span>На карточке появится красный знак «?», и команда его увидит.</span></div></li>
+    </ol>
+    <div class="rules">
+      <div class="rule"><b>Одна карточка — один человек</b>Если ведут двое, не ведёт никто.</div>
+      <div class="rule"><b>Всё сохраняется само</b>Кнопки «Сохранить» нет. Все видят изменения сразу.</div>
+      <div class="rule"><b>Раз в неделю смотрим все «?»</b>Фильтр «З питаннями» сверху карты показывает только их.</div>
+      <div class="rule"><b>Нет нужного экрана?</b>Нажми «+ Додати» в нужной клетке таблицы.</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-words">
+    <h2 id="h-words">Словарик</h2>
+    <dl>
+      <div><dt>Карта отношений</dt><dd>Первые вопросы про 8 сторон пары. Каждый ставит «как есть» и «как хочу» от 0 до 10.</dd></div>
+      <div><dt>Радар</dt><dd>Картинка-паутинка. Две линии: Юля и Андрей. Где линии далеко, там стоит поговорить.</dd></div>
+      <div><dt>Тема (модуль)</dt><dd>Набор вопросов про одну вещь, например «Границы». Всего 14 тем.</dd></div>
+      <div><dt>Сессия</dt><dd>Один заход по теме: 5–10 вопросов, каждый отвечает у себя.</dd></div>
+      <div><dt>Договорённость</dt><dd>Одна маленькая вещь, которую пара пробует 2 недели. Например: «ужин без телефонов по средам».</dd></div>
+      <div><dt>Проверка</dt><dd>Через 2 недели приложение спрашивает обоих: получилось или нет, и почему.</dd></div>
+      <div><dt>Пейвол</dt><dd>Экран, где просим заплатить: одна тема 390 ₴ или всё 890 ₴ на старте (потом 1290 ₴).</dd></div>
+      <div><dt>Вопрос дня</dt><dd>Один лёгкий вопрос каждый день, чтобы пара заходила не только ради больших тем.</dd></div>
+    </dl>
+  </section>
+
+</div>
+
+<script>
+/* Simple drawings. Y = Юля (orange), A = Андрей (green). */
+const Y="var(--yulia)",A="var(--andrii)",I="var(--ink)",M="var(--muted)",P="var(--paper)",L="var(--line)";
+const phone=(x,c,inner,label)=>`<rect x="${x}" y="14" width="86" height="142" rx="16" fill="${P}" stroke="${c}" stroke-width="3"/><rect x="${x+30}" y="22" width="26" height="4" rx="2" fill="${L}"/>${inner}<circle cx="${x+43}" cy="172" r="11" fill="${c}"/><text x="${x+43}" y="176.5" text-anchor="middle" font-size="12" font-weight="600" fill="${P}" font-family="var(--display)">${label}</text>`;
+const svg=(body,label)=>`<svg viewBox="0 0 260 190" role="img" aria-label="${label}">${body}</svg>`;
+const bars=(x,c,vals)=>vals.map((v,i)=>`<rect x="${x+14}" y="${40+i*24}" width="58" height="8" rx="4" fill="${L}"/><circle cx="${x+14+v*5.8}" cy="${44+i*24}" r="6" fill="${c}"/>`).join("");
+const arrow=(x1,x2,y,c=M)=>`<path d="M${x1},${y} L${x2-8},${y}" stroke="${c}" stroke-width="3" fill="none"/><path d="M${x2-10},${y-7} L${x2},${y} L${x2-10},${y+7} z" fill="${c}"/>`;
+const PICS=[
+ svg(phone(87,Y,`<text x="130" y="62" text-anchor="middle" font-size="13" fill="${M}" font-family="var(--display)">Двоє</text><rect x="99" y="96" width="62" height="24" rx="12" fill="${I}"/><text x="130" y="112" text-anchor="middle" font-size="11" fill="${P}" font-family="var(--display)">Мы пара</text>`,"Ю"),"Телефон Юли с кнопкой Мы пара"),
+ svg(phone(10,Y,`<rect x="22" y="60" width="62" height="34" rx="10" fill="${L}"/><text x="53" y="81" text-anchor="middle" font-size="11" fill="${I}" font-family="var(--display)">ссылка</text>`,"Ю")+arrow(104,158,86,Y)+phone(164,A,`<rect x="176" y="60" width="62" height="34" rx="10" fill="${L}"/><text x="207" y="81" text-anchor="middle" font-size="11" fill="${I}" font-family="var(--display)">ссылка</text><rect x="176" y="104" width="62" height="20" rx="10" fill="${A}"/><text x="207" y="118" text-anchor="middle" font-size="10" fill="${P}" font-family="var(--display)">принять</text>`,"А"),"Юля отправляет ссылку, у Андрея кнопка принять"),
+ svg(phone(10,Y,bars(10,Y,[3,8,5,6]),"Ю")+`<line x1="130" y1="10" x2="130" y2="180" stroke="${M}" stroke-width="2.5" stroke-dasharray="6 6"/><text x="130" y="100" text-anchor="middle" font-size="22" fill="${M}">≠</text>`+phone(164,A,bars(164,A,[7,6,2,6]),"А"),"Два телефона, между ними стена: ответы друг друга не видны"),
+ svg(`<g transform="translate(130,92)"><polygon points="0,-70 60,-35 60,35 0,70 -60,35 -60,-35" fill="none" stroke="${L}" stroke-width="2"/><polygon points="0,-35 30,-17 30,17 0,35 -30,17 -30,-17" fill="none" stroke="${L}" stroke-width="2"/><polygon points="0,-50 48,-28 24,14 0,56 -42,24 -30,-17" fill="${Y}" fill-opacity=".18" stroke="${Y}" stroke-width="3"/><polygon points="0,-58 30,-17 52,30 0,30 -50,28 -48,-28" fill="${A}" fill-opacity=".18" stroke="${A}" stroke-width="3"/></g><text x="130" y="184" text-anchor="middle" font-size="12" fill="${M}" font-family="var(--display)">где линии далеко, там говорим</text>`,"Радар: две линии, Юли и Андрея"),
+ svg(`<rect x="70" y="70" width="120" height="96" rx="16" fill="${P}" stroke="${I}" stroke-width="3"/><path d="M100,70 V48 a30,30 0 0 1 60,0 V52" fill="none" stroke="${I}" stroke-width="6" stroke-linecap="round"/><text x="130" y="128" text-anchor="middle" font-size="26" font-weight="600" fill="${I}" font-family="var(--display)">890 ₴</text><circle cx="40" cy="118" r="11" fill="${Y}"/><circle cx="220" cy="118" r="11" fill="${A}"/><text x="130" y="184" text-anchor="middle" font-size="12" fill="${M}" font-family="var(--display)">платит один, открыто обоим</text>`,"Замок открывается, 890 гривен, доступ обоим"),
+ svg(phone(10,Y,`<rect x="22" y="44" width="62" height="40" rx="8" fill="${Y}" fill-opacity=".2"/><rect x="22" y="92" width="62" height="40" rx="8" fill="${A}" fill-opacity=".2"/>`,"Ю")+`<path d="M112,70 q18,-26 36,0" fill="none" stroke="${M}" stroke-width="3"/><path d="M112,110 q18,26 36,0" fill="none" stroke="${M}" stroke-width="3"/><text x="130" y="96" text-anchor="middle" font-size="12" fill="${M}" font-family="var(--display)">15 мин</text>`+phone(164,A,`<rect x="176" y="44" width="62" height="40" rx="8" fill="${Y}" fill-opacity=".2"/><rect x="176" y="92" width="62" height="40" rx="8" fill="${A}" fill-opacity=".2"/>`,"А"),"Оба видят оба ответа и говорят 15 минут"),
+ svg(`<rect x="60" y="24" width="140" height="130" rx="16" fill="${P}" stroke="${I}" stroke-width="3"/><rect x="60" y="24" width="140" height="34" rx="16" fill="${I}"/><rect x="60" y="44" width="140" height="14" fill="${I}"/><text x="130" y="47" text-anchor="middle" font-size="13" fill="${P}" font-family="var(--display)">через 14 дней</text><path d="M104,104 l18,18 l36,-38" fill="none" stroke="${A}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><text x="130" y="178" text-anchor="middle" font-size="12" fill="${M}" font-family="var(--display)">получилось?</text>`,"Календарь: через 14 дней проверка"),
+ svg(`<path d="M130,30 a62,62 0 1 1 -54,31" fill="none" stroke="${M}" stroke-width="4"/><path d="M68,50 l8,16 l14,-12" fill="none" stroke="${M}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="118" cy="92" r="20" fill="none" stroke="${Y}" stroke-width="5"/><circle cx="142" cy="92" r="20" fill="none" stroke="${A}" stroke-width="5"/><text x="130" y="184" text-anchor="middle" font-size="12" fill="${M}" font-family="var(--display)">следующая тема</text>`,"Стрелка по кругу: следующая тема"),
+];
+const STEPS=[
+ ["Юля открывает сайт и нажимает «Мы пара»","Входит по почте, без пароля. Пишет имена и сколько они вместе.","Юля · экраны A1–A3"],
+ ["Юля отправляет Андрею ссылку","Андрей открывает её на своём телефоне. Теперь их телефоны связаны.","Юля и Андрей · A4–A5"],
+ ["Каждый отвечает отдельно","Вопросы про 8 сторон пары: безопасность, общение, близость и другие. Ответы другого <b>не видно</b>.","Оба · B1–B3"],
+ ["Когда ответили оба, появляется радар","Видно, где они думают одинаково, а где по-разному. Приложение подсказывает, с какой темы начать.","Приложение · B4"],
+ ["Пробуют 3 вопроса бесплатно, дальше платит один","Одна тема 390 ₴ или всё сразу 890 ₴. Платит один, открывается обоим.","Юля · B5, H5"],
+ ["Тема: отвечают отдельно, потом смотрят вместе","Когда ответили оба, ответы открываются рядом. Дальше таймер на 15 минут, чтобы поговорить вслух.","Оба · D1–D6"],
+ ["Договариваются об одной маленькой вещи","Через 2 недели приложение спрашивает обоих: получилось или нет.","Оба · D7–D9"],
+ ["Следующая тема, и так по кругу","Между темами каждый день приходит один лёгкий вопрос дня.","Оба · C1, DQ"],
+];
+document.getElementById("steps").innerHTML=STEPS.map(([h,p,t],i)=>`<li class="step"><div class="num">${i+1}</div><div class="pic">${PICS[i]}</div><div class="txt"><h3>${h}</h3><p>${p}</p><span class="tag">${t}</span></div></li>`).join("");
+</script>
