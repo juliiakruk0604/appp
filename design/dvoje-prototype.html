@@ -1,7 +1,7 @@
 <title>Двоє · прототип</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap">
 <style>
 /* Layout: developer bar on top; the site as a page, the app inside a phone, the psychologist cabinet as a desk-width panel. */
 :root{
@@ -286,7 +286,7 @@ button.logo{background:none;border:0;color:inherit;font:inherit;font-family:var(
 .sheet .sb{border:1px solid var(--rule);border-radius:99px;padding:8px 12px;font-family:var(--mono);font-size:11px;margin:0 6px 6px 0;display:inline-block}
 .sheet .sb.on{background:var(--ink);color:var(--onInk);border-color:var(--ink)}
 @media (max-width:700px){
-  body{background:var(--sheet)}
+  body{background:var(--sheet);padding:0}
   .dev{display:none}
   .stage{padding:0;display:block;max-width:none}
   .side{display:none}
@@ -302,6 +302,74 @@ button.logo{background:none;border:0;color:inherit;font:inherit;font-family:var(
   .cab{padding-block:16px}
   .cabMain{padding:16px}
 }
+
+/* ── «Mist & silk» theme: soft misty ground, drifting silk, film grain, grotesque type ── */
+:root{--display:"Inter Tight","Helvetica Neue",Arial,sans-serif;--body:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  --paper:#E6E8E2;--sheet:#ECEDE8;--solid:#FBFBF8;--card:rgba(255,255,255,.52);--glass:rgba(246,246,242,.62);
+  --rule:rgba(31,30,27,.11);--rule2:rgba(31,30,27,.07);--mist:#DADDD5;--silk1:#C4552F;--silk2:#E39A74;--silk3:#F3D2BF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#141412;--sheet:#191917;--solid:#2A2926;--card:rgba(44,42,38,.55);--glass:rgba(28,27,25,.7);
+  --rule:rgba(255,255,255,.1);--rule2:rgba(255,255,255,.06);--mist:#24251F;--silk1:#8C3A1F;--silk2:#6A2F1E;--silk3:#3A2A22}}
+:root[data-theme="dark"]{--paper:#141412;--sheet:#191917;--solid:#2A2926;--card:rgba(44,42,38,.55);--glass:rgba(28,27,25,.7);
+  --rule:rgba(255,255,255,.1);--rule2:rgba(255,255,255,.06);--mist:#24251F;--silk1:#8C3A1F;--silk2:#6A2F1E;--silk3:#3A2A22}
+body{background:var(--paper)}
+.phone{background:var(--sheet)}
+.silk{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:linear-gradient(180deg,var(--mist) 0%,var(--sheet) 55%)}
+.silk i{position:absolute;border-radius:50%;filter:blur(34px);opacity:.5;will-change:transform}
+.silk i:nth-child(1){width:95%;height:38%;left:-25%;bottom:-12%;background:var(--silk1);animation:drift1 16s ease-in-out infinite alternate}
+.silk i:nth-child(2){width:80%;height:30%;right:-30%;bottom:-6%;background:var(--silk2);animation:drift2 21s ease-in-out infinite alternate}
+.silk i:nth-child(3){width:70%;height:22%;left:10%;bottom:10%;background:var(--silk3);opacity:.45;animation:drift1 26s ease-in-out infinite alternate-reverse}
+.silk:after{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.16;mix-blend-mode:multiply}
+@keyframes drift1{0%{transform:translate(-6%,4%) rotate(-8deg) scale(1)}100%{transform:translate(8%,-3%) rotate(6deg) scale(1.12)}}
+@keyframes drift2{0%{transform:translate(6%,2%) rotate(10deg)}100%{transform:translate(-10%,-4%) rotate(-4deg) scale(1.1)}}
+.phone>.status,.phone>.bar,.phone>.steps,.phone>.scroll,.phone>.foot,.phone>.tabbar,.phone>.plaque,.phone>.offline{position:relative;z-index:1}
+.t1,.t2{font-family:var(--display);font-weight:500;letter-spacing:-.04em;line-height:1.02}
+.t1{font-size:34px}.t2{font-size:27px}
+.t1 em,.t2 em{font-style:normal;color:var(--faint)}
+.t3{font-family:var(--display);font-weight:500;letter-spacing:-.02em}
+.p{font-size:14.5px;line-height:1.5}
+.card,.opt,.tariff{background:var(--card);border-color:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 8px 24px -18px rgba(40,30,20,.35)}
+:root[data-theme="dark"] .card,:root[data-theme="dark"] .opt{border-color:rgba(255,255,255,.07)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .card,:root:not([data-theme="light"]) .opt{border-color:rgba(255,255,255,.07)}}
+.card.darkCard{background:var(--ink);border-color:var(--ink)}
+.seg{background:rgba(31,30,27,.06);border:0;border-radius:14px;padding:4px}
+.seg button{border-radius:11px;color:var(--graphite);font-family:var(--body)}
+.seg button.on{background:var(--solid);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.field{background:var(--card);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.tabbar{background:var(--glass);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top-color:rgba(255,255,255,.4)}
+.btn{font-family:var(--body);font-weight:500;letter-spacing:-.01em}
+.site h2.h,.site h3.h,.side h1{font-family:var(--display);font-weight:500;letter-spacing:-.045em}
+.side h1 em,.site h2.h em{font-style:normal;color:var(--faint)}
+/* dial */
+.dial{display:block;width:100%;height:auto;touch-action:none;cursor:grab;margin-top:6px;user-select:none;-webkit-user-select:none}
+.dial:active{cursor:grabbing}
+.dial:focus-visible{outline:2px solid var(--clay);outline-offset:4px;border-radius:14px}
+.dualStat{display:grid;grid-template-columns:1fr 1px 1fr;align-items:stretch;text-align:center;margin-top:4px}
+.dualStat>div{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--graphite);padding:4px 0}
+.dualStat>div.on{color:var(--ink)}
+.dualStat b{display:block;font-family:var(--mono);font-weight:500;font-size:24px;letter-spacing:0;color:var(--ink);margin-top:4px}
+.dualStat>i{background:var(--rule)}
+.dialHint{text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-top:2px}
+/* game layer */
+.levelCard{padding:16px}
+.ticks{display:flex;gap:3px;margin-top:12px;height:18px;align-items:flex-end}
+.ticks i{flex:1;height:9px;background:var(--graphite);opacity:.28;border-radius:1px}
+.ticks i.on{height:16px;background:var(--ink);opacity:1}
+.badgeGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.badge2{border-radius:16px;padding:12px;background:var(--card);border:1px solid var(--rule);min-width:0}
+.badge2 b{display:block;font-size:13.5px;font-weight:500}
+.badge2 span{font-size:11.5px;color:var(--graphite);line-height:1.35;display:block;margin-top:3px}
+.badge2 .dotB{width:22px;height:22px;border-radius:50%;margin-bottom:8px;background:radial-gradient(circle at 35% 35%,var(--silk2),var(--silk1))}
+.badge2.off{opacity:.45}.badge2.off .dotB{background:var(--rule)}
+.celebrate{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:rgba(236,237,232,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);animation:in .3s}
+.celebrate .burst{position:absolute;width:140%;height:60%;bottom:-18%;left:-20%;border-radius:50%;background:radial-gradient(closest-side,var(--silk2),var(--silk1) 60%,transparent);filter:blur(30px);opacity:.75;animation:rise 2.4s ease-out both}
+.celebrate .cel{position:relative;text-align:center;padding:0 32px}
+.celebrate .ring{width:74px;height:74px;margin:0 auto 16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--silk3),var(--silk1));box-shadow:0 12px 30px -10px var(--silk1);animation:pop .6s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes rise{from{transform:translateY(30%) scale(.8);opacity:0}to{transform:none;opacity:.75}}
+@keyframes pop{from{transform:scale(.3)}to{transform:none}}
+.screen .qBlock .col{animation:flip .7s cubic-bezier(.2,.8,.2,1) both;transform-origin:50% 50%}
+.screen .qBlock .col.b{animation-delay:.12s}
+@keyframes flip{from{transform:perspective(600px) rotateY(80deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.silk i,.celebrate .burst,.celebrate .ring,.screen .qBlock .col{animation:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -678,9 +746,7 @@ V.B2=()=>{const u=me(),i=S.map.idx[u],[sp,q]=MAPQ[i],a=S.map[u][i]||{},sph=SPHER
   return {steps:[i+1,20],body:`
   <div class="between"><div class="eb">${esc(sph.n)}</div><div class="eb">${i+1} / 20</div></div>
   <h2 class="t2">${esc(q)}</h2>
-  <div class="lab" style="margin-top:22px">Як є зараз</div>${scaleRow(a.now,"mapNow")}
-  <div class="lab" style="margin-top:18px;color:var(--moss)">Як я хочу</div>${scaleRow(a.want,"mapWant","moss")}
-  <div class="scaleEnds"><span>0 — зовсім ні</span><span>10 — повністю</span></div>
+  ${dialBlock({now:a.now,want:a.want,actNow:"mapNow",actWant:"mapWant"})}
   <p class="small" style="margin-top:14px">${lockI} ${esc(nm(you()))} не побачить ваші оцінки, доки не відповість сам(а).</p>`,
   foot:`<button class="btn" data-act="mapNext" ${a.now!=null&&a.want!=null?"":"disabled"}>${i<19?"Далі":"Завершити"}${arrow}</button>`};};
 
@@ -807,7 +873,7 @@ V.D2=()=>{const se=curSession();if(!se) return V.Z3empty();const u=me(),i=se.idx
   if(Q.lvl===3&&!se.s1ok) {return V.S1();}
   let input="";
   if(Q.f==="text") input=`<label class="lab" for="ta">Ваша відповідь</label><textarea id="ta" class="field" data-bind="ans.${q}" placeholder="Пишіть як говорите. Довжина не має значення.">${esc(typeof v==="string"&&v!=="skip"?v:"")}</textarea>`;
-  else if(Q.f==="scale2") input=`<div class="lab" style="margin-top:18px">Як є зараз</div>${scaleRow(v&&v!=="skip"?v[0]:null,"aNow")}<div class="lab" style="margin-top:16px;color:var(--moss)">Як я хочу</div>${scaleRow(v&&v!=="skip"?v[1]:null,"aWant","moss")}<div class="scaleEnds"><span>0</span><span>10</span></div>`;
+  else if(Q.f==="scale2") input=dialBlock({now:v&&v!=="skip"?v[0]:null,want:v&&v!=="skip"?v[1]:null,actNow:"aNow",actWant:"aWant"});
   else if(Q.f==="scenario") input=`<div class="stack" style="margin-top:16px">${Q.o.map((o,k)=>opt(esc(o),v===k,"aPick",k)).join("")}</div>`;
   else if(Q.f==="yn") input=`<div class="stack" style="margin-top:16px">${["Так","Ні","Залежить"].map(o=>opt(o,v===o,"aYN",o)).join("")}</div>${v==="Залежить"?`<label class="lab" for="tx">Від чого залежить</label><input id="tx" class="field" data-bind="ans.${q}x" value="${esc(x)}">`:""}`;
   else if(Q.f==="rank"){const ord=Array.isArray(v)?v:Q.o.map((_,k)=>k);input=`<p class="small">Перетягніть або скористайтесь стрілками.</p><ol class="rank" id="rank">${ord.map((k,pos)=>`<li draggable="true" data-k="${k}"><span class="n">${pos+1}</span>${esc(Q.o[k])}<span class="mv"><button data-act="rUp" data-v="${pos}" aria-label="Вище">↑</button><button data-act="rDn" data-v="${pos}" aria-label="Нижче">↓</button></span></li>`).join("")}</ol>`;}
@@ -1274,7 +1340,7 @@ function phoneView(keepScroll){
     :inCouple&&S.couple.mode?`<button class="iconBtn right" data-act="toHome" aria-label="На головний"><svg width="20" height="20"><use href="#home"/></svg></button>`
     :(id[0]==="K"||id[0]==="M"||id[0]==="N"||id[0]==="P")&&S.solo.state?`<button class="iconBtn right" data-go="N1" aria-label="Соло-трек"><svg width="20" height="20"><use href="#home"/></svg></button>`:"<span></span>";
   const c=activeConsent(),p=c?PSY.find(x=>x.id===c.psy):null;
-  return `<div class="phone" id="phone"><div class="status"><span>${time}</span><span class="bat"></span></div>
+  return `<div class="phone" id="phone"><div class="silk" aria-hidden="true"><i></i><i></i><i></i></div><div class="status"><span>${time}</span><span class="bat"></span></div>
     <div class="bar">${left}<button class="logo" data-act="sheet" aria-label="Меню демо"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</button>${right}</div>
     ${v.steps?stepsBar(v.steps[0],v.steps[1]):""}
     ${c&&S.couple.mode?`<div class="plaque"><span>${esc(p.n)} бачить ваші відповіді в темі Межі до ${fD(c.until)}.</span><button data-act="revoke" data-v="${c.id}">Відкликати</button></div>`:""}
@@ -1282,6 +1348,7 @@ function phoneView(keepScroll){
     <div class="scroll"><div class="${keepScroll?"":"screen"}">${v.body}</div></div>
     <div class="foot">${v.foot||""}</div>
     ${tabbar(id)}
+    ${S.celebrate?celebrateView():""}
     ${S.toast?`<div class="toast" role="status">${esc(S.toast)}</div>`:""}</div>`;
 }
 function sheetView(){if(!S.sheet)return "";const u=S.user,sy=S.sync.code,cur=S.view==="app"?S.nav[u].s:"";return `<div class="sheetBg" data-act="sheetClose"></div><div class="sheet" role="dialog" aria-label="Меню демо">
@@ -1790,7 +1857,7 @@ function leavePair(silent){SYNC.unsub.forEach(f=>{try{f()}catch(e){}});SYNC.unsu
   if(S.sync)S.sync={code:null,role:null};if(!silent){toast("Ви вийшли з пари на цьому телефоні");render(true)}}
 
 /* ── local persistence ── */
-function saveLocal(){clearTimeout(saveLocal.t);saveLocal.t=setTimeout(()=>{try{const c=Object.assign({},S,{toast:"",timer:null,sheet:false,filterImg:null,artImg:null,pendingJoin:null});localStorage.setItem(LS_KEY,JSON.stringify({v:2,S:c}))}catch(e){}},400)}
+function saveLocal(){clearTimeout(saveLocal.t);saveLocal.t=setTimeout(()=>{try{const c=Object.assign({},S,{toast:"",timer:null,sheet:false,filterImg:null,artImg:null,pendingJoin:null,celebrate:null});localStorage.setItem(LS_KEY,JSON.stringify({v:2,S:c}))}catch(e){}},400)}
 function loadLocal(){try{const x=JSON.parse(localStorage.getItem(LS_KEY)||"null");if(x&&x.v===2&&x.S){S=Object.assign(freshState(),x.S);S.toast="";S.timer=null;S.sheet=false;
   Object.keys(S.ai||{}).forEach(k=>{if(S.ai[k].status==="loading")delete S.ai[k]});if(S.soloAi&&S.soloAi.status==="loading")S.soloAi=null}}catch(e){}}
 function afterRender(){saveLocal();persist();if(S.view==="app"&&S.nav[S.user].s==="NT"){let ch=false;notes().forEach(n=>{if(!S.seen[n.id]){S.seen[n.id]=1;ch=true}});if(ch)saveLocal()}}
@@ -1815,6 +1882,69 @@ Object.assign(A,{
   copyInvite(){copyText(S.couple.invite+"\n\n"+(S.sync.code?ART_URL+"#join"+S.sync.code:"dvoie.app/j/24k7"))}
 });
 root.addEventListener("input",e=>{const b=e.target.dataset.bind;if(b==="dqDraft"){const x=document.getElementById("dqBtn");if(x)x.disabled=!e.target.value.trim()}});
+
+
+/* ── dial (tick arc) ── */
+const DIAL={cx:160,cy:430,R:380,span:24,n:41};
+function dialInner(v,other){const {cx,cy,R,span,n}=DIAL;let h="";const sel=v==null?-1:Math.round(v*(n-1)/10),oth=other==null?-1:Math.round(other*(n-1)/10);
+  for(let i=0;i<n;i++){const a=(-span+2*span*i/(n-1))*Math.PI/180,edge=Math.min(i,n-1-i),fade=Math.min(1,.25+edge/6);
+    const x1=cx+(R-26)*Math.sin(a),y1=cy-(R-26)*Math.cos(a),x2=cx+R*Math.sin(a),y2=cy-R*Math.cos(a);
+    const on=i<=sel;
+    h+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--ink)" stroke-width="${on?2.6:1.6}" stroke-linecap="round" opacity="${(on?1:.3)*fade}"/>`;
+  }
+  const mark=(i,filled)=>{const a=(-span+2*span*i/(n-1))*Math.PI/180,x=cx+(R+15)*Math.sin(a),y=cy-(R+15)*Math.cos(a);return filled?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="var(--ink)"/>`:`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="none" stroke="var(--clay)" stroke-width="2"/>`};
+  if(oth>=0&&oth!==sel)h+=mark(oth,false);if(sel>=0)h+=mark(sel,true);
+  return h}
+function dialBlock(o){const m=S.dialMode||"now",v=m==="now"?o.now:o.want,ot=m==="now"?o.want:o.now;
+  return `<div class="seg" style="margin-top:20px"><button class="${m==="now"?"on":""}" data-act="dialMode" data-v="now">Як є зараз</button><button class="${m==="want"?"on":""}" data-act="dialMode" data-v="want">Як я хочу</button></div>
+  <svg class="dial" viewBox="0 18 320 96" role="slider" tabindex="0" aria-label="${m==="now"?"Як є зараз":"Як я хочу"}" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${v??""}" data-dial="${m==="now"?o.actNow:o.actWant}" data-other="${ot??""}" data-mode="${m}" data-both="${o.now!=null&&o.want!=null?1:0}">${dialInner(v,ot)}</svg>
+  <div class="dialHint">${v==null?"Проведіть або торкніться шкали":"0 — зовсім ні · 10 — повністю"}</div>
+  <div class="dualStat"><div class="${m==="now"?"on":""}">Як є зараз<b>${o.now??"—"}</b></div><i></i><div class="${m==="want"?"on":""}">Як я хочу<b>${o.want??"—"}</b></div></div>`}
+function dialValue(svg,e){const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+  const a=Math.atan2(p.x-DIAL.cx,DIAL.cy-p.y)*180/Math.PI;return Math.max(0,Math.min(10,Math.round((a+DIAL.span)/(2*DIAL.span)*10)))}
+let dialDrag=null;
+root.addEventListener("pointerdown",e=>{const svg=e.target.closest(".dial");if(!svg)return;e.preventDefault();svg.setPointerCapture(e.pointerId);
+  const other=svg.dataset.other===""?null:+svg.dataset.other;dialDrag={svg,other,v:dialValue(svg,e)};svg.innerHTML=dialInner(dialDrag.v,other)});
+root.addEventListener("pointermove",e=>{if(!dialDrag)return;const v=dialValue(dialDrag.svg,e);if(v!==dialDrag.v){dialDrag.v=v;dialDrag.svg.innerHTML=dialInner(v,dialDrag.other);if(navigator.vibrate)try{navigator.vibrate(4)}catch(_){}}});
+root.addEventListener("pointerup",e=>{if(!dialDrag)return;const {svg,v}=dialDrag;dialDrag=null;commitDial(svg,v)});
+root.addEventListener("pointercancel",()=>{dialDrag=null});
+root.addEventListener("keydown",e=>{const svg=e.target.closest&&e.target.closest(".dial");if(!svg)return;const cur=svg.getAttribute("aria-valuenow");let v=cur===""?5:+cur;
+  if(e.key==="ArrowRight"||e.key==="ArrowUp")v=Math.min(10,v+1);else if(e.key==="ArrowLeft"||e.key==="ArrowDown")v=Math.max(0,v-1);else return;e.preventDefault();commitDial(svg,v,true)});
+function commitDial(svg,v,keepMode){const act=svg.dataset.dial,mode=svg.dataset.mode;
+  if(!keepMode&&mode==="now"&&svg.dataset.other==="")S.dialMode="want";
+  if(A[act])A[act](String(v));
+  if(keepMode){const nx=document.querySelector(".dial");if(nx)nx.focus()}}
+A.dialMode=v=>{S.dialMode=v;render(false)};
+const _mapNext=A.mapNext;A.mapNext=()=>{S.dialMode="now";_mapNext()};
+const _qNext=A.qNext;A.qNext=()=>{S.dialMode="now";_qNext()};
+
+/* ── game layer: levels, discoveries, celebrations ── */
+const LEVELS=[[0,"Знайомство"],[30,"Перші відкриття"],[80,"Спільна мова"],[150,"Команда"],[250,"Глибина"],[400,"Двоє"]];
+function xp(){let x=0;["p1","p2"].forEach(u=>{if(S.map.done[u])x+=10});
+  S.sessions.forEach(s=>{["p1","p2"].forEach(u=>{if(s.submitted[u])x+=5});if(s.revealed)x+=20});
+  x+=Object.keys(S.daily.p1).filter(d=>S.daily.p2[d]).length*3+S.agreements.length*15+S.checkins.filter(c=>c.result==="Спрацювало").length*25;
+  if(S.promise.sig.p1&&S.promise.sig.p2)x+=10;if(Object.values(S.korotko).some(v=>v&&String(v).trim()))x+=5;return x}
+function level(){const x=xp();let i=0;LEVELS.forEach((l,k)=>{if(x>=l[0])i=k});const nx=LEVELS[i+1];return {n:i+1,name:LEVELS[i][1],x,from:LEVELS[i][0],to:nx?nx[0]:null}}
+const BADGES=[
+  {id:"map",t:"Карта удвох",d:"Обоє пройшли карту стосунків",ok:()=>S.map.done.p1&&S.map.done.p2},
+  {id:"daily",t:"Перше питання дня",d:"Відповіли обоє",ok:()=>Object.keys(S.daily.p1).some(d=>S.daily.p2[d])},
+  {id:"reveal",t:"Перше відкриття",d:"Відкрили відповіді одночасно",ok:()=>S.sessions.some(s=>s.revealed)},
+  {id:"agree",t:"Перша домовленість",d:"Один маленький крок",ok:()=>S.agreements.length>0},
+  {id:"promise",t:"Обіцянка",d:"Два підписи",ok:()=>!!(S.promise.sig.p1&&S.promise.sig.p2)},
+  {id:"streak3",t:"Три дні поспіль",d:"Питання дня без пропусків",ok:()=>streak()>=3},
+  {id:"worked",t:"Спрацювало",d:"Домовленість пройшла перевірку",ok:()=>S.checkins.some(c=>c.result==="Спрацювало")},
+  {id:"deep",t:"Глибше",d:"Перший захід рівня 3",ok:()=>S.sessions.some(s=>s.n===2&&s.revealed)}];
+function levelCard(){const L=level(),pct=L.to?(L.x-L.from)/(L.to-L.from):1;
+  return `<button class="card levelCard" data-go="ME" style="margin-top:14px;width:100%;text-align:left"><div class="between"><span class="lab">Рівень ${L.n} · ${L.x} XP</span><span class="lab">${L.to?"ще "+(L.to-L.x)+" до рівня "+(L.n+1):"найвищий рівень"}</span></div>
+  <div class="t2" style="margin-top:6px">${esc(L.name)}</div><div class="ticks">${[...Array(32)].map((_,i)=>`<i class="${i<Math.round(pct*32)?"on":""}"></i>`).join("")}</div></button>`}
+function badgesHTML(){const got=BADGES.filter(b=>b.ok()).length;return `<div class="blk"><span class="lab">Відкриття пари · ${got} з ${BADGES.length}</span><div class="badgeGrid">${BADGES.map(b=>`<div class="badge2 ${b.ok()?"":"off"}"><div class="dotB"></div><b>${esc(b.t)}</b><span>${esc(b.d)}</span></div>`).join("")}</div></div>`}
+function celebrateView(){const b=S.celebrate;return `<div class="celebrate" data-act="celebrateClose" role="status"><div class="burst"></div><div class="cel"><div class="ring"></div><div class="eb">Нове відкриття пари</div><h3 class="t1" style="margin-top:10px">${esc(b.t)}</h3><p class="p">${esc(b.d)}</p><p class="small">+ досвід пари · торкніться, щоб продовжити</p></div></div>`}
+A.celebrateClose=()=>{S.celebrate=null;render(false)};
+const _C1=V.C1;V.C1=()=>{const r=_C1();r.body=r.body.replace('<div class="stack" style="margin-top:14px">',levelCard()+'<div class="stack" style="margin-top:14px">');return r};
+const _ME=V.ME;V.ME=()=>{const r=_ME();r.body+=`<div style="margin-top:14px">${levelCard()}</div>`+badgesHTML();return r};
+const _afterRender=afterRender;afterRender=function(){_afterRender();if(S.view!=="app"||!S.couple.mode||S.celebrate)return;S.badgesSeen=S.badgesSeen||[];
+  const nw=BADGES.filter(b=>b.ok()&&!S.badgesSeen.includes(b.id));if(!nw.length)return;nw.forEach(b=>S.badgesSeen.push(b.id));
+  S.celebrate={t:nw[0].t,d:nw[0].d};setTimeout(()=>{render(false);clearTimeout(afterRender.h);afterRender.h=setTimeout(()=>{if(S.celebrate){S.celebrate=null;render(false)}},3200)},60)};
 
 /* ── boot ── */
 loadLocal();
