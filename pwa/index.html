@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0F0A0E" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0F0A0E" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F7F5F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#F7F5F2" media="(prefers-color-scheme: dark)">
 <meta name="description" content="Двоє — пара відповідає окремо і бачить, де розходиться.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -772,6 +772,73 @@ button.chip.on{background:var(--a3);color:#111;border-color:var(--a3)}
 .gHero.sm .gT{font-size:26px;margin-top:34px}
 @keyframes gIn{from{opacity:0;transform:translateY(16px) scale(.97)}}
 @media (prefers-reduced-motion:reduce){.gHero,.orb circle.p{animation:none}}
+/* ── світла основа: теплий молочний фон, чорний текст; аури з темним ядром лишаються як яскраві об'єкти ── */
+:root,:root[data-theme="dark"]{--paper:#EEEBE8;--sheet:#F7F5F2;--solid:#FFFFFF;--card:#FFFFFF;--glass:rgba(247,245,242,.86);
+  --ink:#141214;--onInk:#FFFFFF;--graphite:rgba(20,18,20,.66);--faint:rgba(20,18,20,.5);--tone2:rgba(20,18,20,.45);
+  --rule:rgba(20,18,20,.10);--rule2:rgba(20,18,20,.06);
+  --moss:#6577DB;--mossSoft:rgba(101,119,219,.12);--mossLine:rgba(101,119,219,.4);
+  --clay:#D0705F;--claySoft:rgba(208,112,95,.12);--clayLine:rgba(208,112,95,.4);--shadow:rgba(40,20,30,.25);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#EEEBE8;--sheet:#F7F5F2;--solid:#FFFFFF;--card:#FFFFFF;--glass:rgba(247,245,242,.86);
+  --ink:#141214;--onInk:#FFFFFF;--graphite:rgba(20,18,20,.66);--faint:rgba(20,18,20,.5);--tone2:rgba(20,18,20,.45);
+  --rule:rgba(20,18,20,.10);--rule2:rgba(20,18,20,.06);
+  --moss:#6577DB;--mossSoft:rgba(101,119,219,.12);--mossLine:rgba(101,119,219,.4);
+  --clay:#D0705F;--claySoft:rgba(208,112,95,.12);--clayLine:rgba(208,112,95,.4);--shadow:rgba(40,20,30,.25);color-scheme:light}}
+/* на темних поверхнях текст лишається білим */
+.darkCard,.gHero,.twoHero,.celebrate,.poster,.deck{--ink:#FFFFFF;--onInk:#FFFFFF;--graphite:rgba(255,255,255,.76);--faint:rgba(255,255,255,.6);--rule:rgba(255,255,255,.16)}
+body{background:radial-gradient(60% 50% at 88% 0%,rgba(231,169,161,.28),transparent 70%),radial-gradient(55% 45% at 0% 100%,rgba(160,201,234,.26),transparent 70%),var(--paper);color:var(--ink)}
+::selection{background:rgba(160,201,234,.5)}
+.dev{background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:var(--ink);border-bottom:1px solid var(--rule)}
+.dev button{color:var(--ink);border-color:var(--rule)}
+.dev button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.side h1 em,.side h1 .tone{background:linear-gradient(90deg,#C9776C,#7A6FD6 55%,#4F8FC4)}
+.sid{background:#fff;border-color:var(--rule);color:var(--graphite)}.sid b{color:var(--ink)}
+.sid.cur{background:var(--ink);color:#fff;border-color:var(--ink)}.sid.cur b{color:#fff}
+.who .pillU{background:#fff;border-color:var(--rule)}
+.phone{--silk1:var(--a2);background:var(--sheet);box-shadow:0 0 0 1px rgba(20,18,20,.06),0 0 0 7px #FFFFFF,0 0 0 8px rgba(20,18,20,.08),0 50px 100px -40px rgba(60,30,40,.35)}
+.silk{background:radial-gradient(95% 36% at 50% 112%,color-mix(in srgb,var(--a3) 45%,transparent),transparent 72%),radial-gradient(70% 30% at 100% -6%,color-mix(in srgb,var(--a3) 30%,transparent),transparent 70%),var(--sheet)}
+.silk:after{opacity:.18}
+.status,.bar .logo,.iconBtn{color:var(--ink)}
+.bat{border-color:var(--ink)}.bat:after{background:var(--ink)}
+.iconBtn{background:rgba(20,18,20,.06)}.iconBtn:hover{background:rgba(20,18,20,.11)}
+.steps i{background:rgba(20,18,20,.10)}.steps i.on{background:var(--ink)}
+.eb,.eb.key{color:rgba(20,18,20,.68)}
+.darkCard .eb,.gHero .eb{color:#fff}
+.card,.opt,.tariff,.rvAns,.aiCard{background:#fff;border:1px solid rgba(20,18,20,.07);color:var(--ink);box-shadow:0 1px 2px rgba(20,18,20,.04),0 12px 30px -20px rgba(60,30,40,.22)}
+.card.soft{background:rgba(20,18,20,.04);box-shadow:none;border-color:transparent}
+.card.warm{background:color-mix(in srgb,var(--a3) 22%,#fff);border-color:color-mix(in srgb,var(--a3) 60%,transparent)}
+.card.darkCard,.darkCard{color:#fff}
+.field{background:#fff;border:1px solid rgba(20,18,20,.12);color:var(--ink)}
+.field::placeholder,textarea::placeholder{color:rgba(20,18,20,.38)}
+.field:focus{border-color:var(--a2);box-shadow:0 0 0 3px color-mix(in srgb,var(--a3) 40%,transparent)}
+.opt.sel{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.sel .dot{background:var(--ink);border-color:var(--ink)}
+.dot{border-color:rgba(20,18,20,.3)}
+.btn,.btn.clay,.btn.moss{background:var(--ink);color:#fff}
+.darkCard .btn,.gHero .btn{background:#fff;color:#141214}
+.btn.ghost,.foot .btn.ghost:only-child,.foot .btn.ghost:first-child{background:rgba(20,18,20,.06);color:var(--ink)}
+.foot .btn.ghost:first-child+.btn.ghost{background:transparent;color:var(--ink)}
+.btn[disabled]{background:rgba(20,18,20,.08);color:rgba(20,18,20,.35)}
+.link{color:var(--graphite)}.link:hover{color:var(--ink)}
+.chip,button.chip,.tag,.rvV{background:rgba(20,18,20,.05);border:1px solid rgba(20,18,20,.10);color:var(--ink)}
+button.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.seg{background:rgba(20,18,20,.06)}
+.seg button{color:rgba(20,18,20,.6)}
+.seg button.on{background:var(--ink);color:#fff}
+.scale button{background:#fff;border-color:var(--rule)}.scale button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tariff.rec{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.tariff.sel{background:color-mix(in srgb,var(--a3) 18%,#fff)}
+.mod .ic,.mod .ic.lock{background:rgba(20,18,20,.05);color:var(--ink)}
+.mod .ic.lock{color:var(--faint)}
+.tabbar{background:rgba(247,245,242,.88);border-top:1px solid var(--rule)}
+.tabbar button{color:rgba(20,18,20,.42)}.tabbar button.on{color:var(--ink)}
+.toast{background:var(--ink);color:#fff}
+.plaque{background:color-mix(in srgb,var(--a3) 25%,#fff);color:var(--ink)}
+.offline{background:rgba(20,18,20,.05)}
+.safeNote{color:var(--ink)}
+.safeNote button{background:var(--ink);color:#fff}
+.sheet{background:#fff;color:var(--ink)}
+.cPart .bar i{background:var(--a2)}
+.rvV.same{color:var(--moss)}.rvV.diff{color:var(--clay)}
 </style>
 </head>
 <body>
@@ -817,7 +884,7 @@ button.chip.on{background:var(--a3);color:#111;border-color:var(--a3)}
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
-const APP_VERSION="17 · тони подій";
+const APP_VERSION="18 · світла основа";
 /* Лендинг поки схований: прототип відкривається одразу з входу (A1). Повернути — true. */
 const SHOW_LANDING=false;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -2677,7 +2744,7 @@ function dialInner(v,other){const {cx,cy,R,span,n}=DIAL;let h="";const sel=v==nu
   for(let i=0;i<n;i++){const a=(-span+2*span*i/(n-1))*Math.PI/180,edge=Math.min(i,n-1-i),fade=Math.min(1,.25+edge/6);
     const x1=cx+(R-26)*Math.sin(a),y1=cy-(R-26)*Math.cos(a),x2=cx+R*Math.sin(a),y2=cy-R*Math.cos(a);
     const on=i<=sel;
-    h+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${i===sel?"var(--a3)":"var(--ink)"}" stroke-width="${i===sel?3.4:on?2.6:1.6}" stroke-linecap="round" opacity="${(on?1:.3)*fade}"/>`;
+    h+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${i===sel?"var(--a2)":"var(--ink)"}" stroke-width="${i===sel?3.4:on?2.6:1.6}" stroke-linecap="round" opacity="${(on?1:.3)*fade}"/>`;
   }
   const mark=(i,filled)=>{const a=(-span+2*span*i/(n-1))*Math.PI/180,x=cx+(R+15)*Math.sin(a),y=cy-(R+15)*Math.cos(a);return filled?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="var(--ink)"/>`:`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="none" stroke="var(--clay)" stroke-width="2"/>`};
   if(oth>=0&&oth!==sel)h+=mark(oth,false);if(sel>=0)h+=mark(sel,true);
