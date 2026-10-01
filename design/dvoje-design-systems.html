@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Двоє · три дорослі напрями</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Onest:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: page intro; three directions, each = manifesto row + three full-size phone screens; then the recommendation. */
+:root{--bg:#EFECE7;--ink:#141312;--muted:#6E6A64;--line:rgba(20,19,18,.14);--card:#F7F5F1;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121110;--ink:#EEEBE6;--muted:#9C978F;--line:rgba(238,235,230,.14);--card:#1A1917;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121110;--ink:#EEEBE6;--muted:#9C978F;--line:rgba(238,235,230,.14);--card:#1A1917;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 Onest,system-ui,sans-serif;padding:0 16px 120px}
+.wrap{max-width:1180px;margin:0 auto}
+.mono{font-family:"IBM Plex Mono",monospace}
+.tag{display:inline-block;font:500 10px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--line);border-radius:99px;padding:6px 11px;color:var(--muted)}
+header.top{padding:88px 0 40px}
+header.top h1{font:300 clamp(46px,7vw,96px)/.95 Cormorant,serif;letter-spacing:-.025em;margin:22px 0 0;max-width:12ch}
+header.top h1 i{font-style:italic}
+header.top p{max-width:58ch;color:var(--muted);font-size:17px;margin:26px 0 0}
+.rule{border:0;border-top:1px solid var(--line);margin:0}
+section.dir{padding:96px 0 40px}
+.dhead{display:grid;grid-template-columns:120px minmax(0,1.2fr) minmax(0,1fr);gap:24px 40px;align-items:start}
+@media (max-width:900px){.dhead{grid-template-columns:1fr}}
+.dnum{font:300 72px/1 Cormorant,serif;letter-spacing:-.03em}
+.dhead h2{font:300 clamp(40px,5vw,64px)/.95 Cormorant,serif;letter-spacing:-.02em;margin:10px 0 0}
+.dhead h2 i{font-style:italic}
+.mood{margin:14px 0 0;color:var(--muted)}
+.refs{margin-top:16px;font:400 12px/1.6 "IBM Plex Mono",monospace;color:var(--muted)}
+.spec{display:grid;gap:14px}
+.sw{display:flex;gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;height:52px}
+.sw i{flex:1;display:block}
+.sw i.wide{flex:3}
+.why{font-size:14.5px}
+.why b{display:block;font:500 10px "IBM Plex Mono",monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.why p{margin:0}
+.screens{display:flex;gap:28px;margin-top:56px;overflow-x:auto;padding:10px 4px 40px;scroll-snap-type:x mandatory}
+.cap{font:400 11px "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:16px}
+.shot{flex:none;scroll-snap-align:start}
+/* device: thin graphite frame, concentric radii */
+.dev{width:330px;height:714px;border-radius:52px;padding:7px;background:linear-gradient(160deg,#3A3836,#121110);box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 50px 90px -40px rgba(20,15,10,.55),0 18px 30px -18px rgba(20,15,10,.35)}
+.scr{position:relative;width:100%;height:100%;border-radius:45px;overflow:hidden;isolation:isolate}
+.scr:after{content:"";position:absolute;inset:0;background-image:var(--grain);opacity:.06;pointer-events:none;mix-blend-mode:multiply;z-index:5}
+.isl{position:absolute;top:10px;left:50%;width:96px;height:28px;margin-left:-48px;border-radius:20px;background:#000;z-index:6}
+.sb{position:absolute;top:16px;left:30px;right:30px;display:flex;justify-content:space-between;font:600 12px Onest,sans-serif;z-index:6}
+.body{position:absolute;inset:0;padding:64px 24px 26px;display:flex;flex-direction:column}
+.end{margin-top:auto}
+
+/* ═══════════ A · АТЕЛЬЄ — тиха розкіш, редакційна антиква ═══════════ */
+.A{background:#F4F1EB;color:#161412;font-family:Onest,sans-serif}
+.A .sb{color:#161412}
+.A .meta{display:flex;justify-content:space-between;font:400 9.5px "IBM Plex Mono",monospace;letter-spacing:.22em;text-transform:uppercase;color:#7C766D}
+.A .hl{border-top:1px solid rgba(22,20,18,.85);margin:10px 0 0}
+.A .hl.t{border-top-color:rgba(22,20,18,.14)}
+.A .disp{font:300 76px/.86 Cormorant,serif;letter-spacing:-.035em;margin:26px 0 0}
+.A .disp i{display:block;font-style:italic;font-size:50px;letter-spacing:-.02em;padding-left:44px;color:#5A1E1E}
+.A .note{font-size:12.5px;line-height:1.55;color:#5E5850;max-width:190px;margin:18px 0 0 auto}
+.A .q{font:italic 300 25px/1.12 Cormorant,serif;letter-spacing:-.01em;margin:10px 0 12px}
+.A .lbl{font:400 9.5px "IBM Plex Mono",monospace;letter-spacing:.22em;text-transform:uppercase;color:#7C766D;margin-top:12px}
+.A .bar{display:flex;justify-content:space-between;align-items:center;height:56px;padding:0 6px 0 20px;background:#161412;color:#F4F1EB;font:500 12px "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase}
+.A .bar span.ar{width:44px;height:44px;display:grid;place-items:center;border-left:1px solid rgba(244,241,235,.18)}
+.A .sub{display:flex;justify-content:space-between;margin-top:12px;font-size:11.5px;color:#7C766D}
+.A .ans{padding:14px 0;border-top:1px solid rgba(22,20,18,.14)}
+.A .ans .who{display:flex;align-items:center;gap:8px;font:400 9.5px "IBM Plex Mono",monospace;letter-spacing:.22em;text-transform:uppercase;color:#7C766D}
+.A .ans .who i{width:9px;height:9px;border-radius:50%;border:1px solid #161412}
+.A .ans .who i.b{border-color:#5A1E1E;background:#5A1E1E}
+.A .ans p{font:300 21px/1.18 Cormorant,serif;margin:8px 0 0;letter-spacing:-.005em}
+.A .big{font:300 150px/.78 Cormorant,serif;letter-spacing:-.06em;margin-top:22px;display:flex;align-items:flex-start}
+.A .big sup{font-size:40px;letter-spacing:0;margin:10px 0 0 6px;color:#5A1E1E;font-style:italic}
+.A .row{display:grid;grid-template-columns:22px 1fr 92px;gap:8px;align-items:center;padding:10px 0;border-top:1px solid rgba(22,20,18,.12);font-size:12.5px}
+.A .row .n{font:italic 300 15px Cormorant,serif;color:#7C766D}
+.A .trk{position:relative;height:12px}
+.A .trk:before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px solid rgba(22,20,18,.2)}
+.A .trk i{position:absolute;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;border:1px solid #161412;background:#F4F1EB}
+.A .trk i.b{border-color:#5A1E1E;background:#5A1E1E}
+.A .lnk{display:flex;justify-content:space-between;align-items:center;font:500 11px "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;padding:16px 0 4px;border-bottom:1px solid #161412}
+
+/* ═══════════ B · ГАЛЕРЕЯ — швейцарська точність, гротеск, один сигнальний колір ═══════════ */
+.B{background:#FBFBFA;color:#0E0E0E;font-family:Onest,sans-serif}
+.B .sb{color:#0E0E0E}
+.B .top{display:grid;grid-template-columns:1fr 1fr;font-size:11px;font-weight:500;padding-bottom:10px;border-bottom:1px solid #0E0E0E}
+.B .top span:last-child{text-align:right;color:#8A8A86}
+.B .disp{font:600 58px/.9 Onest,sans-serif;letter-spacing:-.065em;margin:30px 0 0}
+.B .disp span{color:#E2482D}
+.B .grid3{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(14,14,14,.12);border-bottom:1px solid rgba(14,14,14,.12);margin-top:26px}
+.B .grid3 div{padding:10px 8px 10px 0;font-size:10.5px;color:#8A8A86;line-height:1.35}
+.B .grid3 div b{display:block;color:#0E0E0E;font-size:15px;font-weight:600;letter-spacing:-.03em}
+.B .grid3 div+div{padding-left:10px;border-left:1px solid rgba(14,14,14,.12)}
+.B .q{font:500 21px/1.18 Onest,sans-serif;letter-spacing:-.035em;margin:22px 0 0}
+.B .k{font-size:10.5px;font-weight:500;color:#8A8A86;margin-top:22px;letter-spacing:.01em}
+.B .btn{display:flex;align-items:center;justify-content:space-between;height:56px;border-radius:6px;background:#0E0E0E;color:#fff;padding:0 6px 0 20px;font-weight:500;font-size:14.5px;letter-spacing:-.01em}
+.B .btn span{width:44px;height:44px;border-radius:4px;background:#E2482D;display:grid;place-items:center}
+.B .ans{display:grid;grid-template-columns:54px 1fr;gap:10px;padding:14px 0;border-top:1px solid rgba(14,14,14,.12)}
+.B .ans .who{font-size:10.5px;font-weight:600;letter-spacing:.01em}
+.B .ans .who.b{color:#E2482D}
+.B .ans p{margin:0;font-size:15px;line-height:1.35;letter-spacing:-.02em}
+.B .big{font:600 132px/.8 Onest,sans-serif;letter-spacing:-.085em;margin:28px 0 0 -4px}
+.B .big span{font-size:60px;letter-spacing:-.06em;color:#E2482D}
+.B .row{display:grid;grid-template-columns:96px 1fr 30px;gap:10px;align-items:center;padding:9px 0;border-top:1px solid rgba(14,14,14,.1);font-size:12px;font-weight:500;letter-spacing:-.01em}
+.B .row .v{text-align:right;font-variant-numeric:tabular-nums;color:#8A8A86;font-weight:400}
+.B .bars{position:relative;height:14px}
+.B .bars i{position:absolute;left:0;height:3px;background:#0E0E0E}
+.B .bars i.a{top:2px}.B .bars i.b{top:9px;background:#C9C9C5}
+.B .row.hot .bars i.b{background:#E2482D}
+.B .row.hot{color:#E2482D}
+
+/* ═══════════ C · НІЧНИЙ КАДР — кіно, темрява, тепле світло ═══════════ */
+.C{background:#0D0B0A;color:#EDE6DD;font-family:Onest,sans-serif}
+.C .sb{color:#EDE6DD}
+.C .light{position:absolute;border-radius:50%;filter:blur(38px);opacity:.9;z-index:0}
+.C .light.a{width:210px;height:210px;left:-40px;top:70px;background:radial-gradient(circle,#E9A15B,rgba(233,161,91,0) 70%)}
+.C .light.b{width:230px;height:230px;right:-60px;top:120px;background:radial-gradient(circle,#C7646B,rgba(199,100,107,0) 70%)}
+.C .vig{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 35%,transparent 40%,rgba(13,11,10,.85) 100%),linear-gradient(180deg,rgba(13,11,10,0) 40%,#0D0B0A 72%);z-index:1}
+.C .body{z-index:2}
+.C .meta{display:flex;justify-content:space-between;font:400 9.5px "IBM Plex Mono",monospace;letter-spacing:.24em;text-transform:uppercase;color:rgba(237,230,221,.62)}
+.C .disp{font:italic 300 60px/.9 Cormorant,serif;letter-spacing:-.03em;margin:210px 0 0}
+.C .disp b{font-weight:300;font-style:normal;display:block}
+.C .txt{font-size:12.5px;line-height:1.55;color:rgba(237,230,221,.68);margin:16px 0 0;max-width:230px}
+.C .frame{border-top:1px solid rgba(237,230,221,.2);border-bottom:1px solid rgba(237,230,221,.2);padding:14px 0;margin-top:22px}
+.C .frame .lbl{font:400 9.5px "IBM Plex Mono",monospace;letter-spacing:.24em;text-transform:uppercase;color:#E9A15B}
+.C .frame p{font:italic 300 22px/1.15 Cormorant,serif;margin:8px 0 0}
+.C .btn{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 20px;border:1px solid rgba(237,230,221,.55);font:500 11.5px "IBM Plex Mono",monospace;letter-spacing:.22em;text-transform:uppercase}
+.C .ans{padding:14px 0;border-top:1px solid rgba(237,230,221,.16)}
+.C .ans .who{font:400 9.5px "IBM Plex Mono",monospace;letter-spacing:.24em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.C .ans .who i{width:7px;height:7px;border-radius:50%;box-shadow:0 0 10px 2px currentColor;background:currentColor}
+.C .ans p{font:300 21px/1.2 Cormorant,serif;margin:8px 0 0}
+.C .big{font:300 140px/.8 Cormorant,serif;letter-spacing:-.06em;margin-top:150px}
+.C .big i{font-size:46px;letter-spacing:0;color:#E9A15B}
+.C .row{display:grid;grid-template-columns:1fr 70px;gap:10px;align-items:center;padding:9px 0;border-top:1px solid rgba(237,230,221,.12);font:400 10px "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:rgba(237,230,221,.8)}
+.C .row .d{display:flex;justify-content:flex-end;gap:5px}
+.C .row .d i{width:7px;height:7px;border-radius:50%}
+
+/* recommendation */
+.rec{margin-top:96px;padding:56px clamp(20px,5vw,64px);background:var(--card);border-radius:28px;box-shadow:0 0 0 1px var(--line)}
+.rec h2{font:300 clamp(40px,5.5vw,72px)/.95 Cormorant,serif;letter-spacing:-.025em;margin:20px 0 0}
+.rec h2 i{font-style:italic}
+.rgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 48px;margin-top:40px}
+@media (max-width:760px){.rgrid{grid-template-columns:1fr}}
+.rgrid h4{font:500 10px "IBM Plex Mono",monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.rgrid p{margin:0}
+.tbl{width:100%;border-collapse:collapse;margin-top:44px;font-size:14px}
+.tbl th,.tbl td{text-align:left;padding:12px 8px;border-top:1px solid var(--line)}
+.tbl th{font:500 10px "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tbl td.n{font-variant-numeric:tabular-nums}
+.tbl tr.win td{font-weight:600}
+.tw{overflow-x:auto}
+.reveal{opacity:0;transform:translateY(28px);filter:blur(6px);transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+.reveal.on{opacity:1;transform:none;filter:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;filter:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="tag">Двоє · візуальний напрям · жовтень 2026</span>
+    <h1>Три дорослі <i>напрями</i></h1>
+    <p>Без іграшкових форм і цукеркових кольорів. Кожен напрям — на трьох однакових екранах у натуральну величину: запрошення партнера, відкриття відповідей, результат карти. Орієнтири — fashion-видання, галереї, кіно.</p>
+  </header>
+  <hr class="rule">
+
+  <!-- ═══ A ═══ -->
+  <section class="dir reveal">
+    <div class="dhead">
+      <div class="dnum">I</div>
+      <div><span class="tag">Тиха розкіш · редакційний</span><h2>Ательє</h2>
+        <p class="mood">Кремовий папір, тонка висококонтрастна антиква, курсив як інтонація голосу. Багато повітря, прямі кути, тонкі лінійки, мітки моноширинним шрифтом. Один колір — глибокий бордо, лише там, де другий партнер.</p>
+        <div class="refs">Орієнтири: Aesop · The Row · Kinfolk · книжкові обкладинки Penguin Modern</div></div>
+      <div class="spec">
+        <div class="sw"><i class="wide" style="background:#F4F1EB"></i><i style="background:#161412"></i><i style="background:#5A1E1E"></i><i style="background:#7C766D"></i></div>
+        <div class="why"><b>Чому так</b><p>Звучить як розмова з уважною людиною, а не як застосунок. Чоловік, якого «запросили», бачить серйозну річ, а не «гру для пар».</p></div>
+        <div class="why"><b>Ризик</b><p>Потребує бездоганного набору тексту: погано зверстана антиква виглядає дешево.</p></div>
+      </div>
+    </div>
+    <div class="screens">
+      <div class="shot"><div class="dev"><div class="scr A"><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="meta"><span>Двоє</span><span>Запрошення · 1 хв</span></div><div class="hl"></div>
+        <div class="disp">Юлія<i>кличе вас</i></div>
+        <p class="note">Одне питання. Її відповідь уже тут — відкриється, щойно ви напишете свою.</p>
+        <div class="end"><div class="lbl">Питання I</div><div class="hl t"></div><p class="q">Який момент з наших стосунків ти хочеш пам’ятати завжди?</p>
+        <div class="bar">Відповісти<span class="ar">→</span></div><div class="sub"><span>Без встановлення</span><span>Без пароля</span></div></div>
+      </div></div></div><div class="cap">01 · Запрошення</div></div>
+      <div class="shot"><div class="dev"><div class="scr A"><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="meta"><span>Питання I</span><span>Обоє відповіли</span></div><div class="hl"></div>
+        <p class="q" style="font-size:30px;margin-top:22px">Який момент з наших стосунків ти хочеш пам’ятати&nbsp;завжди?</p>
+        <div class="ans" style="margin-top:14px"><div class="who"><i></i>Юлія</div><p>Як ми вперше разом готували борщ і все пересолили.</p></div>
+        <div class="ans"><div class="who"><i class="b"></i>Андрій</div><p>Коли ти тримала мене за руку в лікарні.</p></div>
+        <div class="end"><div class="hl t"></div><p class="note" style="margin:12px 0 18px;max-width:none">Правильних відповідей немає. Спитайте одне одного ввечері: <i style="font-family:Cormorant,serif;font-size:15px">чому саме цей момент?</i></p>
+        <div class="bar">Наступне питання<span class="ar">→</span></div></div>
+      </div></div></div><div class="cap">02 · Відкриття відповідей</div></div>
+      <div class="shot"><div class="dev"><div class="scr A"><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="meta"><span>Карта стосунків</span><span>8 сфер</span></div><div class="hl"></div>
+        <div class="big">91<sup>%</sup></div>
+        <p class="note" style="margin:10px 0 0;max-width:220px">настільки однаково ви бачите ваші стосунки зараз</p>
+        <div style="margin-top:22px">
+          <div class="row"><span class="n">i</span><span>Безпека</span><span class="trk"><i style="left:78%"></i><i class="b" style="left:84%"></i></span></div>
+          <div class="row"><span class="n">ii</span><span>Спілкування</span><span class="trk"><i style="left:30%"></i><i class="b" style="left:74%"></i></span></div>
+          <div class="row"><span class="n">iii</span><span>Спільний час</span><span class="trk"><i style="left:60%"></i><i class="b" style="left:66%"></i></span></div>
+          <div class="row"><span class="n">iv</span><span>Межі</span><span class="trk"><i style="left:44%"></i><i class="b" style="left:58%"></i></span></div>
+        </div>
+        <div class="end"><div class="lnk"><span>Почати з «Спілкування»</span><span>→</span></div></div>
+      </div></div></div><div class="cap">03 · Результат карти</div></div>
+    </div>
+  </section>
+  <hr class="rule">
+
+  <!-- ═══ B ═══ -->
+  <section class="dir reveal">
+    <div class="dhead">
+      <div class="dnum">II</div>
+      <div><span class="tag">Швейцарська точність · галерея</span><h2>Галерея</h2>
+        <p class="mood">Білий, чорний і один сигнальний — цинобра. Щільний гротеск із тісним трекінгом, строга сітка, цифри як головна графіка. Нічого зайвого: інформація і є дизайн.</p>
+        <div class="refs">Орієнтири: Teenage Engineering · Linear · каталоги галерей · швейцарські плакати</div></div>
+      <div class="spec">
+        <div class="sw"><i class="wide" style="background:#FBFBFA"></i><i style="background:#0E0E0E"></i><i style="background:#E2482D"></i><i style="background:#C9C9C5"></i></div>
+        <div class="why"><b>Чому так</b><p>Максимально сучасно і впевнено. Ясно, чесно, «по-дорослому розумно». Чудово для даних: карта, прогрес, домовленості.</p></div>
+        <div class="why"><b>Ризик</b><p>Прохолодно для теми близькості; тепло доведеться тримати текстом і фото.</p></div>
+      </div>
+    </div>
+    <div class="screens">
+      <div class="shot"><div class="dev"><div class="scr B"><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="top"><span>Двоє</span><span>Запрошення / 01</span></div>
+        <div class="disp">Юлія<br>кличе<br>вас<span>.</span></div>
+        <div class="grid3"><div><b>1</b>питання</div><div><b>1 хв</b>на відповідь</div><div><b>0</b>реєстрацій</div></div>
+        <div class="k">Питання</div>
+        <p class="q" style="margin-top:6px">Який момент з наших стосунків ти хочеш пам’ятати завжди?</p>
+        <div class="end"><div class="btn">Відповісти<span>→</span></div></div>
+      </div></div></div><div class="cap">01 · Запрошення</div></div>
+      <div class="shot"><div class="dev"><div class="scr B"><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="top"><span>Питання 01</span><span>2 / 2 відповіли</span></div>
+        <p class="q" style="font-size:27px;margin-top:26px">Який момент з наших стосунків ти хочеш пам’ятати завжди?</p>
+        <div style="margin-top:24px"><div class="ans"><div class="who">Юлія</div><p>Як ми вперше разом готували борщ і все пересолили.</p></div>
+        <div class="ans"><div class="who b">Андрій</div><p>Коли ти тримала мене за руку в лікарні.</p></div></div>
+        <div class="end"><div class="k" style="margin:0 0 14px">Спитайте одне одного ввечері: чому саме цей момент?</div><div class="btn">Наступне питання<span>→</span></div></div>
+      </div></div></div><div class="cap">02 · Відкриття відповідей</div></div>
+      <div class="shot"><div class="dev"><div class="scr B"><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="top"><span>Карта стосунків</span><span>8 сфер</span></div>
+        <div class="big">91<span>%</span></div>
+        <div class="k" style="margin-top:12px">збіг у тому, як ви бачите стосунки зараз</div>
+        <div style="margin-top:22px">
+          <div class="row"><span>Безпека</span><span class="bars"><i class="a" style="width:78%"></i><i class="b" style="width:84%"></i></span><span class="v">.94</span></div>
+          <div class="row hot"><span>Спілкування</span><span class="bars"><i class="a" style="width:30%"></i><i class="b" style="width:74%"></i></span><span class="v" style="color:#E2482D">.56</span></div>
+          <div class="row"><span>Спільний час</span><span class="bars"><i class="a" style="width:60%"></i><i class="b" style="width:66%"></i></span><span class="v">.94</span></div>
+          <div class="row"><span>Межі</span><span class="bars"><i class="a" style="width:44%"></i><i class="b" style="width:58%"></i></span><span class="v">.86</span></div>
+        </div>
+        <div class="end"><div class="btn">Почати зі «Спілкування»<span>→</span></div></div>
+      </div></div></div><div class="cap">03 · Результат карти</div></div>
+    </div>
+  </section>
+  <hr class="rule">
+
+  <!-- ═══ C ═══ -->
+  <section class="dir reveal">
+    <div class="dhead">
+      <div class="dnum">III</div>
+      <div><span class="tag">Кіно · нічний кадр</span><h2>Нічний <i>кадр</i></h2>
+        <p class="mood">Глибока темрява і два теплих джерела світла — бурштин і троянда, ніби двоє в напівтемряві. Зерно плівки, курсивна антиква, титри моноширинним. Інтимно і дорослo, як кадр фільму.</p>
+        <div class="refs">Орієнтири: плакати A24 · Wong Kar-wai · обкладинки вінілу · вечірні сцени Apple TV</div></div>
+      <div class="spec">
+        <div class="sw"><i class="wide" style="background:#0D0B0A"></i><i style="background:#EDE6DD"></i><i style="background:#E9A15B"></i><i style="background:#C7646B"></i></div>
+        <div class="why"><b>Чому так</b><p>Найбільше емоції й атмосфери. Говорить про близькість, а не про «опитування». Найсильніше для реклами і соцмереж.</p></div>
+        <div class="why"><b>Ризик</b><p>Темний фон гірший для довгих текстів і денного використання; для безпеки й складних тем занадто «романтично».</p></div>
+      </div>
+    </div>
+    <div class="screens">
+      <div class="shot"><div class="dev"><div class="scr C"><span class="light a"></span><span class="light b"></span><div class="vig"></div><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="meta"><span>Двоє</span><span>Запрошення</span></div>
+        <div class="disp"><b>Юлія</b>кличе вас</div>
+        <p class="txt">Одне питання. Її відповідь уже тут — відкриється після вашої.</p>
+        <div class="frame"><div class="lbl">Питання · 1 хв</div><p>Який момент з наших стосунків ти хочеш пам’ятати завжди?</p></div>
+        <div class="end"><div class="btn">Відповісти<span>→</span></div></div>
+      </div></div></div><div class="cap">01 · Запрошення</div></div>
+      <div class="shot"><div class="dev"><div class="scr C"><span class="light a" style="top:-40px;left:-60px"></span><span class="light b" style="top:-20px;right:-80px"></span><div class="vig"></div><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="meta"><span>Питання I</span><span>Обоє відповіли</span></div>
+        <p style="font:italic 300 32px/1.05 Cormorant,serif;margin:120px 0 0;letter-spacing:-.02em">Який момент з наших стосунків ти хочеш пам’ятати завжди?</p>
+        <div class="ans" style="margin-top:22px"><div class="who" style="color:#E9A15B"><i></i>Юлія</div><p>Як ми вперше разом готували борщ і все пересолили.</p></div>
+        <div class="ans"><div class="who" style="color:#C7646B"><i></i>Андрій</div><p>Коли ти тримала мене за руку в лікарні.</p></div>
+        <div class="end"><div class="btn">Наступне питання<span>→</span></div></div>
+      </div></div></div><div class="cap">02 · Відкриття відповідей</div></div>
+      <div class="shot"><div class="dev"><div class="scr C"><span class="light a" style="top:40px;left:20px;width:180px;height:180px"></span><span class="light b" style="top:50px;right:10px;width:180px;height:180px"></span><div class="vig"></div><div class="isl"></div><div class="sb"><span>9:41</span><span>100%</span></div><div class="body">
+        <div class="meta"><span>Карта стосунків</span><span>8 сфер</span></div>
+        <div class="big">91<i>%</i></div>
+        <p class="txt" style="margin-top:12px">настільки однаково ви бачите ваші стосунки зараз</p>
+        <div style="margin-top:18px">
+          <div class="row"><span>Безпека</span><span class="d"><i style="background:#E9A15B"></i><i style="background:#C7646B"></i></span></div>
+          <div class="row" style="color:#C7646B"><span>Спілкування · різне</span><span class="d"><i style="background:#E9A15B"></i><i style="background:rgba(237,230,221,.2)"></i><i style="background:rgba(237,230,221,.2)"></i><i style="background:#C7646B"></i></span></div>
+          <div class="row"><span>Спільний час</span><span class="d"><i style="background:#E9A15B"></i><i style="background:#C7646B"></i></span></div>
+        </div>
+        <div class="end"><div class="btn">Почати розмову<span>→</span></div></div>
+      </div></div></div><div class="cap">03 · Результат карти</div></div>
+    </div>
+  </section>
+
+  <div class="rec reveal">
+    <span class="tag">Рекомендація</span>
+    <h2>«Ательє» як основа, <i>«Нічний кадр»</i> — для особливих моментів</h2>
+    <div class="rgrid">
+      <div><h4>Основа — Ательє</h4><p>Щоденні екрани світлі, редакційні, з тонкою антиквою і прямими кутами. Довіра для складних тем, гарно читається довгий текст, нейтрально для обох партнерів, і в ніші так ніхто не робить.</p></div>
+      <div><h4>Акцент — Нічний кадр</h4><p>Лише кілька «кінокадрів»: відкриття відповідей, ритуал розмови, річниця пари. Темрява і два теплі вогні роблять ці моменти подією, і їх хочеться зняти на екран.</p></div>
+      <div><h4>Від Галереї — дані</h4><p>Карта, прогрес і домовленості — у точній швейцарській подачі: тонкі шкали, числа, без декору.</p></div>
+      <div><h4>Чого не буде</h4><p>Пухлих кнопок, кольорових градієнтів-«конфет», ілюстрацій і бейджів. Скруглення — лише на пристрої, не в інтерфейсі.</p></div>
+    </div>
+    <div class="tw"><table class="tbl">
+      <tr><th>Напрям</th><th>Довіра</th><th>Тепло</th><th>Відмінність</th><th>Читабельність</th><th>Дорослість</th><th>Разом</th></tr>
+      <tr class="win"><td>I · Ательє</td><td class="n">10</td><td class="n">8</td><td class="n">9</td><td class="n">10</td><td class="n">10</td><td class="n">9.4</td></tr>
+      <tr><td>III · Нічний кадр</td><td class="n">7</td><td class="n">10</td><td class="n">9</td><td class="n">6</td><td class="n">9</td><td class="n">8.2</td></tr>
+      <tr><td>II · Галерея</td><td class="n">9</td><td class="n">5</td><td class="n">8</td><td class="n">9</td><td class="n">10</td><td class="n">8.2</td></tr>
+    </table></div>
+  </div>
+</div>
+<script>
+/* gentle entry reveal; content stays visible without JS via the noscript-safe fallback below */
+(function(){var els=document.querySelectorAll(".reveal");if(!("IntersectionObserver" in window)){els.forEach(function(e){e.classList.add("on")});return}
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("on");io.unobserve(e.target)}})},{threshold:.08});els.forEach(function(e){io.observe(e)})})();
+</script>
+</body>
+</html>
