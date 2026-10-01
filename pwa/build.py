@@ -16,8 +16,8 @@ head = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#DADDD5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#24251F" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#1C1110" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1110" media="(prefers-color-scheme: dark)">
 <meta name="description" content="Двоє — пара відповідає окремо і бачить, де розходиться.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
