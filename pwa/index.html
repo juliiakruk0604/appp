@@ -428,9 +428,6 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;back
 .calmBox{display:flex;gap:14px;align-items:baseline}
 .calmBox .d{font-family:var(--display);font-size:40px;line-height:1;letter-spacing:-.03em}
 .anom{border-left:3px solid var(--clay);padding-left:12px;margin-top:10px;font-size:13.5px;line-height:1.5}
-.hidden3{position:relative;border:1px dashed var(--rule);border-radius:16px;padding:14px;margin-top:10px}
-.hidden3 .blurTxt{filter:blur(5px);user-select:none;font-family:var(--display);font-size:16px;line-height:1.4;color:var(--graphite)}
-.hidden3 .hint{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay);margin-bottom:6px}
 .ahaBar{display:flex;align-items:center;gap:10px;font-size:13.5px;border-radius:14px;padding:10px 14px;background:var(--mossSoft);border:1px solid var(--mossLine);margin-top:12px}
 .ahaBar b{font-family:var(--display);font-weight:400;font-size:20px}
 /* audit: tap targets, legible tags, clear disabled state */
@@ -677,7 +674,7 @@ button.chip.on{background:var(--clay);border-color:var(--clay);color:var(--onInk
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
-const APP_VERSION="13 · вау-моменти";
+const APP_VERSION="14 · захист";
 /* Лендинг поки схований: прототип відкривається одразу з входу (A1). Повернути — true. */
 const SHOW_LANDING=false;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -686,6 +683,7 @@ const checkI='<svg width="12" height="12" aria-hidden="true"><use href="#check"/
 const I=n=>`<svg width="20" height="20" aria-hidden="true"><use href="#i-${n}"/></svg>`;
 const lockI='<svg width="13" height="13" aria-hidden="true" style="vertical-align:-2px"><use href="#lock"/></svg>';
 const DAY=864e5;
+const WARM_Q="Який момент з наших стосунків ти хочеш пам’ятати завжди?";
 const now=()=>new Date(Date.now()+S.shift*DAY);
 const addD=(d,n)=>new Date(d.getTime()+n*DAY);
 const fD=d=>new Date(d).toLocaleDateString("uk-UA",{day:"numeric",month:"long"});
@@ -856,7 +854,7 @@ function freshState(){return{
   nav:{p1:{s:"A1",st:[]},p2:{s:"A5",st:[]},psy:{s:"T1",st:[]}},
   known:{}, email:"",
   couple:{names:{p1:"Юлія",p2:"Андрій"},together:"1–3 роки",live:"Так",kids:0,kidsAge:"",therapy:"Ні",mode:null,joined:{p1:false,p2:false},
-    invite:"Я почав(ла) одну штуку для нас двох. Там питання, на які ми відповідаємо окремо, а потім дивимось разом, де в нас різне. Мені цікаво, що вийде. Спробуєш?",
+    invite:"Хочу спитати тебе одне. Я вже відповів(ла), але мою відповідь ти побачиш, тільки коли відповіси сам(а). Це хвилина, нічого встановлювати не треба.",
     inviteSent:false,inviteAt:null,remindAt:null,warm:{},tariff:null,purchased:[],linkExpired:false},
   map:{p1:{},p2:{},idx:{p1:0,p2:0},done:{p1:false,p2:false}},
   sessions:[], cur:null,
@@ -1017,14 +1015,17 @@ V.A3=()=>{const c=S.couple;return {body:`
   foot:`<button class="btn" data-act="profileNext" ${c.names.p1.trim()?"":"disabled"} id="profBtn">Далі${arrow}</button>`};};
 
 V.A4=()=>{const c=S.couple,code="ДВ-24K7",link="dvoie.app/j/24k7";return {body:`
-  <div class="eb">Запрошення</div><h2 class="t1">Запросіть партнера</h2>
-  <p class="p">Усе найцікавіше починається, коли відповіли обидва. До того моменту ваші відповіді бачите тільки ви.</p>
+  <div class="eb">Запрошення · одне питання</div><h2 class="t1">Почніть з одного питання</h2>
+  <p class="p">Партнер отримає не «застосунок», а одне питання. Відповідає прямо з посилання: без встановлення, без пошти і без пароля.</p>
+  <div class="card" style="margin-top:14px"><div class="lab">Питання для вас обох</div><p style="font-family:var(--display);font-size:16.5px;line-height:1.4;margin:8px 0 0">${esc(WARM_Q)}</p></div>
+  <label class="lab" for="warm1">Спершу ваша відповідь</label><textarea id="warm1" class="field" data-bind="couple.warm.p1" placeholder="Пишіть як говорите. ${esc(nm("p2"))} побачить її тільки після своєї.">${esc(c.warm.p1||"")}</textarea>
   <div class="card" style="margin-top:14px"><div class="between"><div><div class="lab">Посилання</div><div style="font-size:14px;margin-top:4px">${link}</div></div><div style="text-align:right"><div class="lab">Код</div><div class="mono" style="font-size:14px;margin-top:4px">${code}</div></div></div></div>
   <label class="lab" for="inv">Текст запрошення · можна змінити</label>
   <textarea id="inv" class="field" data-bind="couple.invite">${esc(c.invite)}</textarea>
-  <div class="btnRow" style="margin-top:10px"><button class="btn ghost" data-act="copyInvite">Скопіювати</button><button class="btn ghost" data-act="sendInvite">Надіслати в месенджер</button></div>
+  <div class="btnRow" style="margin-top:10px"><button class="btn ghost" data-act="sendInvite" data-v="Telegram">Telegram</button><button class="btn ghost" data-act="sendInvite" data-v="Viber">Viber</button><button class="btn ghost" data-act="copyInvite">Скопіювати</button></div>
+  <p class="small">Ваші карта стосунків і власні висновки працюють і без партнера. Його відповіді лише додають порівняння.</p>
   <button class="card mod" data-go="SY" style="margin-top:12px"><span class="ic">${I("swap")}</span><span class="tx"><b>Пройти на двох телефонах</b><span>${S.sync.code?"Пара "+esc(S.sync.code)+" створена":"Справжнє посилання для партнера"}</span></span>${arrow}</button>
-  ${c.inviteSent?`<div class="card soft" style="margin-top:12px;font-size:13px;line-height:1.5">Запрошення надіслано. Нагадаємо ${esc(nmDat("p2"))} на 2-й і 7-й день.<br><span style="color:var(--graphite)">Прототип: перемкніться на «${esc(nm("p2"))}» у верхній панелі.</span></div>`:""}`,
+  ${c.inviteSent?`<div class="card soft" style="margin-top:12px;font-size:13px;line-height:1.5">Запрошення надіслано. Нагадаємо ${esc(nmDat("p2"))} один раз, на 3-й день, і більше не турбуватимемо.<br><span style="color:var(--graphite)">Прототип: перемкніться на «${esc(nm("p2"))}» у верхній панелі.</span></div>`:""}`,
   foot:`<button class="btn" data-act="inviteNext">${c.inviteSent?"Далі — карта стосунків":"Надіслати й продовжити"}${arrow}</button><button class="btn ghost" data-act="skipInvite">Поки пропустити${arrow}</button>`};};
 
 V.A5=()=>{const c=S.couple,inv=nm("p1");
@@ -1035,19 +1036,33 @@ V.A5=()=>{const c=S.couple,inv=nm("p1");
   <p class="p">Це не тест і не перевірка. Питання, на які ви відповідаєте окремо, а потім дивитесь разом.</p>
   <div class="card" style="margin-top:16px"><div class="lab">${esc(inv)} пише</div><p style="font-family:var(--display);font-size:16.5px;line-height:1.45;margin:8px 0 0">«${esc(c.invite)}»</p></div>
   <div class="stack" style="margin-top:14px;font-size:13.5px;line-height:1.45;color:var(--graphite)">
-    <div>· Ви відповідаєте на питання окремо.</div><div>· Відповіді відкриваються тільки коли відповіли обидва.</div><div>· Потім бачите, де ви однакові, а де різні.</div></div>`,
-  foot:`<button class="btn" data-act="warmStart">Подивитись, що це${arrow}</button>`};
+    <div>· Одне питання, близько хвилини.</div><div>· ${esc(inv)} уже відповів(ла). Ви побачите відповідь одразу після своєї.</div><div>· Нічого не треба встановлювати і ніде реєструватися.</div></div>`,
+  foot:`<button class="btn" data-act="warmStart">Відповісти на питання${arrow}</button>`};
   if(step===1) return {noBack:true,body:`
   <div class="eb">Коротко про нас · одне тепле питання</div>
-  <h2 class="t2">Який момент з ваших стосунків ви хочете пам’ятати завжди?</h2>
+  <h2 class="t2">${esc(WARM_Q)}</h2>
   <label class="lab" for="warm">Ваша відповідь</label><textarea id="warm" class="field" data-bind="couple.warm.p2" placeholder="Пишіть як говорите. Довжина не має значення.">${esc(c.warm.p2||"")}</textarea>
-  <p class="small">${esc(inv)} побачить відповідь, коли ви обоє відповісте.</p>`,
-  foot:`<button class="btn" data-act="warmNext">Далі${arrow}</button><button class="link" data-act="warmNext">Пропустити це питання</button>`};
+  <p class="small">${lockI} Відповідь ${esc(inv)} відкриється, щойно ви натиснете «Відкрити». Вашу ${esc(inv)} побачить так само.</p>`,
+  foot:`<button class="btn" data-act="warmNext" ${(c.warm.p2||"").trim()?"":"disabled"} id="warmBtn">Відкрити обидві відповіді${arrow}</button>`};
+  if(step===2) return {noBack:true,body:`
+  <div class="eb">Ваші відповіді поруч</div><h2 class="t2">${esc(WARM_Q)}</h2>
+  <div class="stack" style="margin-top:14px">
+    <div class="card"><div class="lab">${esc(inv)}</div><p style="font-family:var(--display);font-size:16px;line-height:1.45;margin:8px 0 0">${esc(c.warm.p1||"Найперша наша поїздка, коли ми заблукали і сміялися всю дорогу.")}</p></div>
+    <div class="card"><div class="lab">Ви</div><p style="font-family:var(--display);font-size:16px;line-height:1.45;margin:8px 0 0">${esc(c.warm.p2||"")}</p></div></div>
+  <div class="card soft" style="margin-top:12px;font-size:13.5px;line-height:1.5">Тут нема правильних відповідей. Спитайте одне одного ввечері: чому саме цей момент?</div>
+  <p class="small">Далі так само: одне питання за раз, кожен відповідає у себе, відкривається тільки коли відповіли обидва.</p>`,
+  foot:`<button class="btn" data-act="warmSave">Хочу ще${arrow}</button><button class="link" data-act="warmSave" data-v="later">Поки досить</button>`};
   return {noBack:true,body:`
-  <div class="eb">Щоб зберегти відповідь</div><h2 class="t2">Куди надіслати посилання для входу?</h2>
-  <p class="p">Без пароля і без форми. Це все.</p>
-  <label class="lab" for="em2">Пошта</label><input id="em2" class="field" type="email" data-bind="email2" value="${esc(S.email2||"")}" placeholder="you@example.com">`,
-  foot:`<button class="btn" data-act="p2Join">Зберегти й продовжити${arrow}</button>`};};
+  <div class="eb">Щоб не загубити</div><h2 class="t2">Де вам зручніше отримувати наступне питання?</h2>
+  <p class="p">Один дотик. Без пароля і без анкети.</p>
+  <div class="big3" style="margin-top:16px">
+    <button class="opt" data-act="p2Join" data-v="tg"><div><b>Telegram</b><small>Питання приходитиме в чат, відповідь — однією кнопкою</small></div></button>
+    <button class="opt" data-act="p2Join" data-v="viber"><div><b>Viber</b><small>Так само, у Viber</small></div></button>
+    <button class="opt" data-act="p2Join" data-v="here"><div><b>Тут, на цьому телефоні</b><small>Без входу. Пізніше можна додати пошту</small></div></button>
+  </div>
+  ${S.p2Email?`<label class="lab" for="em2">Пошта</label><input id="em2" class="field" type="email" data-bind="email2" value="${esc(S.email2||"")}" placeholder="you@example.com">
+  <button class="btn ghost" style="margin-top:10px" data-act="p2Join" data-v="email">Надіслати посилання${arrow}</button>`
+  :`<button class="link" data-act="p2EmailShow">Краще поштою</button>`}`};};
 
 /* B — relationship map */
 V.B1=()=>({body:`
@@ -1108,7 +1123,7 @@ V.B4=()=>{
   foot:`${hasMod(r.mod.id)?"":`<button class="btn ${showPay?"ghost":""}" data-act="startTrial" data-v="${r.mod.id}">«${esc(r.mod.short||r.mod.n)}»: 3 питання безкоштовно${arrow}</button>`}
   ${showPay?`<button class="btn" data-go="B5">Відкрити «${esc(r.mod.short||r.mod.n)}» повністю${arrow}</button>`:`<button class="btn ${hasMod(r.mod.id)?"":"ghost"}" data-act="toHome">На головний${arrow}</button>`}`};};
 
-const PRICE_FULL=890,PRICE_FULL_REG=1290,PRICE_MOD=390;
+const PRICE_FULL=890,PRICE_MOD=390;
 V.B5=()=>{const r=recommendation(),sel=S.tariffSel||"full";
   if(me()==="p2") return {body:`<div class="eb">Доступ</div><h2 class="t2">Вам нічого не треба купувати.</h2>
   <p class="p">Доступ один на двох. Відкриває його ${esc(nm("p1"))}, і все відкрите одразу з’являється у вас.</p>
@@ -1116,16 +1131,15 @@ V.B5=()=>{const r=recommendation(),sel=S.tariffSel||"full";
   <div class="card" style="margin-top:8px"><div class="lab">Коли ${esc(nm("p1"))} відкриє доступ</div><p style="margin:6px 0 0;font-size:14px;line-height:1.5">Ви отримаєте сповіщення. Відповіді кожного залишаються приватними, поки обидва не відповіли.</p></div>`,
   foot:`${hasMod(r.mod.id)?"":`<button class="btn" data-act="startTrial" data-v="${r.mod.id}">Спробувати 3 питання${arrow}</button>`}<button class="btn ${hasMod(r.mod.id)?"":"ghost"}" data-act="toHome">На головний${arrow}</button>`};
   const T=[{id:r.mod.id,n:"Один модуль",sub:"«"+(r.mod.short||r.mod.n)+"»",p:PRICE_MOD,li:["Одна тема повністю: усі заходи","Розбори, домовленості, перевірки"]},
-    {id:"full",n:"Пара, повний доступ",sub:"Разово, назавжди, на двох",p:PRICE_FULL_REG,launch:PRICE_FULL,rec:true,li:["Усі 14 модулів","ШІ-розбори, домовленості, перевірки","Усі колоди · PDF пари — після тестів"]},
+    {id:"full",n:"Пара, повний доступ",sub:"Разово, назавжди, на двох",p:PRICE_FULL,rec:true,li:["Усі 14 модулів","ШІ-розбори, домовленості, перевірки","Усі колоди · PDF пари — після тестів"]},
     {id:"card",n:"Карта стосунків",sub:"Вже у вас",p:0,li:["Радар по 8 сферах","3 пробні питання"]}];
   return {body:`
   <div class="eb">Продовжити глибше</div><h2 class="t2">Почніть з «${esc(r.mod.short||r.mod.n)}» — або відкрийте все.</h2>
   <div class="stack" style="margin-top:16px;gap:14px">${T.map(t=>`<button class="tariff ${t.rec?"rec":""} ${sel===t.id?"sel":""}" data-act="tariff" data-v="${t.id}" ${t.id==="card"?"disabled":""}>
     ${t.rec?'<span class="recTag">Рекомендовано</span>':""}
     <div class="between"><div><div style="font-size:15px">${esc(t.n)}</div><div class="small" style="margin:2px 0 0">${esc(t.sub)}</div></div>
-    <div class="price">${t.launch||t.p} ₴${t.launch?`<s>${t.p}</s>`:""}</div></div><ul>${t.li.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
-    ${t.launch?`<div class="small" style="margin-top:6px">Ціна запуску перші 2 тижні, далі ${t.p} ₴</div>`:""}</button>`).join("")}</div>
-  <p class="small">Повернення грошей протягом 14 днів. Одна сесія парної терапії в Києві коштує 1500–2600 ₴.</p>`,
+    <div class="price">${t.p} ₴</div></div><ul>${t.li.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></button>`).join("")}</div>
+  <p class="small">Одна ціна для всіх і без таймерів: вона не зміниться, поки ви думаєте. Повернення грошей протягом 14 днів. Одна сесія парної терапії в Києві коштує 1500–2600 ₴.</p>`,
   foot:`<button class="btn" data-act="buy">Оплатити ${sel==="full"?PRICE_FULL:PRICE_MOD} ₴${arrow}</button>`};};
 
 /* C — home */
@@ -1525,12 +1539,12 @@ V.K4b=()=>{const neg=criteria().filter(isNeg);return {body:`
   <p class="p">Не «не ревнивий», а що саме замість: «спокійно ставиться до моїх друзів». Це перший крок до вашого фільтра.</p>
   ${neg.map((c,i)=>`<label class="lab" for="rw${i}">${esc(c)}</label><input id="rw${i}" class="field" data-bind="solo.rewrites.${i}" value="${esc(S.solo.rewrites[i]||"")}" placeholder="Замість цього я шукаю…">`).join("")}`,
   foot:`<button class="btn" data-act="rewritesDone">Зберегти в мій фільтр${arrow}</button>`};};
-V.K5=()=>{const ps=anomalies(),hid=Math.max(0,ps.length-1),st=(S.solo.stories||[]).length;return {body:`
-  <div class="eb">Соло, повний доступ</div><h2 class="t2">Що ви повторюєте — і як не повторити</h2>
-  ${st>=FREE_STORIES&&ps.length?`<div class="card darkCard" style="margin-top:14px"><div class="lab">У ваших історіях</div><p style="font-family:var(--display);font-size:18px;line-height:1.35;margin:8px 0 0;color:var(--onInk)">Знайдено ${ps.length} ${ps.length===1?"повтор":ps.length<5?"повтори":"повторів"}. Один ви вже бачили${hid?`, ще ${hid} чекають`:""}.</p></div>`
-  :`<div class="card soft" style="margin-top:14px;font-size:13.5px;line-height:1.5">Додайте дві короткі історії стосунків безкоштовно — і побачите перший повтор ще до оплати.</div>`}
+V.K5=()=>{const ps=anomalies(),st=(S.solo.stories||[]).length;return {body:`
+  <div class="eb">Соло, повний доступ</div><h2 class="t2">Ви вже знаєте, що повторюєте. Тепер — як не повторити</h2>
+  ${st>=FREE_STORIES&&ps.length?`<div class="card darkCard" style="margin-top:14px"><div class="lab">У ваших історіях</div><p style="font-family:var(--display);font-size:18px;line-height:1.35;margin:8px 0 0;color:var(--onInk)">Знайдено ${ps.length} ${ps.length===1?"повтор":ps.length<5?"повтори":"повторів"}. Усі вони вже відкриті вам безкоштовно.</p></div>`
+  :`<div class="card soft" style="margin-top:14px;font-size:13.5px;line-height:1.5">Додайте дві короткі історії стосунків безкоштовно — і побачите всі повтори ще до оплати.</div>`}
   <div class="tariff rec" style="margin-top:12px"><div class="between"><div style="font-size:15px">Соло, повний доступ</div><div class="price">790 ₴</div></div>
-  <ul><li>Усі повтори з ваших історій і що з ними робити</li><li>«Перед наступним побаченням»: одна сторінка на вечір перед зустріччю</li><li>Маршрут: перевірка вашого курсу на побаченнях</li><li>Соло-розбір і практика тижня з перевіркою</li></ul></div>
+  <ul><li>Що робити з кожним повтором: конкретні кроки</li><li>«Перед наступним побаченням»: одна сторінка на вечір перед зустріччю</li><li>Маршрут: перевірка вашого курсу на побаченнях</li><li>Соло-розбір і практика тижня з перевіркою</li></ul></div>
   <div class="card" style="margin-top:12px;font-size:13px;line-height:1.5"><div class="lab">Хто це зробив</div>Методика: ${esc(PSY[0].n)}, психологиня, ${esc(PSY[0].dir.toLowerCase())}. Спирається на дослідження про те, як люди обирають партнерів і відновлюються після розриву.<br><span style="color:var(--graphite)">Прототип: дані психолога — заглушка.</span></div>
   <p class="small">Разово, без підписки. Повернення грошей протягом 14 днів. Одна сесія з психологом коштує 1500–2600 ₴.</p>`,
   foot:`<button class="btn" data-act="buySolo">Відкрити все · 790 ₴${arrow}</button><button class="btn ghost" data-go="N1">Поки ні${arrow}</button>`}};
@@ -1569,7 +1583,7 @@ V.M3=()=>{const st=S.solo.stories,ps=anomalies(),rep={},paid=S.solo.paid;st.forE
   :`<div class="card soft" style="margin-top:14px"><p style="font-size:14px;line-height:1.5;margin:0">Ваші історії між собою не схожі. Це теж відповідь: справа не в типі людей, яких ви обираєте, а швидше в обставинах або в етапі, на якому ви були.</p></div>`}
   <p class="small">Патерни рахуються правилами по ваших полях, не ШІ.</p>`,
   foot:st.length<2?`<button class="btn" data-act="storyNew">Додати історію${arrow}</button>`
-    :!paid&&ps.length>1?`<button class="btn" data-go="K5">Відкрити ще ${ps.length-1} · 790 ₴${arrow}</button><button class="btn ghost" data-go="N1">До компаса${arrow}</button>`
+    :!paid&&ps.length?`<button class="btn" data-go="K5">Що з цим робити${arrow}</button><button class="btn ghost" data-go="N1">До компаса${arrow}</button>`
     :`<button class="btn ghost" data-act="storyNew">Додати історію${arrow}</button><button class="btn" data-go="${paid?"N8":"N1"}">${paid?"Перед наступним побаченням":"До компаса"}${arrow}</button>`}};
 V.N1=()=>({noBack:false,homeBar:true,body:`
   <div class="eb">Соло-трек · ${{hard:"Я зараз без пари, і мені важко",prep:"Я готуюсь до стосунків",search:"Я шукаю і не знаходжу"}[S.solo.state]||"—"}</div><h2 class="t2">Цикл про себе</h2>
@@ -1742,7 +1756,7 @@ V.N0c=()=>{const p=S.solo.point||{minus:[]};return {body:`
 V.N7=()=>{const an=anomalies(),seen=soloArr("seenAnom");return {body:`
   <div class="eb">Компас · аномалії</div><h2 class="t2">Що збиває стрілку</h2>
   <p class="p">Це повтори з ваших історій. Поки вони не названі, вони тягнуть курс убік. Позначте кожну, коли прочитаєте й подумаєте, що з цим робити.</p>
-  ${an.length?patternList(t=>`<div style="margin-top:8px"><button class="chip ${seen.includes(t)?"on":""}" data-act="anomSeen" data-v="${esc(t)}">${seen.includes(t)?"Названо":"Я це бачу"}</button></div>`)+(!S.solo.paid&&an.length>1?`<button class="btn" style="margin-top:12px" data-go="K5">Відкрити ще ${an.length-1} · 790 ₴${arrow}</button>`:"")
+  ${an.length?patternList(t=>`<div style="margin-top:8px"><button class="chip ${seen.includes(t)?"on":""}" data-act="anomSeen" data-v="${esc(t)}">${seen.includes(t)?"Названо":"Я це бачу"}</button></div>`)+(!S.solo.paid?`<button class="btn ghost" style="margin-top:12px" data-go="K5">Що з цим робити${arrow}</button>`:"")
   :`<p class="p">Поки аномалій немає. Потрібно щонайменше дві історії.</p>`}`,
   foot:`<button class="btn" data-go="N1">До компаса${arrow}</button>`}};
 
@@ -1768,13 +1782,11 @@ V.N6=()=>{const f=filterData(),D=soloArr("dates"),calm=D.filter(d=>d.calm==="yes
   foot:`<button class="btn" data-go="N5">Записати побачення${arrow}</button><button class="btn ghost" data-go="N1">До компаса${arrow}</button>`}};
 
 /* ── what is free and what is paid in the solo track ──
-   free: Точка, тихий режим, карта пошуку, компас, переписування «не», «Мій курс», 2 короткі історії, перший повтор, одне «після побачення»
-   paid (790 ₴): решта повторів, «Перед наступним побаченням», маршрут повністю, соло-розбір і практики */
+   free: Точка, тихий режим, карта пошуку, компас, переписування «не», «Мій курс», 2 короткі історії, усі знайдені повтори, одне «після побачення»
+   paid (790 ₴): що робити з кожним повтором, «Перед наступним побаченням», маршрут повністю, соло-розбір і практики */
 const FREE_STORIES=2,FREE_DATES=1;
-function patHint(t){return /ресурс/.test(t)?"про те, коли ви починаєте стосунки":/завершували/.test(t)?"про те, хто завершує стосунки":/приваблює, а потім дратує/.test(t)?"про те, що вас приваблює":/тривалість/.test(t)?"про тривалість стосунків":/всіх історіях/.test(t)?"про ваш «тип»":"про ваші стосунки"}
-function patternList(open){const ps=anomalies(),paid=S.solo.paid;
-  return ps.map((t,i)=>paid||i===0?`<div class="card" style="margin-top:10px"><p style="font-family:var(--display);font-size:16.5px;line-height:1.4;margin:0">${esc(t)}</p>${open?open(t):""}</div>`
-    :`<div class="hidden3" aria-label="Прихована знахідка ${patHint(t)}"><div class="hint">Ще один повтор · ${patHint(t)}</div><div class="blurTxt" aria-hidden="true">▓▓▓▓▓▓ ▓▓▓▓ ▓▓▓▓▓▓▓▓ ▓▓▓ ▓▓▓▓▓ ▓▓▓▓▓▓▓ ▓▓▓▓ ▓▓▓▓▓▓</div></div>`).join("")}
+/* every pattern found is shown in full, free: it is the person's own data. Payment opens what to do with it. */
+function patternList(open){return anomalies().map(t=>`<div class="card" style="margin-top:10px"><p style="font-family:var(--display);font-size:16.5px;line-height:1.4;margin:0">${esc(t)}</p>${open?open(t):""}</div>`).join("")}
 const ASK={"Надійність":"Як ти поводишся, коли не можеш виконати обіцянку?","Спільні цінності":"Що для тебе точно неможливо в стосунках?","Гумор":"Над чим ти смієшся, коли все йде не так?","Пристрасть":"Що тебе захоплює настільки, що забуваєш про час?","Амбітність":"Чого ти хочеш досягти за найближчі два роки?","Спокій":"Як ти відновлюєшся після важкого дня?"};
 
 V.N0b=()=>{const s=S.solo,p=s.point||{lost:[],back:[]},lit=p.lost.filter(x=>p.back.includes(x)).length;return {body:`
@@ -1859,7 +1871,7 @@ function siteView(){return `<div class="site">
   <section><h3 class="h">Хто це зробив</h3><div class="placeholder">Про терапевта: ім’я, освіта, скільки років практики, скільки пар провела. <b>Заглушка — заповнити реальними даними.</b></div></section>
   <section id="prices"><h3 class="h">Ціни</h3><div class="grid3">
     <div class="tar"><div class="label">Карта стосунків</div><div class="price" style="margin-top:12px">0 ₴</div><ul><li>20 питань зі шкалами</li><li>Радар по 8 сферах</li><li>Рекомендація, з чого почати</li></ul></div>
-    <div class="tar rec"><span class="recTag">Рекомендовано</span><div class="label">Пара, повний доступ</div><div class="price" style="margin-top:12px">890 ₴<s>1290</s></div><div class="small">Разово, назавжди, на двох · ціна перших 2 тижнів</div><ul><li>Усі 14 модулів</li><li>Розбори, домовленості, перевірки</li><li>PDF пари, усі колоди</li></ul></div>
+    <div class="tar rec"><span class="recTag">Рекомендовано</span><div class="label">Пара, повний доступ</div><div class="price" style="margin-top:12px">890 ₴</div><div class="small">Разово, назавжди, на двох · ціна перших 2 тижнів</div><ul><li>Усі 14 модулів</li><li>Розбори, домовленості, перевірки</li><li>PDF пари, усі колоди</li></ul></div>
     <div class="tar"><div class="label">Один модуль</div><div class="price" style="margin-top:12px">390 ₴</div><ul><li>Одна тема повністю</li><li>Усі заходи, розбори, перевірки</li></ul></div></div>
     <p class="p" style="margin-top:18px">Одна сесія парної терапії в Києві коштує 1500–2600 ₴.</p></section>
   <section id="privacy"><h3 class="h">Приватність</h3><p class="sub" style="margin-top:0">Ваші відповіді не бачить ніхто. Психолог отримує доступ тільки якщо ви обидва його дасте — і ви бачите, коли він їх відкривав</p></section>
@@ -1951,6 +1963,7 @@ function setPath(path,val){
   const ks=path.split(".");let o=S;for(let i=0;i<ks.length-1;i++){if(o[ks[i]]==null)o[ks[i]]={};o=o[ks[i]]}o[ks[ks.length-1]]=val;}
 root.addEventListener("input",e=>{const t=e.target,b=t.dataset.bind;if(!b) return;setPath(b,t.value);safetyScan(t);
   if(b==="email"){const x=document.getElementById("sendLinkBtn");if(x)x.disabled=!/.+@.+\..+/.test(t.value)}
+  if(b==="couple.warm.p2"){const x=document.getElementById("warmBtn");if(x)x.disabled=!t.value.trim()}
   if(b==="couple.names.p1"){const x=document.getElementById("profBtn");if(x)x.disabled=!t.value.trim()}
   if(b.startsWith("ans.")){const x=document.getElementById("qNextBtn");if(x&&MQ[b.slice(4)]&&MQ[b.slice(4)].f==="text")x.disabled=!t.value.trim()}
   if(b.startsWith("solo.ans.")){const x=document.getElementById("soloNextBtn");if(x)x.disabled=!t.value.trim()}
@@ -1987,13 +2000,13 @@ const A={
   setTogether(v){S.couple.together=v;render(false)}, setLive(v){S.couple.live=v;render(false)},
   setKids(v){S.couple.kids=v==="Немає"?0:v;render(false)}, setTherapy(v){S.couple.therapy=v;render(false)},
   profileNext(){if(S.couple.mode==="alone"){toast("Запросити партнера можна будь-коли");go("B1")}else go("A4")},
-  copyInvite(){copyText(S.couple.invite+"\n\ndvoie.app/j/24k7")},
-  sendInvite(){S.couple.inviteSent=true;S.couple.inviteAt=now().toISOString();toast("Відкрито вибір месенджера · прототип");render(false)},
+  copyInvite(){copyText(S.couple.invite+"\n\n«"+WARM_Q+"»\n\ndvoie.app/j/24k7")},
+  sendInvite(v){S.couple.inviteSent=true;S.couple.inviteAt=now().toISOString();toast(v?"Відкрито "+v+" · прототип":"Відкрито вибір месенджера · прототип");render(false)},
   inviteNext(){if(!S.couple.inviteSent){S.couple.inviteSent=true;S.couple.inviteAt=now().toISOString()}go("B1")},
   skipInvite(){S.couple.mode=S.couple.mode||"alone";go("B1")},
   devUnexpire(){S.couple.linkExpired=false;render(true)},
-  warmStart(){S.couple.warmStep=1;render(true)}, warmNext(){S.couple.warmStep=2;render(true)},
-  p2Join(){if(S.pendingJoin&&DB){joinPair(S.pendingJoin);return}S.couple.joined.p2=true;S.couple.warmStep=0;S.nav.p2.st=[];go("B1",{replace:true})},
+  warmStart(){S.couple.warmStep=1;render(true)}, warmNext(){if(!(S.couple.warm.p2||"").trim())return;S.couple.warmStep=2;render(true)}, warmSave(v){S.couple.p2Later=v==="later";S.couple.warmStep=3;render(true)}, p2EmailShow(){S.p2Email=true;render(false)},
+  p2Join(v){S.couple.p2Channel=v&&v!=="undefined"?v:"here";if(S.pendingJoin&&DB){joinPair(S.pendingJoin);return}S.couple.joined.p2=true;S.couple.warmStep=0;S.nav.p2.st=[];const later=S.couple.p2Later;S.couple.p2Later=false;toast(S.couple.p2Channel==="tg"?"Наступне питання прийде в Telegram · прототип":S.couple.p2Channel==="viber"?"Наступне питання прийде у Viber · прототип":"Збережено на цьому телефоні");go(later?"C1":"B1",{replace:true})},
   mapStart(){go(S.map.done[me()]?"B3":"B2")},
   mapNow(v){const u=me(),i=S.map.idx[u];S.map[u][i]={...(S.map[u][i]||{}),now:+v};render(false)},
   mapWant(v){const u=me(),i=S.map.idx[u];S.map[u][i]={...(S.map[u][i]||{}),want:+v};render(false)},
@@ -2496,7 +2509,7 @@ Object.assign(A,{
   aiRun(v){runAi(v)}, soloAiRun(){runSoloAi()}, aiStop(){if(SYNC.aiCtl)SYNC.aiCtl.abort()},
   openConsent(v){S.consentId=v;go("H3")},
   openNote(v){const n=notes().find(x=>x.id===v);S.seen[v]=1;if(!n){render(false);return}if(n.tab){S.nav[S.user]={s:n.tab,st:[]};render(true);return}if(n.go){go(n.go);return}if(n.act&&A[n.act])A[n.act](n.v)},
-  copyInvite(){copyText(S.couple.invite+"\n\n"+(S.sync.code?ART_URL+"#join"+S.sync.code:"dvoie.app/j/24k7"))}
+  copyInvite(){copyText(S.couple.invite+"\n\n«"+WARM_Q+"»\n\n"+(S.sync.code?ART_URL+"#join"+S.sync.code:"dvoie.app/j/24k7"))}
 });
 root.addEventListener("input",e=>{const b=e.target.dataset.bind;if(b==="dqDraft"){const x=document.getElementById("dqBtn");if(x)x.disabled=!e.target.value.trim()}});
 
