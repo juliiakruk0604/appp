@@ -619,33 +619,40 @@ button.chip.on{background:var(--clay);border-color:var(--clay);color:var(--onInk
   --paper:#0B080A;--sheet:#0F0A0E;--solid:#1E1520;--card:#18111A;--glass:rgba(15,10,14,.82);
   --ink:#FFFFFF;--onInk:#0F0A0E;--graphite:rgba(255,255,255,.72);--faint:rgba(255,255,255,.55);--tone2:rgba(255,255,255,.5);
   --rule:rgba(255,255,255,.12);--rule2:rgba(255,255,255,.07);
-  --moss:#BBA4F5;--mossSoft:rgba(187,164,245,.16);--mossLine:rgba(187,164,245,.4);
-  --clay:#FF6EC7;--claySoft:rgba(255,110,199,.16);--clayLine:rgba(255,110,199,.45);--deep:#1E0618;
-  --warn:#F4E04D;--warnSoft:rgba(244,224,77,.14);--shadow:rgba(0,0,0,.7);--silk2:#C9A8FF;--silk3:#FFE6F5;--yel:#F4E04D;--silk1:#FF6EC7;
-  --aura:radial-gradient(farthest-side at 50% 58%,#1A0414 0%,#2A0822 38%,#561550 60%,#A9338F 80%,#EC78C8 96%,#F7A2DA 100%);
-  --lilac:radial-gradient(55% 46% at 50% 42%,#2A0722 0%,#4E0F3E 22%,#B8337E 46%,#D66DAE 64%,#C7A6CB 86%);color-scheme:dark}
+  --moss:#AFC0FF;--mossSoft:rgba(175,192,255,.15);--mossLine:rgba(175,192,255,.4);
+  --clay:#F4B3A6;--claySoft:rgba(244,179,166,.15);--clayLine:rgba(244,179,166,.42);--deep:#120D0E;
+  --warn:#F4E04D;--warnSoft:rgba(244,224,77,.14);--shadow:rgba(0,0,0,.7);--yel:#F4E04D;
+  --a1:#1C1011;--a2:#5E3438;--a3:#E7A9A1;--a4:#F7D8D1;color-scheme:dark}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#0B080A;--sheet:#0F0A0E;--solid:#1E1520;--card:#18111A;--glass:rgba(15,10,14,.82);
   --ink:#FFFFFF;--onInk:#0F0A0E;--graphite:rgba(255,255,255,.72);--faint:rgba(255,255,255,.55);--tone2:rgba(255,255,255,.5);
   --rule:rgba(255,255,255,.12);--rule2:rgba(255,255,255,.07);
-  --moss:#BBA4F5;--mossSoft:rgba(187,164,245,.16);--mossLine:rgba(187,164,245,.4);
-  --clay:#FF6EC7;--claySoft:rgba(255,110,199,.16);--clayLine:rgba(255,110,199,.45);--deep:#1E0618;
-  --warn:#F4E04D;--warnSoft:rgba(244,224,77,.14);--shadow:rgba(0,0,0,.7);--silk2:#C9A8FF;--silk3:#FFE6F5;color-scheme:dark}}
-body{background:radial-gradient(60% 50% at 85% 0%,rgba(169,53,146,.22),transparent 70%),radial-gradient(50% 45% at 0% 100%,rgba(120,60,140,.18),transparent 70%),var(--paper);background-attachment:fixed;font-family:var(--body)}
+  --moss:#AFC0FF;--mossSoft:rgba(175,192,255,.15);--mossLine:rgba(175,192,255,.4);
+  --clay:#F4B3A6;--claySoft:rgba(244,179,166,.15);--clayLine:rgba(244,179,166,.42);--deep:#120D0E;
+  --warn:#F4E04D;--warnSoft:rgba(244,224,77,.14);--shadow:rgba(0,0,0,.7);color-scheme:dark}}
+/* тон події: кожен тип моменту має свою чисту пастель на чорному. a1 — ядро, a2 — перехід, a3 — сяйво краю, a4 — світлий край */
+.t-rose{--a1:#1C1011;--a2:#5E3438;--a3:#E7A9A1;--a4:#F7D8D1}
+.t-lilac{--a1:#111024;--a2:#3B3770;--a3:#B6B0F0;--a4:#DEDBFB}
+.t-sage{--a1:#0D1914;--a2:#2D5544;--a3:#A2D4BC;--a4:#D5EEE2}
+.t-amber{--a1:#1B140B;--a2:#64461F;--a3:#E9C48B;--a4:#F7E5C6}
+.t-sky{--a1:#0C1520;--a2:#2A4B6A;--a3:#A0C9EA;--a4:#D6E9F8}
+.phone,.gHero,.darkCard,.celebrate,.twoHero{--silk1:var(--a3);--silk2:var(--a4);--silk3:#FFFFFF}
+.celebrate{--a1:#1B140B;--a2:#64461F;--a3:#E9C48B;--a4:#F7E5C6}
+body{background:radial-gradient(60% 50% at 85% 0%,rgba(231,169,161,.14),transparent 70%),radial-gradient(50% 45% at 0% 100%,rgba(160,201,234,.10),transparent 70%),var(--paper);background-attachment:fixed;font-family:var(--body)}
 body:before{opacity:.25}
-::selection{background:rgba(255,110,199,.4)}
+::selection{background:rgba(231,169,161,.4)}
 :focus-visible{outline-color:var(--clay)}
 /* сторінка навколо телефона */
 .dev{background:#000;color:#fff;border-bottom:1px solid var(--rule)}
 .dev button{color:#fff;border-color:rgba(255,255,255,.22)}
 .dev button.on{background:#fff;color:#000}
 .side h1{font-family:var(--display);font-weight:500;letter-spacing:-.045em}
-.side h1 em,.side h1 .tone{font-style:normal;background:linear-gradient(90deg,#E66CC3,#BBA4F5);-webkit-background-clip:text;background-clip:text;color:transparent}
+.side h1 em,.side h1 .tone{font-style:normal;background:linear-gradient(90deg,#E7A9A1,#B6B0F0 55%,#A0C9EA);-webkit-background-clip:text;background-clip:text;color:transparent}
 .sid{background:var(--card);border-color:var(--rule);color:var(--graphite)}
 .sid.cur{background:#fff;color:#000;border-color:#fff}.sid.cur b{color:#000}
 .who .pillU{background:var(--card);border-color:var(--rule)}
 /* телефон */
 .phone{background:var(--sheet);border-radius:46px;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 0 7px #050304,0 0 0 8px rgba(255,255,255,.06),0 60px 120px -50px #000}
-.silk{background:radial-gradient(90% 40% at 50% 112%,rgba(169,53,146,.42),transparent 70%),radial-gradient(70% 30% at 100% -4%,rgba(187,164,245,.12),transparent 70%),var(--sheet)}
+.silk{background:radial-gradient(90% 38% at 50% 112%,color-mix(in srgb,var(--a2) 70%,transparent),transparent 70%),radial-gradient(70% 28% at 100% -4%,color-mix(in srgb,var(--a3) 14%,transparent),transparent 70%),var(--sheet)}
 .silk:before,.silk i{display:none}
 .silk:after{opacity:.35}
 .status,.bar .logo,.iconBtn{color:#fff}
@@ -666,16 +673,16 @@ body:before{opacity:.25}
 /* поверхні: щільні, контрастні */
 .card,.opt,.tariff,.rvAns,.field,.aiCard{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:24px;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;color:#fff}
 .card.soft{background:rgba(255,255,255,.05)}
-.card.warm{background:rgba(255,110,199,.12);border-color:rgba(255,110,199,.35)}
+.card.warm{background:color-mix(in srgb,var(--a3) 12%,transparent);border-color:color-mix(in srgb,var(--a3) 38%,transparent)}
 .card.darkCard,.darkCard,.poster,.deck,.aura{position:relative;overflow:hidden;isolation:isolate}
-.card.darkCard,.darkCard,.poster,.deck,.celebrate{--aura:radial-gradient(150% 125% at 50% 115%,#1A0414 0%,#2A0822 48%,#5E1756 70%,#B23D9C 87%,#EE84CC 100%)}
+.card.darkCard,.darkCard,.poster,.deck,.celebrate{--aura:radial-gradient(150% 125% at 50% 115%,var(--a1) 0%,var(--a1) 46%,var(--a2) 72%,var(--a3) 93%,var(--a4) 100%)}
 .card.darkCard,.darkCard,.poster,.deck,.celebrate,.aura{--onInk:#fff;color:#fff;border:0;border-radius:34px;background:var(--aura)!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.10),0 30px 70px -30px rgba(169,53,146,.55);-webkit-backdrop-filter:none;backdrop-filter:none}
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.10),0 30px 70px -34px color-mix(in srgb,var(--a3) 45%,transparent);-webkit-backdrop-filter:none;backdrop-filter:none}
 .darkCard .lab,.poster h4,.pTop{color:rgba(255,255,255,.72)}
 .darkCard .eb{color:#fff}
 .field{border-radius:18px;padding:14px 16px;background:#1A121C}
 .field::placeholder,textarea::placeholder{color:rgba(255,255,255,.38)}
-.field:focus{border-color:var(--clay);box-shadow:0 0 0 3px rgba(255,110,199,.18)}
+.field:focus{border-color:var(--a3);box-shadow:0 0 0 3px color-mix(in srgb,var(--a3) 22%,transparent)}
 .opt{border-radius:22px}
 .opt.sel{border-color:#fff;box-shadow:inset 0 0 0 1px #fff}
 .opt.sel .dot{background:var(--clay);border-color:var(--clay)}
@@ -691,13 +698,13 @@ body:before{opacity:.25}
 .link{color:var(--graphite);font-style:normal}.link:hover{color:#fff}
 /* пігулки, перемикачі */
 .chip,button.chip,.tag,.rvV{border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff}
-button.chip.on{background:var(--clay);color:#1A0614;border-color:var(--clay)}
+button.chip.on{background:var(--a3);color:#111;border-color:var(--a3)}
 .rvV.same{color:var(--moss)}.rvV.diff{color:var(--clay)}
 .seg{background:rgba(255,255,255,.10);border:0;border-radius:999px;padding:4px}
 .seg button{border-radius:999px;color:rgba(255,255,255,.7)}
 .seg button.on{background:#fff;color:#0F0A0E}
 .scale button{border-radius:14px;border-color:var(--rule);background:rgba(255,255,255,.05)}.scale button.on{background:#fff;color:#000;border-color:#fff}
-.recTag{background:var(--yel)!important;color:#000!important;border-radius:999px!important}
+.recTag{background:var(--a3)!important;color:#111!important;border-radius:999px!important}
 .tariff.rec{border-color:#fff;box-shadow:inset 0 0 0 1px #fff}
 .tariff.sel{background:#21162A}
 .mod .ic,.mod .ic.lock{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:50%;color:#fff;background:rgba(255,255,255,.08);border:0;box-shadow:none}
@@ -705,15 +712,15 @@ button.chip.on{background:var(--clay);color:#1A0614;border-color:var(--clay)}
 .tabbar{background:rgba(8,5,7,.88);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-top:1px solid var(--rule)}
 .tabbar button{color:rgba(255,255,255,.45)}.tabbar button.on{color:#fff}
 .toast{background:#fff;color:#0F0A0E;font-weight:500;border:0;box-shadow:0 12px 30px -10px rgba(0,0,0,.6)}
-.badge{background:var(--clay);color:#1A0614}
+.badge{background:var(--a3);color:#111}
 .celebrate .small{color:rgba(255,255,255,.8)}
 .celebrate .ring{background:#fff}
 .plaque{background:rgba(244,224,77,.14);color:#fff}
 .offline{background:rgba(255,255,255,.08)}
-.safeNote{background:rgba(255,110,199,.12);border-color:rgba(255,110,199,.45)}
+.safeNote{background:rgba(244,179,166,.12);border-color:rgba(244,179,166,.45)}
 .safeNote button{background:#fff;color:#000}
 .sheet{background:#130C12;color:#fff}
-.cPart .bar i{background:var(--clay)}
+.cPart .bar i{background:var(--a3)}
 /* шкала: активна позначка жовта, як курсор на рулетці референсу */
 .dualStat b{font-family:var(--body);font-size:0;margin-top:8px;display:flex;justify-content:center}
 .dualStat b .dm{height:30px;width:auto}
@@ -725,8 +732,8 @@ button.chip.on{background:var(--clay);color:#1A0614;border-color:var(--clay)}
 .twoNum b .dm{height:56px;width:auto}
 .cScore{font-size:0!important;display:flex;align-items:flex-end;gap:6px;line-height:0}.cScore span{font-size:18px!important;line-height:1}.cScore .dm{height:40px;width:auto}
 /* B4: ліловий кадр із малиновим сяйвом і темним ядром */
-.twoHero{background:var(--lilac);border-radius:40px;padding:22px 16px 22px;margin-top:14px;position:relative;overflow:hidden;isolation:isolate}
-.twoHero .twoNum span{color:rgba(255,255,255,.9);margin-top:14px}
+.twoHero{background:radial-gradient(60% 50% at 50% 40%,var(--a1) 0%,var(--a1) 14%,var(--a2) 42%,var(--a3) 72%,var(--a4) 100%);border-radius:40px;padding:22px 16px 22px;margin-top:14px;position:relative;overflow:hidden;isolation:isolate}
+.twoHero .twoNum span{color:var(--a1);font-weight:600;margin-top:14px}
 .twoHero .two text{fill:#fff}
 /* орбіти: пунктирні кола, що перетинаються, і білі крапки */
 .orb{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;pointer-events:none;z-index:-1;opacity:.9}
@@ -737,11 +744,11 @@ button.chip.on{background:var(--clay);color:#1A0614;border-color:var(--clay)}
 @keyframes orbP{to{transform:translateY(-6px)}}
 .darkCard>*,.twoHero>*{position:relative}
 /* «аура-герой»: заголовок угорі ліворуч, кругла кнопка праворуч, головне по центру, орбіти внизу */
-.gHero{position:relative;overflow:hidden;isolation:isolate;margin:18px 0 4px;min-height:380px;border-radius:46px;display:flex;flex-direction:column;padding:26px 24px 120px;background:var(--aura);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 40px 80px -36px rgba(169,53,146,.7);animation:gIn .9s cubic-bezier(.2,.8,.2,1) both}
+.gHero{position:relative;overflow:hidden;isolation:isolate;margin:18px 0 4px;min-height:380px;border-radius:46px;display:flex;flex-direction:column;padding:26px 24px 120px;background:radial-gradient(farthest-side at 50% 58%,var(--a1) 0%,var(--a1) 46%,var(--a2) 72%,var(--a3) 93%,var(--a4) 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 40px 80px -40px color-mix(in srgb,var(--a3) 60%,transparent);animation:gIn .9s cubic-bezier(.2,.8,.2,1) both}
 .gHero .gTop{display:flex;justify-content:space-between;align-items:center}
-.gHero .gTop b{font-size:20px;font-weight:500;letter-spacing:-.025em}
-.gHero .gIc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.14)}
+.gHero .gTop b{font-size:20px;font-weight:600;letter-spacing:-.025em;color:var(--a1)}
+.gHero .gIc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:var(--a1);background:rgba(255,255,255,.38)}
 .gHero .gIc svg{width:24px;height:auto}
 .gHero .gT{margin-top:44px;text-align:center;font-family:var(--display);font-weight:500;font-size:34px;line-height:1.02;letter-spacing:-.045em;color:#fff;text-wrap:balance}
 .gHero .gPill{align-self:center;margin-top:16px;font-size:14px;color:#fff;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.14)}
@@ -784,7 +791,7 @@ button.chip.on{background:var(--clay);color:#1A0614;border-color:var(--clay)}
 (function(){
 "use strict";
 /* ═════════ utils ═════════ */
-const APP_VERSION="16 · аура";
+const APP_VERSION="17 · тони подій";
 /* Лендинг поки схований: прототип відкривається одразу з входу (A1). Повернути — true. */
 const SHOW_LANDING=false;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -1099,7 +1106,7 @@ function orbits(seed){const pts=[[70,22],[150,78],[34,104],[262,110],[206,50]];c
   return `<svg class="orb" viewBox="0 0 300 130" aria-hidden="true"><circle class="o" cx="80" cy="150" r="128"/><circle class="o" cx="150" cy="150" r="128"/><circle class="o" cx="220" cy="150" r="128"/><circle class="o" cx="150" cy="200" r="190"/><line x1="0" y1="112" x2="300" y2="112"/>
   ${pts.filter((_,i)=>i!==k).map(([x,y])=>`<circle class="p" cx="${x}" cy="${y}" r="4"/>`).join("")}</svg>`}
 /* «аура-герой»: заголовок угорі, кругла кнопка, головне по центру, орбіти внизу */
-function gHero(o){return `<div class="gHero ${o.cls||""}"><div class="gTop"><b>${esc(o.label)}</b>${o.icon?`<span class="gIc">${o.icon}</span>`:""}</div><div class="gT">${o.title}</div>${o.pill?`<div class="gPill">${esc(o.pill)}</div>`:""}${orbits(o.seed)}</div>`}
+function gHero(o){return `<div class="gHero ${o.cls||""} ${o.tone?"t-"+o.tone:""}"><div class="gTop"><b>${esc(o.label)}</b>${o.icon?`<span class="gIc">${o.icon}</span>`:""}</div><div class="gT">${o.title}</div>${o.pill?`<div class="gPill">${esc(o.pill)}</div>`:""}${orbits(o.seed)}</div>`}
 const TWO_IC=`<svg width="40" height="26" viewBox="0 0 40 26" aria-hidden="true"><circle cx="14" cy="13" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="26" cy="13" r="10" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".7"/></svg>`;
 
 
@@ -1167,7 +1174,7 @@ V.A5=()=>{const c=S.couple,inv=nm("p1");
   <p class="small">${lockI} Відповідь ${esc(inv)} відкриється, щойно ви натиснете «Відкрити». Вашу ${esc(inv)} побачить так само.</p>`,
   foot:`<button class="btn" data-act="warmNext" ${(c.warm.p2||"").trim()?"":"disabled"} id="warmBtn">Відкрити обидві відповіді${arrow}</button>`};
   if(step===2) return {noBack:true,body:`
-  ${gHero({cls:"sm",label:"Обидва відповіли",title:esc(WARM_Q)})}
+  ${gHero({cls:"sm",tone:"lilac",label:"Обидва відповіли",title:esc(WARM_Q)})}
   <div class="stack" style="margin-top:14px">
     <div class="card"><div class="lab">${esc(inv)}</div><p style="font-family:var(--display);font-size:16px;line-height:1.45;margin:8px 0 0">${esc(c.warm.p1||"Найперша наша поїздка, коли ми заблукали і сміялися всю дорогу.")}</p></div>
     <div class="card"><div class="lab">Ви</div><p style="font-family:var(--display);font-size:16px;line-height:1.45;margin:8px 0 0">${esc(c.warm.p2||"")}</p></div></div>
@@ -2033,6 +2040,8 @@ function sideView(){const cur=S.view==="app"?S.nav[S.user].s:S.nav.psy.s;return 
   <div class="map">${mapIds(cur)}</div>
   <p class="note">Не в прототипі: T4, T5. Оплата й блог — заглушки. Прогрес зберігається в цьому браузері; «Скинути» починає заново. Версія ${APP_VERSION}.</p></aside>`;}
 function tabbar(id){if(!S.couple.mode||!TABS.some(t=>t[0]===id))return "";const nb=unseen();return `<nav class="tabbar" aria-label="Розділи">${TABS.map(([t,l,ic])=>`<button class="${t===id?"on":""}" data-tab="${t}">${ICON[ic]}${l}${t==="DQ"&&!S.daily[me()][dayKey()]?'<span class="badge">1</span>':""}</button>`).join("")}</nav>`}
+/* тон екрана за подією: вхід і дім — рожевий, зустріч відповідей — бузковий, домовленості й безпека — шавлія, щоденне і оплата — бурштин, соло й психолог — небесний */
+function toneOf(id){if(/^(D7|D8|F|S|N0)/.test(id))return "sage";if(/^(DQ|G|H5|B5|KN)/.test(id))return "amber";if(/^(B|D|E)/.test(id))return "lilac";if(/^(K|M|N|P|H|O)/.test(id))return "sky";return "rose"}
 function phoneView(keepScroll){
   const id=S.nav[S.user].s,f=V[id]||V.Z3empty,v=f();
   const n=S.nav[S.user],t=new Date(),time=t.getHours()+":"+String(t.getMinutes()).padStart(2,"0");
@@ -2045,7 +2054,7 @@ function phoneView(keepScroll){
     :inCouple&&S.couple.mode?`<button class="iconBtn right" data-act="toHome" aria-label="На головний"><svg width="20" height="20"><use href="#home"/></svg></button>`
     :(id[0]==="K"||id[0]==="M"||id[0]==="N"||id[0]==="P")&&S.solo.state?`<button class="iconBtn right" data-go="N1" aria-label="Соло-трек"><svg width="20" height="20"><use href="#home"/></svg></button>`:"<span></span>";
   const c=activeConsent(),p=c?PSY.find(x=>x.id===c.psy):null;
-  return `<div class="phone" id="phone"><div class="silk" aria-hidden="true"></div><div class="status"><span>${time}</span><span class="bat"></span></div>
+  return `<div class="phone t-${toneOf(id)}" id="phone"><div class="silk" aria-hidden="true"></div><div class="status"><span>${time}</span><span class="bat"></span></div>
     <div class="bar">${left}<button class="logo" data-act="sheet" aria-label="Меню демо"><svg width="30" height="18"><use href="#logo"/></svg>Двоє</button>${right}</div>
     ${v.steps?stepsBar(v.steps[0],v.steps[1]):""}
     ${c&&S.couple.mode?`<div class="plaque"><span>${esc(p.n)} бачить ваші відповіді в темі Межі до ${fD(c.until)}.</span><button data-act="revoke" data-v="${c.id}">Відкликати</button></div>`:""}
@@ -2642,7 +2651,7 @@ function dialInner(v,other){const {cx,cy,R,span,n}=DIAL;let h="";const sel=v==nu
   for(let i=0;i<n;i++){const a=(-span+2*span*i/(n-1))*Math.PI/180,edge=Math.min(i,n-1-i),fade=Math.min(1,.25+edge/6);
     const x1=cx+(R-26)*Math.sin(a),y1=cy-(R-26)*Math.cos(a),x2=cx+R*Math.sin(a),y2=cy-R*Math.cos(a);
     const on=i<=sel;
-    h+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${i===sel?"var(--yel)":"var(--ink)"}" stroke-width="${i===sel?3.4:on?2.6:1.6}" stroke-linecap="round" opacity="${(on?1:.3)*fade}"/>`;
+    h+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${i===sel?"var(--a3)":"var(--ink)"}" stroke-width="${i===sel?3.4:on?2.6:1.6}" stroke-linecap="round" opacity="${(on?1:.3)*fade}"/>`;
   }
   const mark=(i,filled)=>{const a=(-span+2*span*i/(n-1))*Math.PI/180,x=cx+(R+15)*Math.sin(a),y=cy-(R+15)*Math.cos(a);return filled?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="var(--ink)"/>`:`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="none" stroke="var(--clay)" stroke-width="2"/>`};
   if(oth>=0&&oth!==sel)h+=mark(oth,false);if(sel>=0)h+=mark(sel,true);
