@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Двоє · 5 дизайн-систем</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Cormorant:ital,wght@0,500;0,600;1,500&family=Inter+Tight:wght@400;500;600&family=Unbounded:wght@500;700&family=Nunito:wght@600;800;900&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: page header, then one row per design system (story + palette + two phone screens), then the recommendation. */
+:root{--bg:#F3F1EE;--ink:#151413;--muted:#66625C;--line:rgba(21,20,19,.12);--card:#FFFFFF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#151413;--ink:#F1EEE9;--muted:#A8A39B;--line:rgba(241,238,233,.14);--card:#1F1D1B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#151413;--ink:#F1EEE9;--muted:#A8A39B;--line:rgba(241,238,233,.14);--card:#1F1D1B;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Inter Tight",system-ui,sans-serif;padding:40px 16px 80px}
+.wrap{max-width:1180px;margin:0 auto}
+.eb{font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font:600 clamp(34px,5vw,58px)/1.02 "Inter Tight",sans-serif;letter-spacing:-.035em;margin:12px 0 0;text-wrap:balance}
+.lead{color:var(--muted);max-width:64ch;font-size:17px;margin:14px 0 0}
+.trends{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.trends span{border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13.5px;background:var(--card)}
+section.sys{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px 40px;align-items:start;border-top:1px solid var(--line);padding:44px 0;margin-top:44px}
+@media (max-width:980px){section.sys{grid-template-columns:1fr}}
+.num{font:500 13px "JetBrains Mono",monospace;color:var(--muted)}
+.sys h2{font:600 32px/1.05 "Inter Tight",sans-serif;letter-spacing:-.03em;margin:8px 0 4px}
+.sys .src{font-size:13.5px;color:var(--muted)}
+.sys p{margin:14px 0 0;max-width:52ch}
+.sw{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap}
+.sw i{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);display:block}
+.type{margin-top:16px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.type b{display:block;font-size:26px;line-height:1.1}
+.type small{color:var(--muted);font-size:12.5px}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;margin-top:16px;font-size:14px}
+.pc h4{margin:0 0 4px;font:600 12px "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pc ul{margin:0;padding-left:18px}
+.fit{margin-top:16px;display:flex;align-items:center;gap:10px;font-size:14px}
+.fit .bar{flex:0 0 160px;height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.fit .bar i{display:block;height:100%;background:var(--ink)}
+.phones{display:flex;gap:18px;flex-wrap:wrap}
+.ph{width:248px;height:520px;border-radius:38px;overflow:hidden;position:relative;flex:none;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 0 0 6px #111,0 30px 60px -30px rgba(0,0,0,.5)}
+.ph .in{position:absolute;inset:0;padding:40px 18px 18px;display:flex;flex-direction:column}
+.ph .st{position:absolute;top:12px;left:24px;right:24px;display:flex;justify-content:space-between;font:600 10px "Inter Tight",sans-serif}
+.ph .ft{margin-top:auto}
+.ph .btn{display:flex;justify-content:center;align-items:center;height:44px;font-size:13.5px}
+.rows{margin-top:10px}
+.rows div{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:12.5px}
+.dots{display:flex;gap:3px}
+.dots i{width:9px;height:9px;border-radius:50%;display:block}
+/* ═════ 1 · Рідке скло ═════ */
+.s1{background:radial-gradient(80% 50% at 15% 10%,#FFC9B9,transparent 70%),radial-gradient(70% 50% at 100% 40%,#B9D2FF,transparent 70%),radial-gradient(80% 50% at 30% 100%,#E7C6FF,transparent 70%),#F4EEF6;font-family:Onest,sans-serif;color:#141318}
+.s1 .gl{background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.7);border-radius:26px;-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(255,255,255,.3),0 10px 30px -14px rgba(60,40,90,.35)}
+.s1 .lab{font-size:11px;font-weight:500;color:rgba(20,19,24,.6)}
+.s1 h3{font-size:26px;font-weight:600;letter-spacing:-.03em;line-height:1.05;margin:6px 0 0}
+.s1 .btn{border-radius:99px;background:rgba(20,19,24,.86);color:#fff}
+.s1 .big{font-size:54px;font-weight:600;letter-spacing:-.05em;line-height:1}
+/* ═════ 2 · Журнал ═════ */
+.s2{background:#F6F1E8;color:#1B1A17;font-family:"Inter Tight",sans-serif}
+.s2 .ser{font-family:Cormorant,serif;font-weight:500;letter-spacing:-.01em}
+.s2 .lab{font:500 9.5px "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#7A7366}
+.s2 h3{font-family:Cormorant,serif;font-weight:500;font-size:34px;line-height:.98;margin:10px 0 0;letter-spacing:-.015em}
+.s2 h3 em{font-style:italic;color:#2F4BD8}
+.s2 .hr{border-top:1px solid #1B1A17;margin:12px 0 0}
+.s2 .hr2{border-top:1px solid rgba(27,26,23,.14)}
+.s2 .btn{background:#1B1A17;color:#F6F1E8;border-radius:2px;letter-spacing:.02em}
+.s2 .big{font-family:Cormorant,serif;font-size:84px;line-height:.85;letter-spacing:-.03em}
+.s2 .acc{color:#2F4BD8}
+/* ═════ 3 · Виразні форми ═════ */
+.s3{background:#FFF8EC;color:#1D1530;font-family:Onest,sans-serif}
+.s3 h3{font-family:Unbounded,sans-serif;font-weight:700;font-size:22px;line-height:1.05;letter-spacing:-.02em;margin:8px 0 0}
+.s3 .lab{font-size:11px;font-weight:600;color:#6A5F80}
+.s3 .blob{display:grid;place-items:center;color:#1D1530}
+.s3 .btn{background:#1D1530;color:#FFF8EC;border-radius:18px;font-weight:600}
+.s3 .chip{display:inline-block;padding:6px 12px;border-radius:99px;background:#FFD45C;font-size:11.5px;font-weight:600}
+.s3 .big{font-family:Unbounded,sans-serif;font-weight:700;font-size:46px;letter-spacing:-.04em;line-height:1}
+/* ═════ 4 · Желе ═════ */
+.s4{background:linear-gradient(180deg,#FCEFF4,#EEF0FF);color:#3A2F55;font-family:Nunito,sans-serif}
+.s4 h3{font-weight:900;font-size:26px;line-height:1.05;margin:8px 0 0;letter-spacing:-.01em}
+.s4 .lab{font-size:11.5px;font-weight:800;color:#8C7FB0}
+.s4 .jel{border-radius:28px;background:linear-gradient(180deg,#FFFFFF,#F4ECFF);box-shadow:inset 0 -6px 12px rgba(160,130,220,.25),inset 0 4px 8px #fff,0 14px 24px -12px rgba(130,100,200,.45)}
+.s4 .btn{border-radius:99px;background:linear-gradient(180deg,#9C86FF,#7A63F0);color:#fff;font-weight:800;box-shadow:inset 0 -4px 8px rgba(60,30,160,.35),inset 0 3px 6px rgba(255,255,255,.5),0 10px 18px -8px rgba(122,99,240,.7)}
+.s4 .big{font-weight:900;font-size:52px;line-height:1;background:linear-gradient(180deg,#FF8FB8,#9C86FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* ═════ 5 · Холодна синява ═════ */
+.s5{background:#F5F8FC;color:#0F1B2D;font-family:Manrope,sans-serif}
+.s5 h3{font-weight:700;font-size:25px;line-height:1.06;letter-spacing:-.035em;margin:8px 0 0}
+.s5 .lab{font:500 9.5px "JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:#5D6E86}
+.s5 .cd{background:#fff;border-radius:18px;border:1px solid #E1E8F2}
+.s5 .hero{border-radius:22px;background:radial-gradient(120% 90% at 100% 0%,#9CC3FF,transparent 55%),linear-gradient(160deg,#1D4ED8,#0E2A6B);color:#fff}
+.s5 .btn{background:#1D4ED8;color:#fff;border-radius:12px;font-weight:700}
+.s5 .big{font-weight:700;font-size:54px;letter-spacing:-.06em;line-height:1}
+/* recommendation */
+.rec{margin-top:56px;border-radius:28px;padding:32px clamp(18px,4vw,44px);background:var(--card);border:1px solid var(--line)}
+.rec h2{font:600 clamp(28px,4vw,42px)/1.05 "Inter Tight",sans-serif;letter-spacing:-.03em;margin:10px 0 0}
+.rec ol{padding-left:20px;max-width:72ch}
+.rec li{margin:8px 0}
+.score{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}
+.score th,.score td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+.score th{font:500 11px "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.score td.n{font-variant-numeric:tabular-nums}
+.score tr.win td{font-weight:600}
+.tblw{overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eb">Двоє · дизайн-напрям · жовтень 2026</div>
+  <h1>П’ять дизайн-систем на тих самих двох екранах</h1>
+  <p class="lead">Кожна система показана на однакових екранах: «Партнера запросили» і «Результат карти стосунків». Так видно різницю в характері, а не в контенті. Внизу оцінка за критеріями продукту і рекомендація.</p>
+  <div class="trends"><span>Liquid Glass (iOS 26)</span><span>Material 3 Expressive: форми й морфінг</span><span>Редакційна типографіка: антиква + гротеск</span><span>Тактильність «Gimme Gummy»</span><span>Колір року: Cool Blue</span><span>Тиха розкіш і білий простір</span></div>
+
+  <!-- 1 -->
+  <section class="sys">
+    <div>
+      <div class="num">01</div><h2>Рідке скло</h2><div class="src">Тренд: Apple Liquid Glass, iOS 26</div>
+      <p>Напівпрозорі скляні панелі над м’яким кольоровим полем: персик, блакить, бузок. Інтерфейс як фізичний матеріал, що заломлює світло. Виглядає «рідно» на iPhone і сучасно просто зараз.</p>
+      <div class="sw"><i style="background:#FFC9B9"></i><i style="background:#B9D2FF"></i><i style="background:#E7C6FF"></i><i style="background:#F4EEF6"></i><i style="background:#141318"></i></div>
+      <div class="type" style="font-family:Onest,sans-serif"><b style="font-weight:600;letter-spacing:-.03em">Юлія кличе вас</b><small>Onest 600 · один гротеск на все</small></div>
+      <div class="pc"><div><h4>Плюси</h4><ul><li>Максимально «зараз»</li><li>Легкість, повітря</li></ul></div><div><h4>Мінуси</h4><ul><li>Платформений стиль: не ваш, а Apple</li><li>Склу бракує контрасту на тексті</li><li>Застаріє разом із iOS</li></ul></div></div>
+      <div class="fit"><span>Відповідність Двоє</span><span class="bar"><i style="width:62%"></i></span><b>6.2</b></div>
+    </div>
+    <div class="phones">
+      <div class="ph s1"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="gl" style="padding:18px;margin-top:30px;text-align:center"><div class="lab">Запрошення</div><h3>Юлія кличе вас</h3><div style="font-size:12px;margin-top:10px;color:rgba(20,19,24,.65)">Одне питання · хвилина</div></div>
+        <div class="gl" style="padding:14px;margin-top:12px;font-size:13px;line-height:1.4">«Який момент з наших стосунків ти хочеш пам’ятати завжди?»</div>
+        <div class="ft"><div class="btn">Відповісти</div></div></div></div>
+      <div class="ph s1"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="lab" style="margin-top:4px">Карта стосунків</div>
+        <div class="gl" style="padding:18px;margin-top:10px;text-align:center"><svg width="120" height="64" viewBox="0 0 120 64"><circle cx="46" cy="32" r="28" fill="rgba(255,201,185,.6)" stroke="#fff" stroke-width="1.5"/><circle cx="74" cy="32" r="28" fill="rgba(185,210,255,.6)" stroke="#fff" stroke-width="1.5"/></svg><div class="big">91%</div><div style="font-size:11.5px;color:rgba(20,19,24,.6);margin-top:4px">настільки однаково ви бачите</div></div>
+        <div class="gl rows" style="padding:4px 14px"><div><span>Безпека</span><b>поруч</b></div><div><span>Спілкування</span><b>різне</b></div><div><span>Спільний час</span><b>поруч</b></div></div>
+        <div class="ft"><div class="btn">Почати з «Межі»</div></div></div></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="sys">
+    <div>
+      <div class="num">02</div><h2>Журнал</h2><div class="src">Тренд: редакційна типографіка, антиква + гротеск, тиха розкіш</div>
+      <p>Кремовий папір, велика висококонтрастна антиква, тонкі лінійки, нумерація як у журналі. Один акцент — кобальтовий синій (колір року). Відчуття: розумно, дорослo, без маніпуляцій. Ближче до книжки про стосунки, ніж до «застосунку для пар».</p>
+      <div class="sw"><i style="background:#F6F1E8"></i><i style="background:#1B1A17"></i><i style="background:#2F4BD8"></i><i style="background:#C9785F"></i><i style="background:#7A7366"></i></div>
+      <div class="type"><b style="font-family:Cormorant,serif;font-weight:500;font-size:32px">Юлія <i style="color:#2F4BD8">кличе</i> вас</b><small>Cormorant 500 для заголовків · Inter Tight для тексту · JetBrains Mono для міток</small></div>
+      <div class="pc"><div><h4>Плюси</h4><ul><li>Довіра і серйозність для чутливих тем</li><li>Гендерно нейтрально: не відштовхне скептичного партнера</li><li>Виділяється серед «цукеркових» wellness і ШІ-чатів</li><li>Найкраще читається довгий текст</li></ul></div><div><h4>Мінуси</h4><ul><li>Ризик «нудно», якщо без одного живого елемента</li><li>Антикву треба гарно набирати</li></ul></div></div>
+      <div class="fit"><span>Відповідність Двоє</span><span class="bar"><i style="width:91%"></i></span><b>9.1</b></div>
+    </div>
+    <div class="phones">
+      <div class="ph s2"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="lab" style="display:flex;justify-content:space-between;margin-top:10px"><span>№ 01 · Запрошення</span><span>1 хв</span></div><div class="hr"></div>
+        <h3>Юлія <em>кличе</em> вас</h3>
+        <p style="font-size:12.5px;line-height:1.5;color:#4D4840;margin:12px 0 0">Одне питання. Вона вже відповіла — її відповідь відкриється після вашої.</p>
+        <div class="hr2" style="margin-top:16px;padding-top:12px"><div class="lab">Питання</div><div class="ser" style="font-size:22px;line-height:1.08;margin-top:6px;font-style:italic">«Який момент з наших стосунків ти хочеш пам’ятати завжди?»</div></div>
+        <div class="ft"><div class="btn">Відповісти</div></div></div></div>
+      <div class="ph s2"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="lab" style="display:flex;justify-content:space-between;margin-top:10px"><span>№ 02 · Карта</span><span>8 сфер</span></div><div class="hr"></div>
+        <div style="display:flex;align-items:flex-end;gap:10px;margin-top:14px"><div class="big">91<span class="acc" style="font-size:40px">%</span></div><svg width="64" height="40" viewBox="0 0 64 40" style="margin-bottom:6px"><circle cx="24" cy="20" r="17" fill="none" stroke="#1B1A17"/><circle cx="40" cy="20" r="17" fill="none" stroke="#2F4BD8"/></svg></div>
+        <div class="ser" style="font-size:17px;font-style:italic;margin-top:6px">настільки однаково ви бачите ваші стосунки</div>
+        <div class="rows" style="margin-top:12px"><div class="hr2"><span>01 · Безпека</span><span class="lab">поруч</span></div><div class="hr2"><span>02 · Спілкування</span><span class="lab acc">різне</span></div><div class="hr2"><span>03 · Спільний час</span><span class="lab">поруч</span></div></div>
+        <div class="ft"><div class="btn">Почати з «Межі»</div></div></div></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="sys">
+    <div>
+      <div class="num">03</div><h2>Виразні форми</h2><div class="src">Тренд: Material 3 Expressive — форми, що морфляться, сміливий колір</div>
+      <p>Бренд тримається на формах: «квітка», «печиво», хвиля, що змінюються при дотику. Кремовий фон, масляно-жовтий, корал, кобальт. Широкий гротеск Unbounded. Енергійно й дружньо.</p>
+      <div class="sw"><i style="background:#FFF8EC"></i><i style="background:#FFD45C"></i><i style="background:#FF8A6B"></i><i style="background:#7C9BFF"></i><i style="background:#1D1530"></i></div>
+      <div class="type"><b style="font-family:Unbounded,sans-serif;font-weight:700;font-size:22px">Юлія кличе вас</b><small>Unbounded 700 · Onest для тексту</small></div>
+      <div class="pc"><div><h4>Плюси</h4><ul><li>Запам’ятовується, сильний брендинг</li><li>Гарні мікроанімації</li></ul></div><div><h4>Мінуси</h4><ul><li>Занадто грайливо для конфліктів і безпеки</li><li>Схоже на Android-систему</li></ul></div></div>
+      <div class="fit"><span>Відповідність Двоє</span><span class="bar"><i style="width:58%"></i></span><b>5.8</b></div>
+    </div>
+    <div class="phones">
+      <div class="ph s3"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <svg viewBox="0 0 200 200" width="150" style="align-self:center;margin-top:10px"><path fill="#FFD45C" d="M100 8c14 0 22 14 34 18s28-2 36 10-2 26 2 38 18 22 14 36-20 16-28 28-8 28-22 34-26-6-36-6-24 12-36 6-12-22-22-30-26-14-28-28 12-22 12-36-12-28-4-40 26-6 38-12S86 8 100 8z"/><text x="100" y="112" text-anchor="middle" font-family="Unbounded, Arial, sans-serif" font-weight="700" font-size="26" fill="#1D1530">1 хв</text></svg>
+        <div class="lab" style="text-align:center;margin-top:6px">Запрошення</div><h3 style="text-align:center">Юлія кличе вас</h3>
+        <div style="text-align:center;margin-top:10px"><span class="chip">одне питання</span></div>
+        <div class="ft"><div class="btn">Відповісти</div></div></div></div>
+      <div class="ph s3"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="lab" style="margin-top:6px">Карта стосунків</div>
+        <div style="background:#7C9BFF;border-radius:40px 40px 40px 8px;padding:18px;margin-top:8px;color:#1D1530"><div class="big">91%</div><div style="font-size:11.5px;font-weight:600;margin-top:4px">однаково бачите стосунки</div></div>
+        <div class="rows"><div><span>Безпека</span><span class="chip">поруч</span></div><div><span>Спілкування</span><span class="chip" style="background:#FF8A6B">різне</span></div><div><span>Спільний час</span><span class="chip">поруч</span></div></div>
+        <div class="ft"><div class="btn">Почати з «Межі»</div></div></div></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="sys">
+    <div>
+      <div class="num">04</div><h2>Желе</h2><div class="src">Тренд: «Gimme Gummy» — тактильні, надуті, м’які елементи</div>
+      <p>Опуклі «желейні» кнопки і картки, пастельні градієнти, округлий шрифт Nunito. Відчуття: м’яко, турботливо, трохи ігрово. Популярно у wellness для Gen Z.</p>
+      <div class="sw"><i style="background:#FCEFF4"></i><i style="background:#EEF0FF"></i><i style="background:#9C86FF"></i><i style="background:#FF8FB8"></i><i style="background:#3A2F55"></i></div>
+      <div class="type"><b style="font-family:Nunito,sans-serif;font-weight:900">Юлія кличе вас</b><small>Nunito 900 · округлий</small></div>
+      <div class="pc"><div><h4>Плюси</h4><ul><li>Тепло і безпечно</li><li>Приємно натискати</li></ul></div><div><h4>Мінуси</h4><ul><li>Інфантильно для пар 30+ і для чоловіків</li><li>Знецінює серйозні теми</li><li>Швидко старіє</li></ul></div></div>
+      <div class="fit"><span>Відповідність Двоє</span><span class="bar"><i style="width:44%"></i></span><b>4.4</b></div>
+    </div>
+    <div class="phones">
+      <div class="ph s4"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="jel" style="padding:20px;margin-top:26px;text-align:center"><div style="width:64px;height:64px;margin:0 auto;border-radius:22px;background:linear-gradient(180deg,#FFB3CF,#FF8FB8);box-shadow:inset 0 -5px 10px rgba(200,60,110,.35),inset 0 4px 8px rgba(255,255,255,.6)"></div><div class="lab" style="margin-top:12px">Запрошення</div><h3>Юлія кличе вас</h3><div style="font-size:12.5px;font-weight:700;color:#8C7FB0;margin-top:8px">одне питання · хвилинка</div></div>
+        <div class="ft"><div class="btn">Відповісти</div></div></div></div>
+      <div class="ph s4"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="lab" style="margin-top:6px">Карта стосунків</div>
+        <div class="jel" style="padding:18px;margin-top:8px;text-align:center"><div class="big">91%</div><div style="font-size:11.5px;font-weight:800;color:#8C7FB0">однаково бачите стосунки</div></div>
+        <div class="jel rows" style="padding:4px 14px;margin-top:10px"><div><span>Безпека</span><b style="color:#7A63F0">поруч</b></div><div><span>Спілкування</span><b style="color:#FF6F9F">різне</b></div><div><span>Спільний час</span><b style="color:#7A63F0">поруч</b></div></div>
+        <div class="ft"><div class="btn">Почати з «Межі»</div></div></div></div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sys">
+    <div>
+      <div class="num">05</div><h2>Холодна синява</h2><div class="src">Тренд: Cool Blue — колір 2026, спокій і впевненість</div>
+      <p>Крижаний білий, глибокий кобальт, точні моно-мітки, багато білого простору. Як сучасні health-сервіси: чисто, впевнено, професійно.</p>
+      <div class="sw"><i style="background:#F5F8FC"></i><i style="background:#1D4ED8"></i><i style="background:#9CC3FF"></i><i style="background:#0E2A6B"></i><i style="background:#0F1B2D"></i></div>
+      <div class="type" style="font-family:Manrope,sans-serif"><b style="font-weight:700;letter-spacing:-.035em">Юлія кличе вас</b><small>Manrope 700 · JetBrains Mono для міток</small></div>
+      <div class="pc"><div><h4>Плюси</h4><ul><li>Чисто, довіра, «медично-надійно»</li><li>Легко масштабувати</li></ul></div><div><h4>Мінуси</h4><ul><li>Холодно для теми близькості</li><li>Схоже на банк або телемедицину</li></ul></div></div>
+      <div class="fit"><span>Відповідність Двоє</span><span class="bar"><i style="width:70%"></i></span><b>7.0</b></div>
+    </div>
+    <div class="phones">
+      <div class="ph s5"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="hero" style="padding:20px;margin-top:20px"><div class="lab" style="color:rgba(255,255,255,.7)">Запрошення · 1 хв</div><h3>Юлія кличе вас</h3><div style="font-size:12px;margin-top:10px;color:rgba(255,255,255,.8)">Одне питання. Її відповідь відкриється після вашої.</div></div>
+        <div class="cd" style="padding:14px;margin-top:12px;font-size:13px;line-height:1.4"><div class="lab">Питання</div><div style="margin-top:6px;font-weight:500">Який момент з наших стосунків ти хочеш пам’ятати завжди?</div></div>
+        <div class="ft"><div class="btn">Відповісти</div></div></div></div>
+      <div class="ph s5"><div class="st"><span>9:41</span><span>●●●</span></div><div class="in">
+        <div class="lab" style="margin-top:6px">Карта стосунків</div>
+        <div class="cd" style="padding:16px;margin-top:8px"><div style="display:flex;justify-content:space-between;align-items:flex-end"><div class="big">91<span style="color:#1D4ED8">%</span></div><svg width="54" height="34" viewBox="0 0 54 34"><circle cx="20" cy="17" r="14" fill="rgba(29,78,216,.12)" stroke="#1D4ED8"/><circle cx="34" cy="17" r="14" fill="rgba(156,195,255,.3)" stroke="#9CC3FF"/></svg></div><div style="font-size:11.5px;color:#5D6E86;margin-top:4px">настільки однаково ви бачите</div></div>
+        <div class="cd rows" style="padding:4px 14px;margin-top:10px"><div><span>Безпека</span><span class="lab">поруч</span></div><div><span>Спілкування</span><span class="lab" style="color:#1D4ED8">різне</span></div><div><span>Спільний час</span><span class="lab">поруч</span></div></div>
+        <div class="ft"><div class="btn">Почати з «Межі»</div></div></div></div>
+    </div>
+  </section>
+
+  <div class="rec">
+    <div class="eb">Рекомендація</div>
+    <h2>«Журнал» — з одним живим елементом</h2>
+    <ol>
+      <li><b>Чутливі теми потребують довіри, а не «милоти».</b> Межі, гроші, конфлікти, безпека. Редакційна мова каже «тут дорослий, уважний розбір», а не «гра».</li>
+      <li><b>Другий партнер часто скептичний.</b> Нейтральний, книжковий стиль не відштовхує людину, яку «затягли». Желе і форми — відштовхують.</li>
+      <li><b>Відрізняє від конкурентів.</b> ШІ-чати і wellness-застосунки зараз або «скляні», або пастельно-цукеркові. Журнальна естетика в цій ніші майже не зайнята.</li>
+      <li><b>Повертає до вашої філософії «Тиха доказовість».</b> Антиква, лінійки, нумеровані «пластини» — це та сама ідея, але сучасніше: великий контраст розмірів, кобальтовий акцент кольору року.</li>
+      <li><b>Живий елемент:</b> «два кола» лишаються єдиним графічним мотивом і анімуються в моменти відкриття відповідей. Від «Скла» можна взяти одну річ — скляну нижню панель навігації.</li>
+    </ol>
+    <div class="tblw"><table class="score">
+      <tr><th>Система</th><th>Довіра</th><th>Тепло</th><th>Відмінність</th><th>Читабельність</th><th>Довговічність</th><th>Разом</th></tr>
+      <tr class="win"><td>02 · Журнал</td><td class="n">10</td><td class="n">8</td><td class="n">9</td><td class="n">10</td><td class="n">9</td><td class="n">9.1</td></tr>
+      <tr><td>05 · Холодна синява</td><td class="n">9</td><td class="n">4</td><td class="n">6</td><td class="n">9</td><td class="n">7</td><td class="n">7.0</td></tr>
+      <tr><td>01 · Рідке скло</td><td class="n">6</td><td class="n">7</td><td class="n">5</td><td class="n">6</td><td class="n">6</td><td class="n">6.2</td></tr>
+      <tr><td>03 · Виразні форми</td><td class="n">5</td><td class="n">8</td><td class="n">7</td><td class="n">7</td><td class="n">4</td><td class="n">5.8</td></tr>
+      <tr><td>04 · Желе</td><td class="n">3</td><td class="n">9</td><td class="n">3</td><td class="n">6</td><td class="n">3</td><td class="n">4.4</td></tr>
+    </table></div>
+  </div>
+</div>
+</body>
+</html>
